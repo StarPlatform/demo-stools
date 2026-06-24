@@ -1,0 +1,969 @@
+<!DOCTYPE html>
+<html lang="id">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=no, viewport-fit=cover">
+<title>Buat Tugas - Star Tools</title>
+
+<script src="https://www.gstatic.com/firebasejs/8.10.1/firebase-app.js"></script>
+<script src="https://www.gstatic.com/firebasejs/8.10.1/firebase-auth.js"></script>
+<script src="https://www.gstatic.com/firebasejs/8.10.1/firebase-database.js"></script>
+
+<style>
+  * {
+    margin: 0;
+    padding: 0;
+    box-sizing: border-box;
+    -webkit-tap-highlight-color: transparent;
+  }
+
+  body {
+    font-family: 'Inter', system-ui, -apple-system, 'Segoe UI', Roboto, sans-serif;
+    background: #F1F5F9;
+    color: #0F172A;
+  }
+
+  body.dark {
+    background: #0B1120;
+    color: #F1F5F9;
+  }
+
+  body.dark .card-modern,
+  body.dark .app-header,
+  body.dark .sidebar-nav,
+  body.dark .alert-card {
+    background: #111827;
+    border-color: #1E293B;
+  }
+
+  body.dark .input-field {
+    background: #1E293B;
+    border-color: #334155;
+    color: #F1F5F9;
+  }
+
+  body.dark .input-field::placeholder {
+    color: #64748B;
+  }
+
+  body.dark .limit-info {
+    background: #1E293B;
+  }
+
+  body.dark .info-box {
+    background: #1E293B;
+    border-color: #334155;
+  }
+
+  body.dark .bottom-nav {
+    background: #111827;
+    border-top-color: #1E293B;
+  }
+
+  .app-container {
+    max-width: 560px;
+    margin: 0 auto;
+    background: #F1F5F9;
+    min-height: 100vh;
+    display: flex;
+    flex-direction: column;
+    position: relative;
+  }
+
+  body.dark .app-container {
+    background: #0B1120;
+  }
+
+  .app-header {
+    background: #FFFFFF;
+    padding: 16px 20px;
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    border-bottom: 1px solid #E2E8F0;
+    position: sticky;
+    top: 0;
+    z-index: 20;
+  }
+
+  body.dark .app-header {
+    background: #111827;
+    border-bottom-color: #1E293B;
+  }
+
+  .logo-area {
+    display: flex;
+    align-items: center;
+    gap: 12px;
+  }
+
+  .menu-icon {
+    width: 40px;
+    height: 40px;
+    background: #F8FAFE;
+    border-radius: 32px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    cursor: pointer;
+    border: 1px solid #E2E8F0;
+  }
+
+  body.dark .menu-icon {
+    background: #1E293B;
+    border-color: #334155;
+  }
+
+  .menu-icon svg {
+    stroke: #0F172A;
+  }
+
+  body.dark .menu-icon svg {
+    stroke: #F1F5F9;
+  }
+
+  .app-title {
+    font-weight: 700;
+    font-size: 20px;
+    letter-spacing: -0.3px;
+    background: linear-gradient(135deg, #2563EB, #60A5FA);
+    -webkit-background-clip: text;
+    background-clip: text;
+    color: transparent;
+  }
+
+  .close-btn {
+    width: 40px;
+    height: 40px;
+    background: rgba(0, 0, 0, 0.05);
+    border-radius: 50%;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    cursor: pointer;
+    transition: 0.2s;
+    border: none;
+  }
+
+  body.dark .close-btn {
+    background: rgba(255, 255, 255, 0.05);
+  }
+
+  .close-btn:active {
+    transform: scale(0.92);
+  }
+
+  .close-btn svg {
+    stroke: #0F172A;
+    width: 22px;
+    height: 22px;
+  }
+
+  body.dark .close-btn svg {
+    stroke: #F1F5F9;
+  }
+
+  .sidebar-overlay {
+    position: fixed;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    background: rgba(0, 0, 0, 0.5);
+    backdrop-filter: blur(4px);
+    z-index: 100;
+    visibility: hidden;
+    opacity: 0;
+    transition: 0.25s;
+  }
+
+  .sidebar-overlay.active {
+    visibility: visible;
+    opacity: 1;
+  }
+
+  .sidebar-nav {
+    position: fixed;
+    top: 0;
+    left: -280px;
+    width: 280px;
+    height: 100%;
+    background: #FFFFFF;
+    z-index: 101;
+    transition: 0.3s cubic-bezier(0.2, 0.9, 0.4, 1.1);
+    padding: 70px 20px 30px;
+    display: flex;
+    flex-direction: column;
+    gap: 4px;
+    box-shadow: 4px 0 20px rgba(0, 0, 0, 0.1);
+  }
+
+  .sidebar-nav.active {
+    left: 0;
+  }
+
+  .sidebar-nav a {
+    padding: 14px 18px;
+    font-size: 16px;
+    font-weight: 500;
+    border-radius: 18px;
+    text-decoration: none;
+    color: #0F172A;
+    transition: 0.2s;
+    display: flex;
+    align-items: center;
+    gap: 14px;
+    cursor: pointer;
+  }
+
+  body.dark .sidebar-nav a {
+    color: #F1F5F9;
+  }
+
+  .sidebar-nav a:active {
+    background: #DBEAFE;
+  }
+
+  body.dark .sidebar-nav a:active {
+    background: #1E293B;
+  }
+
+  .logout-link {
+    margin-top: 20px;
+    border-top: 1px solid #E2E8F0;
+    padding-top: 16px;
+  }
+
+  body.dark .logout-link {
+    border-top-color: #334155;
+  }
+
+  .logout-link a {
+    color: #DC2626 !important;
+  }
+
+  .logout-link a svg {
+    stroke: #DC2626;
+  }
+
+  .close-sidebar-icon {
+    position: absolute;
+    top: 20px;
+    right: 20px;
+    cursor: pointer;
+    width: 40px;
+    height: 40px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    border-radius: 30px;
+  }
+
+  .screen {
+    padding: 20px 18px 30px;
+    flex: 1;
+  }
+
+  .card-modern {
+    background: #FFFFFF;
+    border-radius: 28px;
+    padding: 20px;
+    margin-bottom: 20px;
+    box-shadow: 0 2px 8px rgba(0, 0, 0, 0.04);
+    border: 1px solid #E2E8F0;
+  }
+
+  .section-title {
+    font-size: 18px;
+    font-weight: 700;
+    margin-bottom: 4px;
+    display: flex;
+    align-items: center;
+    gap: 8px;
+  }
+
+  .section-sub {
+    font-size: 14px;
+    color: #64748B;
+    margin-bottom: 16px;
+    line-height: 1.5;
+  }
+
+  body.dark .section-sub {
+    color: #94A3B8;
+  }
+
+  .input-field {
+    width: 100%;
+    padding: 14px 16px;
+    border-radius: 14px;
+    border: 1px solid #E2E8F0;
+    background: #FFFFFF;
+    color: #0F172A;
+    font-size: 14px;
+    margin-bottom: 12px;
+  }
+
+  .input-field:focus {
+    outline: none;
+    border-color: #2563EB;
+  }
+
+  .input-field::placeholder {
+    color: #94A3B8;
+  }
+
+  textarea.input-field {
+    min-height: 100px;
+    resize: vertical;
+    font-family: inherit;
+  }
+
+  .btn-save {
+    width: 100%;
+    padding: 14px;
+    border: none;
+    border-radius: 14px;
+    background: #2563EB;
+    color: white;
+    font-weight: 600;
+    font-size: 15px;
+    cursor: pointer;
+    transition: 0.2s;
+  }
+
+  .btn-save:active {
+    transform: scale(0.97);
+    background: #1D4ED8;
+  }
+
+  .btn-sm {
+    padding: 8px 16px;
+    border: none;
+    border-radius: 10px;
+    font-weight: 600;
+    font-size: 13px;
+    cursor: pointer;
+    transition: 0.2s;
+  }
+
+  .btn-sm:active {
+    transform: scale(0.95);
+  }
+
+  .form-group {
+    margin-bottom: 16px;
+  }
+
+  .form-group label {
+    display: block;
+    font-size: 13px;
+    font-weight: 600;
+    color: #475569;
+    margin-bottom: 4px;
+  }
+
+  body.dark .form-group label {
+    color: #94A3B8;
+  }
+
+  .form-group .hint {
+    font-size: 12px;
+    color: #94A3B8;
+    margin-top: 4px;
+    line-height: 1.5;
+  }
+
+  .limit-info {
+    background: #F1F5F9;
+    padding: 12px 16px;
+    border-radius: 12px;
+    margin-bottom: 16px;
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+  }
+
+  body.dark .limit-info {
+    background: #1E293B;
+  }
+
+  .limit-info .label {
+    font-size: 13px;
+    color: #64748B;
+  }
+
+  body.dark .limit-info .label {
+    color: #94A3B8;
+  }
+
+  .limit-info .count {
+    font-size: 15px;
+    font-weight: 700;
+    color: #2563EB;
+  }
+
+  body.dark .limit-info .count {
+    color: #60A5FA;
+  }
+
+  .info-box {
+    background: #F8FAFE;
+    border: 1px solid #E2E8F0;
+    border-radius: 12px;
+    padding: 12px 14px;
+    margin-top: 12px;
+  }
+
+  body.dark .info-box {
+    background: #1E293B;
+    border-color: #334155;
+  }
+
+  .info-box p {
+    font-size: 13px;
+    color: #64748B;
+    line-height: 1.5;
+  }
+
+  body.dark .info-box p {
+    color: #94A3B8;
+  }
+
+  .footer-app {
+    text-align: center;
+    padding: 20px;
+    font-size: 12px;
+    color: #64748B;
+    border-top: 1px solid #E2E8F0;
+  }
+
+  body.dark .footer-app {
+    color: #94A3B8;
+    border-top-color: #1E293B;
+  }
+
+  .alert-overlay {
+    position: fixed;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    background: rgba(0, 0, 0, 0.6);
+    backdrop-filter: blur(6px);
+    display: none;
+    justify-content: center;
+    align-items: center;
+    z-index: 200;
+  }
+
+  .alert-card {
+    background: #FFFFFF;
+    width: 300px;
+    border-radius: 28px;
+    padding: 24px 22px;
+    text-align: center;
+    border: 1px solid #E2E8F0;
+  }
+
+  body.dark .alert-card {
+    background: #111827;
+    border-color: #1E293B;
+  }
+
+  .alert-card p {
+    font-size: 15px;
+    line-height: 1.6;
+    margin-bottom: 20px;
+    white-space: pre-line;
+  }
+
+  .btn-full {
+    background: #2563EB;
+    border: none;
+    color: white;
+    font-weight: 600;
+    padding: 12px;
+    border-radius: 40px;
+    font-size: 14px;
+    width: 100%;
+    cursor: pointer;
+  }
+
+  .btn-full:active {
+    transform: scale(0.97);
+  }
+
+  .alert-actions {
+    display: flex;
+    gap: 10px;
+    flex-direction: column;
+  }
+
+  .hidden {
+    display: none !important;
+  }
+
+  .toast {
+    position: fixed;
+    top: 70px;
+    left: 50%;
+    transform: translateX(-50%);
+    background: #1E293B;
+    color: white;
+    padding: 12px 24px;
+    border-radius: 14px;
+    font-size: 14px;
+    opacity: 0;
+    pointer-events: none;
+    transition: all 0.3s ease;
+    z-index: 300;
+    border-left: 4px solid #34D399;
+  }
+
+  .toast.show {
+    opacity: 1;
+    transform: translateX(-50%) translateY(0);
+  }
+
+  .toast.error {
+    border-left-color: #F87171;
+  }
+
+  .bottom-nav {
+    display: flex;
+    justify-content: space-around;
+    align-items: center;
+    background: #FFFFFF;
+    border-top: 1px solid #E2E8F0;
+    padding: 8px 0 env(safe-area-inset-bottom, 8px) 0;
+    position: sticky;
+    bottom: 0;
+    z-index: 10;
+  }
+
+  body.dark .bottom-nav {
+    background: #111827;
+    border-top-color: #1E293B;
+  }
+
+  .nav-item {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    gap: 2px;
+    padding: 4px 16px;
+    cursor: pointer;
+    border: none;
+    background: none;
+    color: #94A3B8;
+    font-size: 10px;
+    font-weight: 500;
+    transition: 0.2s;
+    font-family: inherit;
+  }
+
+  .nav-item svg {
+    stroke: #94A3B8;
+    transition: 0.2s;
+  }
+
+  .nav-item.active {
+    color: #2563EB;
+  }
+
+  .nav-item.active svg {
+    stroke: #2563EB;
+  }
+
+  .nav-item:active {
+    transform: scale(0.92);
+  }
+
+  .copy-btn {
+    background: #F1F5F9;
+    border: none;
+    padding: 6px 12px;
+    border-radius: 8px;
+    font-size: 12px;
+    font-weight: 500;
+    cursor: pointer;
+    color: #0F172A;
+    transition: 0.2s;
+  }
+
+  body.dark .copy-btn {
+    background: #1E293B;
+    color: #F1F5F9;
+  }
+
+  .copy-btn:active {
+    transform: scale(0.95);
+  }
+
+  .link-display {
+    display: flex;
+    align-items: center;
+    gap: 10px;
+    background: #F8FAFE;
+    border: 1px solid #E2E8F0;
+    border-radius: 12px;
+    padding: 10px 14px;
+    margin-top: 8px;
+    word-break: break-all;
+  }
+
+  body.dark .link-display {
+    background: #1E293B;
+    border-color: #334155;
+  }
+
+  .link-display .link-text {
+    flex: 1;
+    font-size: 13px;
+    color: #2563EB;
+    font-weight: 500;
+  }
+
+  body.dark .link-display .link-text {
+    color: #60A5FA;
+  }
+</style>
+</head>
+<body>
+
+<div class="app-container">
+  <!-- HEADER -->
+  <div class="app-header">
+    <div class="logo-area">
+      <div class="menu-icon" onclick="openSidebar()">
+        <svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+          <line x1="3" y1="12" x2="21" y2="12"/>
+          <line x1="3" y1="6" x2="21" y2="6"/>
+          <line x1="3" y1="18" x2="21" y2="18"/>
+        </svg>
+      </div>
+      <span class="app-title">Star Tools • Buat Tugas</span>
+    </div>
+    <button class="close-btn" onclick="goTo('index.html')" aria-label="Kembali ke Beranda">
+      <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+        <line x1="18" y1="6" x2="6" y2="18"/>
+        <line x1="6" y1="6" x2="18" y2="18"/>
+      </svg>
+    </button>
+  </div>
+
+  <!-- SIDEBAR -->
+  <div class="sidebar-overlay" id="sidebarOverlay" onclick="closeSidebar()"></div>
+  <div class="sidebar-nav" id="sidebarNav">
+    <div class="close-sidebar-icon" onclick="closeSidebar()">
+      <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><line x1="18" y1="6" x2="6" y2="18"/><line x1="6" y1="6" x2="18" y2="18"/></svg>
+    </div>
+    <a href="#" onclick="goTo('index.html')">
+      <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.7" stroke-linecap="round" stroke-linejoin="round"><path d="M3 9l9-7 9 7v11a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2z"/><polyline points="9 22 9 12 15 12 15 22"/></svg> Utama
+    </a>
+    <a href="#" onclick="goTo('berita.html')">
+      <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.7" stroke-linecap="round" stroke-linejoin="round"><path d="M4 4h16a2 2 0 0 1 2 2v12a2 2 0 0 1-2 2H4a2 2 0 0 1-2-2V6a2 2 0 0 1 2-2z"/><line x1="8" y1="8" x2="16" y2="8"/><line x1="8" y1="12" x2="16" y2="12"/><line x1="8" y1="16" x2="12" y2="16"/></svg> Berita
+    </a>
+    <a href="#" onclick="goTo('premium.html')">
+      <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.7" stroke-linecap="round" stroke-linejoin="round"><polygon points="12 2 15.09 8.26 22 9.27 17 14.14 18.18 21.02 12 17.77 5.82 21.02 7 14.14 2 9.27 8.91 8.26 12 2"/></svg> Premium
+    </a>
+    <a href="#" onclick="goTo('akun.html')">
+      <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.7" stroke-linecap="round" stroke-linejoin="round"><path d="M20 21v-2a4 4 0 0 0-4-4H8a4 4 0 0 0-4 4v2"/><circle cx="12" cy="7" r="4"/></svg> Akun
+    </a>
+    <div class="logout-link">
+      <a href="#" onclick="logoutAction()">
+        <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="#DC2626" stroke-width="1.7" stroke-linecap="round" stroke-linejoin="round"><path d="M9 21H5a2 2 0 0 1-2-2V5a2 2 0 0 1 2-2h4"/><polyline points="16 17 21 12 16 7"/><line x1="21" y1="12" x2="9" y2="12"/></svg> Keluar
+      </a>
+    </div>
+  </div>
+
+  <!-- MAIN CONTENT -->
+  <div class="screen">
+    <div class="card-modern">
+      <div class="section-title">
+        <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="#2563EB" stroke-width="1.7" stroke-linecap="round" stroke-linejoin="round">
+          <rect x="2" y="3" width="20" height="14" rx="2" ry="2"/>
+          <line x1="8" y1="21" x2="16" y2="21"/>
+          <line x1="12" y1="17" x2="12" y2="21"/>
+        </svg>
+        Buat Tugas Baru
+      </div>
+      <div class="section-sub">Buat tugas dengan link unik. Bagikan link ke murid-muridmu.</div>
+
+      <!-- Kuota -->
+      <div class="limit-info">
+        <span class="label">Tugas yang bisa dibuat minggu ini</span>
+        <span class="count" id="sisaKuota">10 / 10</span>
+      </div>
+
+      <!-- FORM -->
+      <div class="form-group">
+        <label>Judul Tugas</label>
+        <input type="text" id="judulTugas" class="input-field" placeholder="Contoh: Tugas Matematika Bab 1">
+      </div>
+
+      <div class="form-group">
+        <label>Deskripsi Tugas</label>
+        <textarea id="deskripsiTugas" class="input-field" placeholder="Jelaskan apa yang harus dikerjakan murid..."></textarea>
+      </div>
+
+      <div class="form-group">
+        <label>Durasi Pengerjaan (menit)</label>
+        <input type="number" id="durasiTugas" class="input-field" placeholder="60" min="1" max="180">
+        <div class="hint">Berapa menit murid punya waktu untuk mengerjakan?</div>
+      </div>
+
+      <div class="form-group">
+        <label>Tugas akan dihapus setelah (hari)</label>
+        <input type="number" id="waktuHapus" class="input-field" placeholder="7" min="1" max="30">
+        <div class="hint">Berapa hari tugas akan tersedia sebelum dihapus otomatis?</div>
+      </div>
+
+      <button class="btn-save" onclick="buatTugas()">Buat Tugas & Dapatkan Link</button>
+
+      <!-- Link hasil -->
+      <div id="linkResult" style="display:none; margin-top:16px;">
+        <div class="info-box">
+          <p style="font-weight:600;margin-bottom:6px;">✅ Tugas berhasil dibuat! Link tugas:</p>
+          <div class="link-display">
+            <span class="link-text" id="linkTugas">https://.../t/ABCD1234</span>
+            <button class="copy-btn" onclick="copyLink()">Salin</button>
+          </div>
+          <p style="font-size:12px;margin-top:8px;color:#94A3B8;">Bagikan link ini ke murid-muridmu untuk mengerjakan tugas.</p>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- FOOTER -->
+  <div class="footer-app">
+    <p>Star Platform | Star Tools 2026</p>
+  </div>
+</div>
+
+<!-- ALERT -->
+<div id="globalAlert" class="alert-overlay">
+  <div class="alert-card">
+    <p id="alertMessage">Pemberitahuan</p>
+    <div class="alert-actions">
+      <button class="btn-full" onclick="closeAlertGlobal()">Mengerti</button>
+    </div>
+  </div>
+</div>
+
+<div id="toast" class="toast"></div>
+
+<script>
+const firebaseConfig = {
+  apiKey: "AIzaSyDgr_nHqvpMsiG4lBkYckzxRErkskXj_6E",
+  authDomain: "laporanstartools-c18b2.firebaseapp.com",
+  databaseURL: "https://laporanstartools-c18b2-default-rtdb.asia-southeast1.firebasedatabase.app",
+  projectId: "laporanstartools-c18b2",
+};
+
+if (!firebase.apps.length) {
+  firebase.initializeApp(firebaseConfig);
+}
+const db = firebase.database();
+
+let currentUser = null;
+let lastKode = '';
+
+// ======================== AUTH ========================
+firebase.auth().onAuthStateChanged(function(user) {
+  if (user) {
+    currentUser = user.uid;
+    loadLimit();
+  } else {
+    window.location.href = 'login.html';
+  }
+});
+
+// ======================== THEME ========================
+if (localStorage.getItem('theme') === 'dark') {
+  document.body.classList.add('dark');
+}
+
+// ======================== SIDEBAR ========================
+function openSidebar() {
+  document.getElementById('sidebarOverlay').classList.add('active');
+  document.getElementById('sidebarNav').classList.add('active');
+}
+
+function closeSidebar() {
+  document.getElementById('sidebarOverlay').classList.remove('active');
+  document.getElementById('sidebarNav').classList.remove('active');
+}
+
+function goTo(page) {
+  window.location.href = page;
+}
+
+function logoutAction() {
+  firebase.auth().signOut().then(function() {
+    window.location.href = 'login.html';
+  });
+}
+
+// ======================== TOAST ========================
+function showToast(message, type) {
+  var toast = document.getElementById('toast');
+  toast.innerText = message;
+  toast.className = 'toast show';
+  if (type === 'error') toast.classList.add('error');
+  clearTimeout(toast._timer);
+  toast._timer = setTimeout(function() {
+    toast.classList.remove('show');
+  }, 3000);
+}
+
+// ======================== ALERT ========================
+function showAlert(message) {
+  document.getElementById('alertMessage').innerText = message;
+  document.getElementById('globalAlert').style.display = 'flex';
+}
+
+function closeAlertGlobal() {
+  document.getElementById('globalAlert').style.display = 'none';
+}
+
+// ======================== LOAD LIMIT ========================
+function loadLimit() {
+  if (!currentUser) return;
+  db.ref('users/' + currentUser + '/tugas_limit').once('value').then(function(snap) {
+    var maxLimit = 10;
+    var data = snap.val() || { minggu: getMinggu(), jumlah: 0, max: maxLimit };
+    if (data.minggu !== getMinggu()) {
+      data.minggu = getMinggu();
+      data.jumlah = 0;
+      data.max = maxLimit;
+    }
+    var sisa = data.max - data.jumlah;
+    document.getElementById('sisaKuota').innerText = sisa + ' / ' + data.max;
+  });
+}
+
+function getMinggu() {
+  var now = new Date();
+  var start = new Date(now.getFullYear(), 0, 1);
+  var diff = (now - start) / 86400000;
+  return Math.ceil((diff + start.getDay() + 1) / 7);
+}
+
+// ======================== COPY LINK ========================
+function copyLink() {
+  var linkText = document.getElementById('linkTugas').innerText;
+  navigator.clipboard.writeText(linkText).then(function() {
+    showToast('Link berhasil disalin!');
+  }).catch(function() {
+    // Fallback
+    var textarea = document.createElement('textarea');
+    textarea.value = linkText;
+    document.body.appendChild(textarea);
+    textarea.select();
+    document.execCommand('copy');
+    document.body.removeChild(textarea);
+    showToast('Link berhasil disalin!');
+  });
+}
+
+// ======================== BUAT TUGAS ========================
+function buatTugas() {
+  if (!currentUser) {
+    showAlert('Silakan login terlebih dahulu!');
+    return;
+  }
+
+  var judul = document.getElementById('judulTugas').value.trim();
+  var deskripsi = document.getElementById('deskripsiTugas').value.trim();
+  var durasi = parseInt(document.getElementById('durasiTugas').value);
+  var waktuHapus = parseInt(document.getElementById('waktuHapus').value) || 7;
+
+  if (!judul) {
+    showAlert('Judul tugas wajib diisi!');
+    return;
+  }
+
+  if (!durasi || durasi < 1) {
+    showAlert('Durasi pengerjaan wajib diisi!');
+    return;
+  }
+
+  if (durasi > 180) {
+    showAlert('Durasi maksimal 180 menit!');
+    return;
+  }
+
+  if (waktuHapus > 30) {
+    showAlert('Masa hapus maksimal 30 hari!');
+    return;
+  }
+
+  var kode = generateKode();
+  lastKode = kode;
+
+  var dataTugas = {
+    judul: judul,
+    deskripsi: deskripsi,
+    pembuat_id: currentUser,
+    durasi: durasi,
+    waktu_hapus: waktuHapus,
+    created_at: Date.now(),
+    status: 'aktif',
+    kode: kode
+  };
+
+  db.ref('tugas/' + kode).set(dataTugas).then(function() {
+    var maxLimit = 10;
+    db.ref('users/' + currentUser + '/tugas_limit').transaction(function(current) {
+      if (!current) current = { minggu: getMinggu(), jumlah: 0, max: maxLimit };
+      if (current.minggu !== getMinggu()) {
+        current.minggu = getMinggu();
+        current.jumlah = 0;
+      }
+      current.jumlah = (current.jumlah || 0) + 1;
+      return current;
+    });
+
+    // Tampilkan link
+    var link = window.location.origin + '/tugas.html?kode=' + kode;
+    document.getElementById('linkTugas').innerText = link;
+    document.getElementById('linkResult').style.display = 'block';
+
+    // Scroll ke link
+    document.getElementById('linkResult').scrollIntoView({ behavior: 'smooth', block: 'center' });
+
+    // Reset form
+    document.getElementById('judulTugas').value = '';
+    document.getElementById('deskripsiTugas').value = '';
+    document.getElementById('durasiTugas').value = '';
+
+    loadLimit();
+    showToast('✅ Tugas berhasil dibuat!');
+  }).catch(function(err) {
+    showAlert('Gagal membuat tugas: ' + err.message);
+  });
+}
+
+// ======================== GENERATE KODE ========================
+function generateKode() {
+  var chars = 'ABCDEFGHJKLMNPQRSTUVWXYZ23456789';
+  var kode = '';
+  for (var i = 0; i < 8; i++) {
+    kode += chars[Math.floor(Math.random() * chars.length)];
+  }
+  return kode;
+}
+
+// ======================== KEYBOARD ESC ========================
+document.addEventListener('keydown', function(e) {
+  if (e.key === 'Escape') {
+    closeSidebar();
+    closeAlertGlobal();
+  }
+});
+</script>
+
+</body>
+</html>

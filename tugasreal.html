@@ -1,0 +1,1432 @@
+<!DOCTYPE html>
+<html lang="id">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=no, viewport-fit=cover">
+<title>Tugas - Star Tools</title>
+
+<script src="https://www.gstatic.com/firebasejs/8.10.1/firebase-app.js"></script>
+<script src="https://www.gstatic.com/firebasejs/8.10.1/firebase-auth.js"></script>
+<script src="https://www.gstatic.com/firebasejs/8.10.1/firebase-database.js"></script>
+
+<style>
+  * {
+    margin: 0;
+    padding: 0;
+    box-sizing: border-box;
+    -webkit-tap-highlight-color: transparent;
+  }
+
+  body {
+    font-family: 'Inter', system-ui, -apple-system, 'Segoe UI', Roboto, sans-serif;
+    background: #F1F5F9;
+    color: #0F172A;
+  }
+
+  body.dark {
+    background: #0B1120;
+    color: #F1F5F9;
+  }
+
+  body.dark .card-modern,
+  body.dark .app-header,
+  body.dark .sidebar-nav,
+  body.dark .alert-card {
+    background: #111827;
+    border-color: #1E293B;
+  }
+
+  body.dark .input-field {
+    background: #1E293B;
+    border-color: #334155;
+    color: #F1F5F9;
+  }
+
+  body.dark .input-field::placeholder {
+    color: #64748B;
+  }
+
+  body.dark .info-box {
+    background: #1E293B;
+    border-color: #334155;
+  }
+
+  body.dark .timer-box {
+    background: #1E293B;
+  }
+
+  body.dark .file-upload {
+    border-color: #334155;
+  }
+
+  body.dark .file-preview {
+    background: #1E293B;
+  }
+
+  .app-container {
+    max-width: 560px;
+    margin: 0 auto;
+    background: #F1F5F9;
+    min-height: 100vh;
+    display: flex;
+    flex-direction: column;
+    position: relative;
+  }
+
+  body.dark .app-container {
+    background: #0B1120;
+  }
+
+  .app-header {
+    background: #FFFFFF;
+    padding: 16px 20px;
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    border-bottom: 1px solid #E2E8F0;
+    position: sticky;
+    top: 0;
+    z-index: 20;
+  }
+
+  body.dark .app-header {
+    background: #111827;
+    border-bottom-color: #1E293B;
+  }
+
+  .logo-area {
+    display: flex;
+    align-items: center;
+    gap: 12px;
+  }
+
+  .menu-icon {
+    width: 40px;
+    height: 40px;
+    background: #F8FAFE;
+    border-radius: 32px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    cursor: pointer;
+    border: 1px solid #E2E8F0;
+  }
+
+  body.dark .menu-icon {
+    background: #1E293B;
+    border-color: #334155;
+  }
+
+  .menu-icon svg {
+    stroke: #0F172A;
+  }
+
+  body.dark .menu-icon svg {
+    stroke: #F1F5F9;
+  }
+
+  .app-title {
+    font-weight: 700;
+    font-size: 20px;
+    letter-spacing: -0.3px;
+    background: linear-gradient(135deg, #2563EB, #60A5FA);
+    -webkit-background-clip: text;
+    background-clip: text;
+    color: transparent;
+  }
+
+  .close-btn {
+    width: 40px;
+    height: 40px;
+    background: rgba(0, 0, 0, 0.05);
+    border-radius: 50%;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    cursor: pointer;
+    transition: 0.2s;
+    border: none;
+  }
+
+  body.dark .close-btn {
+    background: rgba(255, 255, 255, 0.05);
+  }
+
+  .close-btn:active {
+    transform: scale(0.92);
+  }
+
+  .close-btn svg {
+    stroke: #0F172A;
+    width: 22px;
+    height: 22px;
+  }
+
+  body.dark .close-btn svg {
+    stroke: #F1F5F9;
+  }
+
+  .sidebar-overlay {
+    position: fixed;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    background: rgba(0, 0, 0, 0.5);
+    backdrop-filter: blur(4px);
+    z-index: 100;
+    visibility: hidden;
+    opacity: 0;
+    transition: 0.25s;
+  }
+
+  .sidebar-overlay.active {
+    visibility: visible;
+    opacity: 1;
+  }
+
+  .sidebar-nav {
+    position: fixed;
+    top: 0;
+    left: -280px;
+    width: 280px;
+    height: 100%;
+    background: #FFFFFF;
+    z-index: 101;
+    transition: 0.3s cubic-bezier(0.2, 0.9, 0.4, 1.1);
+    padding: 70px 20px 30px;
+    display: flex;
+    flex-direction: column;
+    gap: 4px;
+    box-shadow: 4px 0 20px rgba(0, 0, 0, 0.1);
+  }
+
+  .sidebar-nav.active {
+    left: 0;
+  }
+
+  .sidebar-nav a {
+    padding: 14px 18px;
+    font-size: 16px;
+    font-weight: 500;
+    border-radius: 18px;
+    text-decoration: none;
+    color: #0F172A;
+    transition: 0.2s;
+    display: flex;
+    align-items: center;
+    gap: 14px;
+    cursor: pointer;
+  }
+
+  body.dark .sidebar-nav a {
+    color: #F1F5F9;
+  }
+
+  .sidebar-nav a:active {
+    background: #DBEAFE;
+  }
+
+  body.dark .sidebar-nav a:active {
+    background: #1E293B;
+  }
+
+  .logout-link {
+    margin-top: 20px;
+    border-top: 1px solid #E2E8F0;
+    padding-top: 16px;
+  }
+
+  body.dark .logout-link {
+    border-top-color: #334155;
+  }
+
+  .logout-link a {
+    color: #DC2626 !important;
+  }
+
+  .logout-link a svg {
+    stroke: #DC2626;
+  }
+
+  .close-sidebar-icon {
+    position: absolute;
+    top: 20px;
+    right: 20px;
+    cursor: pointer;
+    width: 40px;
+    height: 40px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    border-radius: 30px;
+  }
+
+  .screen {
+    padding: 20px 18px 30px;
+    flex: 1;
+  }
+
+  .page {
+    display: none;
+    animation: fadeSlide 0.25s ease;
+  }
+
+  .page.active {
+    display: block;
+  }
+
+  @keyframes fadeSlide {
+    from { opacity: 0; transform: translateY(8px); }
+    to { opacity: 1; transform: translateY(0); }
+  }
+
+  .card-modern {
+    background: #FFFFFF;
+    border-radius: 28px;
+    padding: 20px;
+    margin-bottom: 20px;
+    box-shadow: 0 2px 8px rgba(0, 0, 0, 0.04);
+    border: 1px solid #E2E8F0;
+  }
+
+  .section-title {
+    font-size: 18px;
+    font-weight: 700;
+    margin-bottom: 4px;
+    display: flex;
+    align-items: center;
+    gap: 8px;
+  }
+
+  .section-sub {
+    font-size: 14px;
+    color: #64748B;
+    margin-bottom: 16px;
+    line-height: 1.5;
+  }
+
+  body.dark .section-sub {
+    color: #94A3B8;
+  }
+
+  .input-field {
+    width: 100%;
+    padding: 14px 16px;
+    border-radius: 14px;
+    border: 1px solid #E2E8F0;
+    background: #FFFFFF;
+    color: #0F172A;
+    font-size: 14px;
+    margin-bottom: 12px;
+  }
+
+  .input-field:focus {
+    outline: none;
+    border-color: #2563EB;
+  }
+
+  .input-field::placeholder {
+    color: #94A3B8;
+  }
+
+  textarea.input-field {
+    min-height: 120px;
+    resize: vertical;
+    font-family: inherit;
+  }
+
+  .btn-save {
+    width: 100%;
+    padding: 14px;
+    border: none;
+    border-radius: 14px;
+    background: #2563EB;
+    color: white;
+    font-weight: 600;
+    font-size: 15px;
+    cursor: pointer;
+    transition: 0.2s;
+  }
+
+  .btn-save:active {
+    transform: scale(0.97);
+    background: #1D4ED8;
+  }
+
+  .btn-save:disabled {
+    opacity: 0.6;
+    cursor: not-allowed;
+  }
+
+  .btn-save:disabled:active {
+    transform: none;
+  }
+
+  .btn-danger {
+    background: #DC2626 !important;
+  }
+
+  .info-box {
+    background: #F8FAFE;
+    border: 1px solid #E2E8F0;
+    border-radius: 12px;
+    padding: 12px 14px;
+    margin-top: 8px;
+  }
+
+  body.dark .info-box {
+    background: #1E293B;
+    border-color: #334155;
+  }
+
+  .info-box p {
+    font-size: 13px;
+    color: #64748B;
+    line-height: 1.5;
+  }
+
+  body.dark .info-box p {
+    color: #94A3B8;
+  }
+
+  .timer-box {
+    background: #F1F5F9;
+    border-radius: 16px;
+    padding: 16px;
+    text-align: center;
+    margin-bottom: 16px;
+    transition: 0.3s;
+  }
+
+  body.dark .timer-box {
+    background: #1E293B;
+  }
+
+  .timer-box .time {
+    font-size: 42px;
+    font-weight: 700;
+    color: #2563EB;
+    font-variant-numeric: tabular-nums;
+    font-family: 'Courier New', monospace;
+    letter-spacing: 2px;
+  }
+
+  body.dark .timer-box .time {
+    color: #60A5FA;
+  }
+
+  .timer-box .label {
+    font-size: 13px;
+    color: #64748B;
+    margin-top: 4px;
+  }
+
+  body.dark .timer-box .label {
+    color: #94A3B8;
+  }
+
+  .timer-box.warning .time {
+    color: #DC2626;
+    animation: pulse 1s ease-in-out infinite;
+  }
+
+  .timer-box.warning .label {
+    color: #DC2626;
+  }
+
+  @keyframes pulse {
+    0%, 100% { opacity: 1; }
+    50% { opacity: 0.5; }
+  }
+
+  .status-badge {
+    display: inline-flex;
+    align-items: center;
+    gap: 6px;
+    padding: 4px 14px;
+    border-radius: 40px;
+    font-size: 12px;
+    font-weight: 600;
+    margin-bottom: 12px;
+  }
+
+  .status-badge svg {
+    width: 14px;
+    height: 14px;
+  }
+
+  .status-badge.active {
+    background: #34D39920;
+    color: #059669;
+  }
+
+  .status-badge.active svg {
+    stroke: #059669;
+  }
+
+  .status-badge.waiting {
+    background: #FBBF2420;
+    color: #D97706;
+  }
+
+  .status-badge.waiting svg {
+    stroke: #D97706;
+  }
+
+  .status-badge.closed {
+    background: #F8717120;
+    color: #DC2626;
+  }
+
+  .status-badge.closed svg {
+    stroke: #DC2626;
+  }
+
+  .status-badge.done {
+    background: #60A5FA20;
+    color: #2563EB;
+  }
+
+  .status-badge.done svg {
+    stroke: #2563EB;
+  }
+
+  .status-badge.blocked {
+    background: #DC262620;
+    color: #DC2626;
+  }
+
+  .status-badge.blocked svg {
+    stroke: #DC2626;
+  }
+
+  .file-upload {
+    border: 2px dashed #E2E8F0;
+    border-radius: 14px;
+    padding: 20px;
+    text-align: center;
+    cursor: pointer;
+    transition: 0.2s;
+    margin-bottom: 12px;
+  }
+
+  body.dark .file-upload {
+    border-color: #334155;
+  }
+
+  .file-upload:active {
+    transform: scale(0.97);
+  }
+
+  .file-upload .icon {
+    display: flex;
+    justify-content: center;
+    margin-bottom: 4px;
+  }
+
+  .file-upload .icon svg {
+    width: 32px;
+    height: 32px;
+    stroke: #94A3B8;
+  }
+
+  .file-upload .text {
+    font-size: 13px;
+    color: #94A3B8;
+  }
+
+  .file-upload.has-file {
+    border-color: #34D399;
+    background: #34D39910;
+  }
+
+  .file-preview {
+    display: flex;
+    align-items: center;
+    gap: 10px;
+    padding: 8px 12px;
+    background: #F1F5F9;
+    border-radius: 10px;
+    margin-top: 8px;
+  }
+
+  body.dark .file-preview {
+    background: #1E293B;
+  }
+
+  .file-preview .name {
+    flex: 1;
+    font-size: 13px;
+    overflow: hidden;
+    text-overflow: ellipsis;
+    white-space: nowrap;
+  }
+
+  .file-preview .remove {
+    color: #DC2626;
+    cursor: pointer;
+    font-weight: 700;
+    font-size: 18px;
+    line-height: 1;
+  }
+
+  .footer-app {
+    text-align: center;
+    padding: 20px;
+    font-size: 12px;
+    color: #64748B;
+    border-top: 1px solid #E2E8F0;
+  }
+
+  body.dark .footer-app {
+    color: #94A3B8;
+    border-top-color: #1E293B;
+  }
+
+  .alert-overlay {
+    position: fixed;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    background: rgba(0, 0, 0, 0.6);
+    backdrop-filter: blur(6px);
+    display: none;
+    justify-content: center;
+    align-items: center;
+    z-index: 200;
+  }
+
+  .alert-card {
+    background: #FFFFFF;
+    width: 300px;
+    border-radius: 28px;
+    padding: 24px 22px;
+    text-align: center;
+    border: 1px solid #E2E8F0;
+  }
+
+  body.dark .alert-card {
+    background: #111827;
+    border-color: #1E293B;
+  }
+
+  .alert-card p {
+    font-size: 15px;
+    line-height: 1.6;
+    margin-bottom: 20px;
+    white-space: pre-line;
+  }
+
+  .btn-full {
+    background: #2563EB;
+    border: none;
+    color: white;
+    font-weight: 600;
+    padding: 12px;
+    border-radius: 40px;
+    font-size: 14px;
+    width: 100%;
+    cursor: pointer;
+  }
+
+  .btn-full:active {
+    transform: scale(0.97);
+  }
+
+  .alert-actions {
+    display: flex;
+    gap: 10px;
+    flex-direction: column;
+  }
+
+  .hidden {
+    display: none !important;
+  }
+
+  .toast {
+    position: fixed;
+    top: 70px;
+    left: 50%;
+    transform: translateX(-50%);
+    background: #1E293B;
+    color: white;
+    padding: 12px 24px;
+    border-radius: 14px;
+    font-size: 14px;
+    opacity: 0;
+    pointer-events: none;
+    transition: all 0.3s ease;
+    z-index: 300;
+    border-left: 4px solid #34D399;
+  }
+
+  .toast.show {
+    opacity: 1;
+    transform: translateX(-50%) translateY(0);
+  }
+
+  .toast.error {
+    border-left-color: #F87171;
+  }
+
+  .loading-container {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    padding: 40px 20px;
+  }
+
+  .loading-spinner {
+    width: 48px;
+    height: 48px;
+    border: 4px solid #E2E8F0;
+    border-top-color: #2563EB;
+    border-radius: 50%;
+    animation: spin 0.8s linear infinite;
+    margin-bottom: 16px;
+  }
+
+  body.dark .loading-spinner {
+    border-color: #334155;
+    border-top-color: #60A5FA;
+  }
+
+  @keyframes spin {
+    to { transform: rotate(360deg); }
+  }
+
+  .loading-text {
+    font-size: 14px;
+    color: #64748B;
+  }
+
+  body.dark .loading-text {
+    color: #94A3B8;
+  }
+
+  .icon-page {
+    display: flex;
+    justify-content: center;
+    margin-bottom: 12px;
+  }
+
+  .icon-page svg {
+    width: 56px;
+    height: 56px;
+    stroke: #94A3B8;
+  }
+
+  body.dark .icon-page svg {
+    stroke: #64748B;
+  }
+
+  .page-done .icon-page svg {
+    stroke: #34D399;
+  }
+
+  .page-timeout .icon-page svg {
+    stroke: #F87171;
+  }
+</style>
+</head>
+<body>
+
+<div class="app-container">
+  <div class="app-header">
+    <div class="logo-area">
+      <div class="menu-icon" onclick="openSidebar()">
+        <svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+          <line x1="3" y1="12" x2="21" y2="12"></line>
+          <line x1="3" y1="6" x2="21" y2="6"></line>
+          <line x1="3" y1="18" x2="21" y2="18"></line>
+        </svg>
+      </div>
+      <span class="app-title">Star Tools • Tugas</span>
+    </div>
+    <button class="close-btn" onclick="goTo('index.html')" aria-label="Kembali ke Beranda">
+      <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+        <line x1="18" y1="6" x2="6" y2="18"/>
+        <line x1="6" y1="6" x2="18" y2="18"/>
+      </svg>
+    </button>
+  </div>
+
+  <div class="sidebar-overlay" id="sidebarOverlay" onclick="closeSidebar()"></div>
+  <div class="sidebar-nav" id="sidebarNav">
+    <div class="close-sidebar-icon" onclick="closeSidebar()">
+      <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+        <line x1="18" y1="6" x2="6" y2="18"/><line x1="6" y1="6" x2="18" y2="18"/>
+      </svg>
+    </div>
+    <a href="#" onclick="goTo('index.html')">
+      <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.7"><path d="M3 9l9-7 9 7v11a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2z"/><polyline points="9 22 9 12 15 12 15 22"/></svg> Utama
+    </a>
+    <a href="#" onclick="goTo('berita.html')">
+      <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.7"><path d="M4 4h16a2 2 0 0 1 2 2v12a2 2 0 0 1-2 2H4a2 2 0 0 1-2-2V6a2 2 0 0 1 2-2z"/><line x1="8" y1="8" x2="16" y2="8"/><line x1="8" y1="12" x2="16" y2="12"/><line x1="8" y1="16" x2="12" y2="16"/></svg> Berita
+    </a>
+    <a href="#" onclick="goTo('premium.html')">
+      <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.7"><polygon points="12 2 15.09 8.26 22 9.27 17 14.14 18.18 21.02 12 17.77 5.82 21.02 7 14.14 2 9.27 8.91 8.26 12 2"/></svg> Premium
+    </a>
+    <a href="#" onclick="goTo('akun.html')">
+      <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.7"><path d="M20 21v-2a4 4 0 0 0-4-4H8a4 4 0 0 0-4 4v2"/><circle cx="12" cy="7" r="4"/></svg> Akun
+    </a>
+    <div class="logout-link">
+      <a href="#" onclick="logoutAction()">
+        <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="#DC2626" stroke-width="1.7"><path d="M9 21H5a2 2 0 0 1-2-2V5a2 2 0 0 1 2-2h4"/><polyline points="16 17 21 12 16 7"/><line x1="21" y1="12" x2="9" y2="12"/></svg> Keluar
+      </a>
+    </div>
+  </div>
+
+  <div class="screen">
+    <!-- LOADING -->
+    <div id="pageLoading" class="page active">
+      <div class="card-modern">
+        <div class="loading-container">
+          <div class="loading-spinner"></div>
+          <div class="loading-text">Memuat tugas...</div>
+        </div>
+      </div>
+    </div>
+
+    <!-- TIDAK DITEMUKAN -->
+    <div id="pageNotFound" class="page">
+      <div class="card-modern" style="text-align:center;padding:40px 20px;">
+        <div class="icon-page">
+          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round">
+            <circle cx="12" cy="12" r="10"/>
+            <line x1="12" y1="8" x2="12" y2="12"/>
+            <line x1="12" y1="16" x2="12.01" y2="16"/>
+          </svg>
+        </div>
+        <h3 style="margin-bottom:8px;font-size:18px;">Tugas Tidak Ditemukan</h3>
+        <p style="font-size:14px;color:#64748B;line-height:1.5;">Link tugas mungkin sudah kadaluarsa atau tidak valid.</p>
+        <button class="btn-save" style="margin-top:16px;" onclick="goTo('index.html')">Kembali ke Beranda</button>
+      </div>
+    </div>
+
+    <!-- SUDAH DIHAPUS -->
+    <div id="pageExpired" class="page">
+      <div class="card-modern" style="text-align:center;padding:40px 20px;">
+        <div class="icon-page">
+          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round">
+            <circle cx="12" cy="12" r="10"/>
+            <line x1="12" y1="8" x2="12" y2="12"/>
+            <line x1="12" y1="16" x2="12.01" y2="16"/>
+          </svg>
+        </div>
+        <h3 style="margin-bottom:8px;font-size:18px;">Tugas Telah Dihapus</h3>
+        <p style="font-size:14px;color:#64748B;line-height:1.5;">Tugas ini sudah tidak tersedia karena melewati batas waktu.</p>
+        <button class="btn-save" style="margin-top:16px;" onclick="goTo('index.html')">Kembali ke Beranda</button>
+      </div>
+    </div>
+
+    <!-- BELUM DIBUKA -->
+    <div id="pageNotOpen" class="page">
+      <div class="card-modern" style="text-align:center;padding:40px 20px;">
+        <div class="icon-page">
+          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round">
+            <rect x="3" y="4" width="18" height="18" rx="2"/>
+            <line x1="16" y1="2" x2="16" y2="6"/>
+            <line x1="8" y1="2" x2="8" y2="6"/>
+            <line x1="3" y1="10" x2="21" y2="10"/>
+          </svg>
+        </div>
+        <h3 style="margin-bottom:8px;font-size:18px;">Tugas Belum Dibuka</h3>
+        <p style="font-size:14px;color:#64748B;line-height:1.5;" id="notOpenMessage">Tugas ini akan dibuka pada tanggal yang ditentukan.</p>
+        <button class="btn-save" style="margin-top:16px;" onclick="goTo('index.html')">Kembali ke Beranda</button>
+      </div>
+    </div>
+
+    <!-- SUDAH DITUTUP -->
+    <div id="pageClosed" class="page">
+      <div class="card-modern" style="text-align:center;padding:40px 20px;">
+        <div class="icon-page">
+          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round">
+            <rect x="3" y="11" width="18" height="11" rx="2"/>
+            <path d="M7 11V7a5 5 0 0 1 10 0v4"/>
+          </svg>
+        </div>
+        <h3 style="margin-bottom:8px;font-size:18px;">Tugas Sudah Ditutup</h3>
+        <p style="font-size:14px;color:#64748B;line-height:1.5;">Tugas ini sudah tidak bisa dikerjakan karena melewati batas waktu.</p>
+        <button class="btn-save" style="margin-top:16px;" onclick="goTo('index.html')">Kembali ke Beranda</button>
+      </div>
+    </div>
+
+    <!-- NAMA TIDAK TERDAFTAR -->
+    <div id="pageNotRegistered" class="page">
+      <div class="card-modern" style="text-align:center;padding:40px 20px;">
+        <div class="icon-page">
+          <svg viewBox="0 0 24 24" fill="none" stroke="#F87171" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round">
+            <circle cx="12" cy="12" r="10"/>
+            <line x1="12" y1="8" x2="12" y2="12"/>
+            <line x1="12" y1="16" x2="12.01" y2="16"/>
+          </svg>
+        </div>
+        <h3 style="margin-bottom:8px;font-size:18px;">Nama Tidak Terdaftar</h3>
+        <p style="font-size:14px;color:#64748B;line-height:1.5;" id="notRegisteredMessage">Nama kamu tidak terdaftar di daftar murid untuk tugas ini.</p>
+        <button class="btn-save" style="margin-top:16px;" onclick="goTo('index.html')">Kembali ke Beranda</button>
+      </div>
+    </div>
+
+    <!-- TUGAS UTAMA -->
+    <div id="pageTugas" class="page">
+      <div class="card-modern">
+        <div id="statusBadgeContainer"></div>
+        <div class="section-title" id="tugasJudul">Judul Tugas</div>
+        <div class="section-sub" id="tugasDeskripsi">Deskripsi tugas akan muncul di sini.</div>
+
+        <div class="timer-box" id="timerBox">
+          <div class="time" id="timerDisplay">--:--</div>
+          <div class="label" id="timerLabel">Waktu tersisa</div>
+        </div>
+
+        <!-- Form Jawaban -->
+        <div id="jawabanContainer">
+          <div class="form-group">
+            <label style="display:block;font-size:13px;font-weight:600;color:#475569;margin-bottom:4px;">Jawaban Kamu</label>
+            <textarea id="jawabanText" class="input-field" placeholder="Tulis jawabanmu di sini..."></textarea>
+          </div>
+
+          <div class="form-group">
+            <label style="display:block;font-size:13px;font-weight:600;color:#475569;margin-bottom:4px;">Upload Foto (opsional)</label>
+            <div class="file-upload" id="fileUpload" onclick="document.getElementById('fileInput').click()">
+              <div class="icon">
+                <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round">
+                  <rect x="3" y="3" width="18" height="18" rx="2"/>
+                  <circle cx="8.5" cy="8.5" r="1.5"/>
+                  <path d="M21 15l-5-5L5 21"/>
+                </svg>
+              </div>
+              <span class="text">Klik untuk upload foto</span>
+            </div>
+            <input type="file" id="fileInput" accept="image/*" style="display:none;">
+            <div id="filePreview" class="hidden file-preview">
+              <span class="name" id="fileName">file.jpg</span>
+              <span class="remove" onclick="hapusFile()">×</span>
+            </div>
+          </div>
+
+          <button class="btn-save" id="btnKirim" onclick="kirimJawaban()">Kirim Jawaban</button>
+        </div>
+
+        <!-- Status Selesai -->
+        <div id="selesaiContainer" class="hidden" style="text-align:center;padding:20px 0;">
+          <div class="icon-page page-done">
+            <svg viewBox="0 0 24 24" fill="none" stroke="#34D399" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round">
+              <path d="M22 11.08V12a10 10 0 1 1-5.93-9.14"/>
+              <polyline points="22 4 12 14.01 9 11.01"/>
+            </svg>
+          </div>
+          <h3 style="margin-bottom:4px;font-size:18px;">Tugas Selesai</h3>
+          <p style="font-size:14px;color:#64748B;line-height:1.5;">Jawabanmu sudah terkirim. Terima kasih sudah mengerjakan.</p>
+        </div>
+
+        <!-- Waktu Habis -->
+        <div id="habisContainer" class="hidden" style="text-align:center;padding:20px 0;">
+          <div class="icon-page page-timeout">
+            <svg viewBox="0 0 24 24" fill="none" stroke="#F87171" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round">
+              <circle cx="12" cy="12" r="10"/>
+              <polyline points="12 6 12 12 16 14"/>
+            </svg>
+          </div>
+          <h3 style="margin-bottom:4px;font-size:18px;">Waktu Habis</h3>
+          <p style="font-size:14px;color:#64748B;line-height:1.5;">Waktu pengerjaan sudah habis. Jawabanmu otomatis terkirim.</p>
+        </div>
+
+        <!-- Terlambat -->
+        <div id="terlambatContainer" class="hidden" style="text-align:center;padding:20px 0;">
+          <div class="icon-page page-timeout">
+            <svg viewBox="0 0 24 24" fill="none" stroke="#F87171" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round">
+              <circle cx="12" cy="12" r="10"/>
+              <line x1="12" y1="8" x2="12" y2="12"/>
+              <line x1="12" y1="16" x2="12.01" y2="16"/>
+            </svg>
+          </div>
+          <h3 style="margin-bottom:4px;font-size:18px;">Terlambat</h3>
+          <p style="font-size:14px;color:#64748B;line-height:1.5;">Kamu tidak mengirimkan jawaban tepat waktu. Tugas ini sudah ditutup.</p>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <div class="footer-app">
+    <p>Star Platform | Star Tools 2026</p>
+  </div>
+</div>
+
+<div id="globalAlert" class="alert-overlay">
+  <div class="alert-card">
+    <p id="alertMessage">Pemberitahuan</p>
+    <div class="alert-actions">
+      <button class="btn-full" onclick="closeAlertGlobal()" id="alertBtnOk">Mengerti</button>
+    </div>
+  </div>
+</div>
+
+<div id="toast" class="toast"></div>
+
+<script>
+const firebaseConfig = {
+  apiKey: "AIzaSyDgr_nHqvpMsiG4lBkYckzxRErkskXj_6E",
+  authDomain: "laporanstartools-c18b2.firebaseapp.com",
+  databaseURL: "https://laporanstartools-c18b2-default-rtdb.asia-southeast1.firebasedatabase.app",
+  projectId: "laporanstartools-c18b2",
+};
+
+if (!firebase.apps.length) {
+  firebase.initializeApp(firebaseConfig);
+}
+const db = firebase.database();
+
+let currentUser = null;
+let tugasData = null;
+let tugasKode = null;
+let timerInterval = null;
+let waktuSisa = 0;
+let fileBase64 = null;
+let isSubmitting = false;
+
+function getKodeFromURL() {
+  // Cek dari query parameter dulu
+  var urlParams = new URLSearchParams(window.location.search);
+  var kode = urlParams.get('kode');
+  
+  if (kode) return kode;
+  
+  // Fallback: dari path
+  var path = window.location.pathname;
+  var parts = path.split('/');
+  var lastPart = parts[parts.length - 1];
+  if (lastPart && lastPart !== 'tugas.html') {
+    return lastPart;
+  }
+  return '';
+}
+
+function loadTugas() {
+  tugasKode = getKodeFromURL();
+  if (!tugasKode) {
+    showPage('pageNotFound');
+    return;
+  }
+
+  db.ref('tugas/' + tugasKode).once('value').then(function(snap) {
+    var data = snap.val();
+    if (!data) {
+      showPage('pageNotFound');
+      return;
+    }
+
+    tugasData = data;
+
+    // Cek apakah tugas sudah dihapus
+    if (data.status === 'dihapus') {
+      showPage('pageExpired');
+      return;
+    }
+
+    // Cek waktu hapus
+    if (data.waktu_hapus) {
+      var created = new Date(data.created_at);
+      var expired = new Date(created.getTime() + (data.waktu_hapus * 24 * 60 * 60 * 1000));
+      if (new Date() > expired) {
+        showPage('pageExpired');
+        return;
+      }
+    }
+
+    // Cek jadwal
+    if (data.jadwal) {
+      var now = new Date();
+      var buka = new Date(data.jadwal.buka);
+      var tutup = new Date(data.jadwal.tutup);
+
+      if (now < buka) {
+        document.getElementById('notOpenMessage').innerText =
+          'Tugas ini akan dibuka pada ' + buka.toLocaleString('id-ID', {
+            day: 'numeric', month: 'long', year: 'numeric',
+            hour: '2-digit', minute: '2-digit'
+          });
+        showPage('pageNotOpen');
+        return;
+      }
+
+      if (now > tutup) {
+        showPage('pageClosed');
+        return;
+      }
+    }
+
+    // Lanjut ke auth
+    firebase.auth().onAuthStateChanged(function(user) {
+      if (user) {
+        currentUser = user;
+        checkAkses(user);
+      } else {
+        showAlert('Silakan login terlebih dahulu untuk mengerjakan tugas.', function() {
+          window.location.href = 'login.html';
+        });
+      }
+    });
+  }).catch(function(err) {
+    console.error('Error loading tugas:', err);
+    showPage('pageNotFound');
+  });
+}
+
+function checkAkses(user) {
+  // Cek daftar murid
+  if (tugasData.daftar_murid) {
+    var userName = localStorage.getItem('userName') || user.displayName || user.email.split('@')[0];
+    userName = userName.trim().toLowerCase();
+    
+    var isRegistered = false;
+    var registeredNames = Object.keys(tugasData.daftar_murid);
+    for (var i = 0; i < registeredNames.length; i++) {
+      if (registeredNames[i].toLowerCase() === userName) {
+        isRegistered = true;
+        break;
+      }
+    }
+    
+    if (!isRegistered) {
+      document.getElementById('notRegisteredMessage').innerText = 
+        'Nama "' + userName + '" tidak terdaftar di daftar murid untuk tugas ini. Hubungi pembuat tugas.';
+      showPage('pageNotRegistered');
+      return;
+    }
+  }
+
+  // Cek apakah sudah selesai
+  var userAksesRef = db.ref('tugas/' + tugasKode + '/akses/' + user.uid);
+  userAksesRef.once('value').then(function(snap) {
+    var akses = snap.val();
+
+    if (akses) {
+      if (akses.status === 'selesai') {
+        tampilkanSelesai(akses);
+        return;
+      }
+      if (akses.status === 'terlambat') {
+        tampilkanTerlambat();
+        return;
+      }
+      if (akses.status === 'habis') {
+        tampilkanHabis();
+        return;
+      }
+    }
+
+    // Tampilkan tugas
+    tampilkanTugas(user.uid, akses);
+  });
+}
+
+function tampilkanTugas(uid, akses) {
+  showPage('pageTugas');
+  document.getElementById('statusBadgeContainer').innerHTML =
+    '<span class="status-badge active"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><circle cx="12" cy="12" r="10"/><line x1="12" y1="8" x2="12" y2="8"/></svg> Tersedia</span>';
+  document.getElementById('tugasJudul').innerText = tugasData.judul || 'Tugas';
+  document.getElementById('tugasDeskripsi').innerText = tugasData.deskripsi || 'Tidak ada deskripsi.';
+
+  // Tampilkan jawaban sebelumnya jika ada
+  if (akses && akses.jawaban) {
+    document.getElementById('jawabanText').value = akses.jawaban;
+  }
+  if (akses && akses.foto) {
+    fileBase64 = akses.foto;
+    document.getElementById('fileUpload').classList.add('has-file');
+    document.getElementById('filePreview').classList.remove('hidden');
+    document.getElementById('fileName').innerText = 'Foto terupload';
+  }
+
+  startTimer(uid);
+}
+
+function tampilkanSelesai(akses) {
+  showPage('pageTugas');
+  document.getElementById('jawabanContainer').classList.add('hidden');
+  document.getElementById('selesaiContainer').classList.remove('hidden');
+  document.getElementById('statusBadgeContainer').innerHTML =
+    '<span class="status-badge done"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><polyline points="20 6 9 17 4 12"/></svg> Selesai</span>';
+  document.getElementById('tugasJudul').innerText = tugasData.judul || 'Tugas';
+  document.getElementById('tugasDeskripsi').innerText = tugasData.deskripsi || 'Tidak ada deskripsi.';
+  document.getElementById('timerDisplay').innerText = '00:00';
+}
+
+function tampilkanTerlambat() {
+  showPage('pageTugas');
+  document.getElementById('jawabanContainer').classList.add('hidden');
+  document.getElementById('terlambatContainer').classList.remove('hidden');
+  document.getElementById('statusBadgeContainer').innerHTML =
+    '<span class="status-badge closed"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><circle cx="12" cy="12" r="10"/><line x1="12" y1="8" x2="12" y2="12"/><line x1="12" y1="16" x2="12.01" y2="16"/></svg> Terlambat</span>';
+  document.getElementById('tugasJudul').innerText = tugasData.judul || 'Tugas';
+  document.getElementById('tugasDeskripsi').innerText = tugasData.deskripsi || 'Tidak ada deskripsi.';
+  document.getElementById('timerDisplay').innerText = '00:00';
+}
+
+function tampilkanHabis() {
+  showPage('pageTugas');
+  document.getElementById('jawabanContainer').classList.add('hidden');
+  document.getElementById('habisContainer').classList.remove('hidden');
+  document.getElementById('statusBadgeContainer').innerHTML =
+    '<span class="status-badge closed"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><circle cx="12" cy="12" r="10"/><polyline points="12 6 12 12 16 14"/></svg> Waktu Habis</span>';
+  document.getElementById('tugasJudul').innerText = tugasData.judul || 'Tugas';
+  document.getElementById('tugasDeskripsi').innerText = tugasData.deskripsi || 'Tidak ada deskripsi.';
+  document.getElementById('timerDisplay').innerText = '00:00';
+}
+
+function startTimer(uid) {
+  var durasi = tugasData.durasi || 60;
+
+  db.ref('tugas/' + tugasKode + '/akses/' + uid).once('value').then(function(snap) {
+    var akses = snap.val();
+
+    if (akses && akses.waktu_mulai) {
+      var waktuMulai = new Date(akses.waktu_mulai);
+      var now = new Date();
+      var elapsed = (now - waktuMulai) / 1000;
+      waktuSisa = Math.max(0, (durasi * 60) - elapsed);
+
+      if (waktuSisa <= 0) {
+        waktuSisa = 0;
+        updateTimerDisplay();
+        autoKirim(uid);
+        return;
+      }
+    } else {
+      waktuSisa = durasi * 60;
+      db.ref('tugas/' + tugasKode + '/akses/' + uid + '/waktu_mulai').set(new Date().toISOString());
+      db.ref('tugas/' + tugasKode + '/akses/' + uid + '/status').set('mengerjakan');
+    }
+
+    updateTimerDisplay();
+    updateTimerUI();
+
+    if (timerInterval) clearInterval(timerInterval);
+    timerInterval = setInterval(function() {
+      waktuSisa--;
+      updateTimerDisplay();
+      updateTimerUI();
+
+      if (waktuSisa <= 0) {
+        clearInterval(timerInterval);
+        timerInterval = null;
+        waktuSisa = 0;
+        updateTimerDisplay();
+        autoKirim(uid);
+      }
+    }, 1000);
+  });
+}
+
+function updateTimerDisplay() {
+  var menit = Math.floor(waktuSisa / 60);
+  var detik = Math.floor(waktuSisa % 60);
+  document.getElementById('timerDisplay').innerText =
+    String(menit).padStart(2, '0') + ':' + String(detik).padStart(2, '0');
+}
+
+function updateTimerUI() {
+  var box = document.getElementById('timerBox');
+  var label = document.getElementById('timerLabel');
+
+  if (waktuSisa < 60) {
+    box.classList.add('warning');
+    label.innerText = '⚠️ Waktu hampir habis';
+  } else {
+    box.classList.remove('warning');
+    label.innerText = '⏱️ Waktu tersisa';
+  }
+}
+
+function autoKirim(uid) {
+  if (isSubmitting) return;
+  isSubmitting = true;
+
+  var jawaban = document.getElementById('jawabanText').value.trim();
+  if (!jawaban && !fileBase64) {
+    jawaban = 'Tidak ada jawaban (waktu habis)';
+  }
+
+  var data = {
+    jawaban: jawaban || 'Tidak ada teks jawaban',
+    waktu_selesai: new Date().toISOString(),
+    status: 'habis',
+    auto: true
+  };
+
+  if (fileBase64) {
+    data.foto = fileBase64;
+  }
+
+  db.ref('tugas/' + tugasKode + '/akses/' + uid).update(data).then(function() {
+    document.getElementById('jawabanContainer').classList.add('hidden');
+    document.getElementById('habisContainer').classList.remove('hidden');
+    document.getElementById('statusBadgeContainer').innerHTML =
+      '<span class="status-badge closed"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><circle cx="12" cy="12" r="10"/><polyline points="12 6 12 12 16 14"/></svg> Waktu Habis</span>';
+    showToast('⏰ Waktu habis! Jawaban otomatis terkirim.');
+  }).catch(function(err) {
+    console.error('Auto kirim error:', err);
+  }).finally(function() {
+    isSubmitting = false;
+  });
+}
+
+function kirimJawaban() {
+  if (!currentUser) {
+    showAlert('Silakan login terlebih dahulu!');
+    return;
+  }
+
+  if (isSubmitting) return;
+
+  if (waktuSisa <= 0) {
+    showAlert('⏰ Waktu sudah habis! Jawaban otomatis terkirim.');
+    return;
+  }
+
+  var jawaban = document.getElementById('jawabanText').value.trim();
+  if (!jawaban && !fileBase64) {
+    showAlert('Isi jawaban atau upload foto terlebih dahulu!');
+    return;
+  }
+
+  var btn = document.getElementById('btnKirim');
+  btn.disabled = true;
+  btn.innerText = 'Mengirim...';
+  isSubmitting = true;
+
+  var data = {
+    jawaban: jawaban || 'Tidak ada teks jawaban',
+    waktu_selesai: new Date().toISOString(),
+    status: 'selesai'
+  };
+
+  if (fileBase64) {
+    data.foto = fileBase64;
+  }
+
+  db.ref('tugas/' + tugasKode + '/akses/' + currentUser.uid).update(data).then(function() {
+    clearInterval(timerInterval);
+    timerInterval = null;
+    document.getElementById('jawabanContainer').classList.add('hidden');
+    document.getElementById('selesaiContainer').classList.remove('hidden');
+    document.getElementById('statusBadgeContainer').innerHTML =
+      '<span class="status-badge done"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><polyline points="20 6 9 17 4 12"/></svg> Selesai</span>';
+    document.getElementById('timerDisplay').innerText = '00:00';
+    showToast('✅ Jawaban berhasil dikirim!');
+  }).catch(function(err) {
+    showToast('❌ Gagal mengirim: ' + err.message, 'error');
+    btn.disabled = false;
+    btn.innerText = 'Kirim Jawaban';
+    isSubmitting = false;
+  });
+}
+
+// File upload handler
+document.getElementById('fileInput').addEventListener('change', function(e) {
+  var file = e.target.files[0];
+  if (!file) return;
+
+  // Max 5MB
+  if (file.size > 5 * 1024 * 1024) {
+    showToast('Ukuran file maksimal 5MB!', 'error');
+    this.value = '';
+    return;
+  }
+
+  var reader = new FileReader();
+  reader.onload = function(event) {
+    fileBase64 = event.target.result;
+    document.getElementById('fileUpload').classList.add('has-file');
+    document.getElementById('filePreview').classList.remove('hidden');
+    document.getElementById('fileName').innerText = file.name;
+  };
+  reader.readAsDataURL(file);
+});
+
+function hapusFile() {
+  fileBase64 = null;
+  document.getElementById('fileInput').value = '';
+  document.getElementById('fileUpload').classList.remove('has-file');
+  document.getElementById('filePreview').classList.add('hidden');
+}
+
+function showPage(pageId) {
+  document.querySelectorAll('.page').forEach(function(p) {
+    p.classList.remove('active');
+  });
+  var target = document.getElementById(pageId);
+  if (target) target.classList.add('active');
+}
+
+function openSidebar() {
+  document.getElementById('sidebarOverlay').classList.add('active');
+  document.getElementById('sidebarNav').classList.add('active');
+}
+
+function closeSidebar() {
+  document.getElementById('sidebarOverlay').classList.remove('active');
+  document.getElementById('sidebarNav').classList.remove('active');
+}
+
+function goTo(page) {
+  window.location.href = page;
+}
+
+function logoutAction() {
+  firebase.auth().signOut().then(function() {
+    window.location.href = 'login.html';
+  });
+}
+
+function showAlert(message, callback) {
+  document.getElementById('alertMessage').innerText = message;
+  var btn = document.getElementById('alertBtnOk');
+  btn.onclick = function() {
+    closeAlertGlobal();
+    if (callback) callback();
+  };
+  document.getElementById('globalAlert').style.display = 'flex';
+}
+
+function closeAlertGlobal() {
+  document.getElementById('globalAlert').style.display = 'none';
+}
+
+function showToast(message, type) {
+  var toast = document.getElementById('toast');
+  toast.innerText = message;
+  toast.className = 'toast show';
+  if (type === 'error') toast.classList.add('error');
+  clearTimeout(toast._timer);
+  toast._timer = setTimeout(function() {
+    toast.classList.remove('show');
+  }, 3000);
+}
+
+// Theme
+if (localStorage.getItem('theme') === 'dark') {
+  document.body.classList.add('dark');
+}
+
+// Keyboard
+document.addEventListener('keydown', function(e) {
+  if (e.key === 'Escape') {
+    closeSidebar();
+    closeAlertGlobal();
+  }
+});
+
+// Start
+window.addEventListener('DOMContentLoaded', function() {
+  loadTugas();
+});
+</script>
+
+</body>
+</html>
