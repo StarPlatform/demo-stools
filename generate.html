@@ -1930,7 +1930,7 @@ if (localStorage.getItem('theme') === 'dark') {
 function loadTrialStatus() {
   if (!currentUser) return;
 
-  db.ref('users/' + currentUser + '/trial').once('value').then(function(snap) {
+  db.ref('users/' + currentUser.uid + '/trial').once('value').then(function(snap) {
     var data = snap.val();
     if (data && data.active === true) {
       trialActive = true;
@@ -1943,20 +1943,68 @@ function loadTrialStatus() {
       if (diffDays > 7) {
         trialExpired = true;
         trialActive = false;
-        updateTrialUI();
+        updateTrialStatusUI();
         updateUI();
         return;
       }
 
-      updateTrialUI();
+      updateTrialStatusUI();
       updateUI();
     } else {
       trialActive = false;
       trialExpired = false;
-      updateTrialUI();
+      updateTrialStatusUI();
       updateUI();
     }
   });
+}
+
+function updateTrialStatusUI() {
+  var box = document.getElementById('trialActivateBox');
+  var title = document.getElementById('trialTitle');
+  var desc = document.getElementById('trialDesc');
+  var btn = document.getElementById('trialBtn');
+  var status = document.getElementById('trialStatus');
+
+  if (isPremium) {
+    box.style.display = 'none';
+    return;
+  }
+
+  if (trialActive) {
+    var start = new Date(trialStartDate);
+    var now = new Date();
+    var diffDays = (now - start) / (1000 * 60 * 60 * 24);
+    var sisaHari = Math.max(0, 7 - Math.floor(diffDays));
+
+    if (sisaHari === 0) {
+      trialExpired = true;
+      trialActive = false;
+      updateTrialStatusUI();
+      return;
+    }
+
+    title.innerText = 'Uji Coba Aktif';
+    desc.innerText = 'Sisa ' + sisaHari + ' hari lagi. Nikmati fitur Premium!';
+    btn.style.display = 'none';
+    status.innerText = 'Aktif - ' + sisaHari + ' hari tersisa';
+    status.className = 'trial-status active';
+    box.style.borderColor = '#059669';
+  } else if (trialExpired) {
+    title.innerText = 'Uji Coba Berakhir';
+    desc.innerText = 'Masa uji coba telah berakhir. Tingkatkan ke Premium.';
+    btn.style.display = 'none';
+    status.innerText = 'Berakhir';
+    status.className = 'trial-status inactive';
+    box.style.borderColor = '#DC2626';
+  } else {
+    title.innerText = 'Mulai Uji Coba 7 Hari';
+    desc.innerText = 'Dapatkan akses semua fitur premium gratis selama 7 hari.';
+    btn.style.display = 'inline-block';
+    status.innerText = 'Belum aktif';
+    status.className = 'trial-status waiting';
+    box.style.borderColor = '#2563EB';
+  }
 }
 
 function activateTrial() {
@@ -1986,13 +2034,13 @@ function activateTrial() {
 
   var startDate = new Date().toISOString();
 
-  db.ref('users/' + currentUser + '/trial').set({
+  db.ref('users/' + currentUser.uid + '/trial').set({
     active: true,
     start_date: startDate
   }).then(function() {
     trialActive = true;
     trialStartDate = startDate;
-    updateTrialUI();
+    updateTrialStatusUI();
     updateUI();
     showToast('Uji coba 7 hari dimulai! Nikmati semua fitur Premium.');
   }).catch(function(err) {
@@ -2003,66 +2051,14 @@ function activateTrial() {
   });
 }
 
-function updateTrialUI() {
-  var box = document.getElementById('trialActivateBox');
-  var title = document.getElementById('trialTitle');
-  var desc = document.getElementById('trialDesc');
-  var btn = document.getElementById('trialBtn');
-  var status = document.getElementById('trialStatus');
-
-  if (isPremium) {
-    box.style.display = 'none';
-    return;
-  }
-
-  if (trialActive) {
-    var start = new Date(trialStartDate);
-    var now = new Date();
-    var diffDays = (now - start) / (1000 * 60 * 60 * 24);
-    var sisaHari = Math.max(0, 7 - Math.floor(diffDays));
-
-    if (sisaHari === 0) {
-      trialExpired = true;
-      trialActive = false;
-      updateTrialUI();
-      return;
-    }
-
-    title.innerText = 'Uji Coba Aktif';
-    desc.innerText = 'Sisa ' + sisaHari + ' hari lagi. Nikmati fitur Premium!';
-    btn.style.display = 'none';
-    status.innerText = 'Aktif - ' + sisaHari + ' hari tersisa';
-    status.className = 'trial-status active';
-    box.style.borderColor = '#059669';
-  } else if (trialExpired) {
-    title.innerText = 'Uji Coba Berakhir';
-    desc.innerText = 'Masa uji coba telah berakhir. Tingkatkan ke Premium.';
-    btn.style.display = 'none';
-    status.innerText = 'Berakhir';
-    status.className = 'trial-status inactive';
-    box.style.borderColor = '#DC2626';
-  } else {
-    title.innerText = 'Mulai Uji Coba 7 Hari';
-    desc.innerText = 'Dapatkan akses semua fitur premium gratis selama 7 hari.';
-    btn.style.display = 'inline-block';
-    status.innerText = 'Belum aktif';
-    status.className = 'trial-status waiting';
-    box.style.borderColor = '#2563EB';
-  }
-}
-
-function isPremiumActive() {
-  return isPremium || (trialActive && !trialExpired);
-}
-
 // ======================== PREMIUM CODE ========================
 function loadPremiumStatus() {
   if (!currentUser) return;
-  db.ref('users/' + currentUser + '/premium').on('value', function(snap) {
+  db.ref('users/' + currentUser.uid + '/premium').on('value', function(snap) {
     isPremium = snap.val() === true;
     updateUI();
     updatePremiumStatus();
-    updateTrialUI();
+    updateTrialStatusUI();
   });
 }
 
@@ -2121,15 +2117,15 @@ function redeemPremiumCode() {
 
     return db.ref('premium_codes/' + code).update({
       used: true,
-      used_by: currentUser,
+      used_by: currentUser.uid,
       used_at: Date.now()
     }).then(function() {
-      return db.ref('users/' + currentUser + '/premium').set(true);
+      return db.ref('users/' + currentUser.uid + '/premium').set(true);
     }).then(function() {
       isPremium = true;
       updateUI();
       updatePremiumStatus();
-      updateTrialUI();
+      updateTrialStatusUI();
       showToast('Premium berhasil diaktifkan!');
       codeInput.value = '';
     });
@@ -2213,6 +2209,10 @@ function updateUI() {
   }
 }
 
+function isPremiumActive() {
+  return isPremium || (trialActive && !trialExpired);
+}
+
 // ======================== SIDEBAR ========================
 function openSidebar() {
   document.getElementById('sidebarOverlay').classList.add('active');
@@ -2259,7 +2259,7 @@ function closeAlertGlobal() {
 // ======================== LOAD LIMIT ========================
 function loadLimit() {
   if (!currentUser) return;
-  db.ref('users/' + currentUser + '/tugas_limit').once('value').then(function(snap) {
+  db.ref('users/' + currentUser.uid + '/tugas_limit').once('value').then(function(snap) {
     var isActive = isPremiumActive();
     var maxLimit = isActive ? 30 : 10;
     var data = snap.val() || { minggu: getMinggu(), jumlah: 0, max: maxLimit };
@@ -2324,7 +2324,6 @@ function toggleFeatureFromDetail(name) {
 
   // Cek limit untuk fitur tertentu
   if (name === 'jadwal' && !isActive) {
-    // Cek sudah berapa tugas minggu ini dengan jadwal
     showAlert('Fitur Jadwal terbatas untuk 5 tugas per minggu. Tingkatkan ke Premium untuk bebas.');
     return;
   }
@@ -2376,21 +2375,18 @@ function toggleFeatureFromDetail(name) {
 
   // Efek khusus untuk hapus
   if (name === 'hapus') {
-    var hapusInput = document.getElementById('waktuHapus');
     var hapusPanjangInput = document.getElementById('hapusPanjangInput');
     var hapusPanjangHint = document.getElementById('hapusPanjangHint');
     var maxHapus = isActive ? 30 : 1;
 
     if (activeFeatures.hapus) {
       var val = parseInt(hapusPanjangInput.value) || 1;
-      hapusInput.value = Math.min(val, maxHapus);
-      hapusInput.max = maxHapus;
+      hapusPanjangInput.value = Math.min(val, maxHapus);
       hapusPanjangInput.max = maxHapus;
       hapusPanjangHint.innerHTML = 'Maksimal ' + maxHapus + ' hari' + (isActive ? ' (Premium)' : ' (Standar)');
     } else {
-      hapusInput.max = maxHapus;
-      hapusInput.value = '';
       hapusPanjangInput.max = maxHapus;
+      hapusPanjangInput.value = '';
       hapusPanjangHint.innerHTML = 'Maksimal ' + maxHapus + ' hari' + (isActive ? ' (Premium)' : ' (Standar)');
     }
   }
@@ -2510,7 +2506,6 @@ function hapusBlokir(index) {
     document.getElementById('blokirToggleBtn').style.background = '#2563EB';
   }
 }
-
 function renderDaftarBlokir() {
   var container = document.getElementById('daftarBlokirContainer');
   container.innerHTML = '';
@@ -2710,7 +2705,7 @@ function buatTugas() {
   var judul = document.getElementById('judulTugas').value.trim();
   var deskripsi = document.getElementById('deskripsiTugas').value.trim();
   var durasi = parseInt(document.getElementById('durasiTugas').value);
-  var waktuHapus = parseInt(document.getElementById('waktuHapus').value) || 1;
+  var waktuHapus = parseInt(document.getElementById('hapusPanjangInput').value) || 1;
 
   if (!judul) {
     showAlert('Judul tugas wajib diisi!');
@@ -2737,8 +2732,6 @@ function buatTugas() {
 
   // Cek limit jadwal untuk user standar
   if (activeFeatures.jadwal && !isActive) {
-    // Hitung sudah berapa tugas minggu ini yang pakai jadwal
-    // Untuk sementara, kita cek di limit aja
     var sisaKuota = parseInt(document.getElementById('sisaKuota').innerText.split(' / ')[0]);
     if (sisaKuota <= 0) {
       showAlert('Kamu sudah mencapai batas 5 tugas per minggu untuk fitur Jadwal. Tingkatkan ke Premium untuk bebas.');
@@ -2752,7 +2745,7 @@ function buatTugas() {
   var dataTugas = {
     judul: judul,
     deskripsi: deskripsi || 'Tidak ada deskripsi',
-    pembuat_id: currentUser,
+    pembuat_id: currentUser.uid,
     pembuat_nama: currentUser.displayName || 'User',
     durasi: durasi,
     waktu_hapus: waktuHapus,
@@ -2798,7 +2791,7 @@ function buatTugas() {
   db.ref('tugas/' + kode).set(dataTugas).then(function() {
     var isActive = isPremiumActive();
     var maxLimit = isActive ? 30 : 10;
-    db.ref('users/' + currentUser + '/tugas_limit').transaction(function(current) {
+    db.ref('users/' + currentUser.uid + '/tugas_limit').transaction(function(current) {
       if (!current) current = { minggu: getMinggu(), jumlah: 0, max: maxLimit };
       if (current.minggu !== getMinggu()) {
         current.minggu = getMinggu();
@@ -2832,6 +2825,7 @@ document.addEventListener('keydown', function(e) {
     closeAlertGlobal();
   }
 });
+
 </script>
 
 </body>
