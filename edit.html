@@ -1,0 +1,1629 @@
+<!DOCTYPE html>
+<html lang="id">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=no, viewport-fit=cover">
+<title>Edit Tugas - Star Tools</title>
+
+<script src="https://www.gstatic.com/firebasejs/8.10.1/firebase-app.js"></script>
+<script src="https://www.gstatic.com/firebasejs/8.10.1/firebase-auth.js"></script>
+<script src="https://www.gstatic.com/firebasejs/8.10.1/firebase-database.js"></script>
+
+<style>
+  * {
+    margin: 0;
+    padding: 0;
+    box-sizing: border-box;
+  }
+
+  body {
+    font-family: -apple-system, 'Segoe UI', Roboto, sans-serif;
+    background: #f5f5f5;
+    color: #1a1a1a;
+    padding: 16px;
+    padding-bottom: 80px;
+  }
+
+  body.dark {
+    background: #0f0f0f;
+    color: #f0f0f0;
+  }
+
+  .header {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    margin-bottom: 16px;
+  }
+
+  .header .left {
+    display: flex;
+    align-items: center;
+    gap: 10px;
+  }
+
+  .header .left svg {
+    width: 24px;
+    height: 24px;
+  }
+
+  .header h1 {
+    font-size: 18px;
+    font-weight: 700;
+    background: linear-gradient(135deg, #2563EB, #60A5FA);
+    -webkit-background-clip: text;
+    -webkit-text-fill-color: transparent;
+  }
+
+  .header .back {
+    background: none;
+    border: none;
+    font-size: 14px;
+    color: #2563eb;
+    cursor: pointer;
+    padding: 6px 12px;
+    display: flex;
+    align-items: center;
+    gap: 4px;
+  }
+
+  .header .back svg {
+    width: 18px;
+    height: 18px;
+    stroke: #2563eb;
+  }
+
+  body.dark .header .back {
+    color: #60a5fa;
+  }
+  body.dark .header .back svg {
+    stroke: #60a5fa;
+  }
+
+  .card {
+    background: white;
+    border-radius: 12px;
+    padding: 16px;
+    margin-bottom: 12px;
+    box-shadow: 0 1px 3px rgba(0,0,0,0.04);
+  }
+
+  body.dark .card {
+    background: #1a1a1a;
+  }
+
+  .card-title {
+    font-size: 13px;
+    font-weight: 600;
+    color: #888;
+    margin-bottom: 10px;
+    display: flex;
+    align-items: center;
+    gap: 6px;
+  }
+
+  body.dark .card-title {
+    color: #9ca3af;
+  }
+
+  .card-title svg {
+    width: 16px;
+    height: 16px;
+    stroke: #888;
+  }
+
+  body.dark .card-title svg {
+    stroke: #9ca3af;
+  }
+
+  input, textarea {
+    width: 100%;
+    padding: 10px 12px;
+    border: 1px solid #ddd;
+    border-radius: 8px;
+    font-size: 14px;
+    font-family: inherit;
+    background: white;
+    color: #1a1a1a;
+  }
+
+  body.dark input, body.dark textarea {
+    background: #262626;
+    border-color: #404040;
+    color: #f0f0f0;
+  }
+
+  input:focus, textarea:focus {
+    outline: none;
+    border-color: #2563eb;
+  }
+
+  textarea {
+    min-height: 70px;
+    resize: vertical;
+  }
+
+  input:disabled {
+    opacity: 0.5;
+    cursor: not-allowed;
+  }
+
+  .input-group {
+    margin-bottom: 10px;
+  }
+
+  .input-group label {
+    display: block;
+    font-size: 12px;
+    font-weight: 500;
+    color: #888;
+    margin-bottom: 4px;
+  }
+
+  body.dark .input-group label {
+    color: #9ca3af;
+  }
+
+  .link-box {
+    display: flex;
+    align-items: center;
+    gap: 8px;
+    background: #f0f0f0;
+    padding: 8px 12px;
+    border-radius: 8px;
+  }
+
+  body.dark .link-box {
+    background: #262626;
+  }
+
+  .link-box .link-text {
+    flex: 1;
+    font-size: 13px;
+    color: #2563eb;
+    word-break: break-all;
+  }
+
+  body.dark .link-box .link-text {
+    color: #60a5fa;
+  }
+
+  .link-box .copy-btn {
+    background: #ddd;
+    border: none;
+    padding: 4px 12px;
+    border-radius: 6px;
+    font-size: 12px;
+    font-weight: 600;
+    cursor: pointer;
+    color: #1a1a1a;
+    flex-shrink: 0;
+  }
+
+  body.dark .link-box .copy-btn {
+    background: #404040;
+    color: #f0f0f0;
+  }
+
+  .link-box .copy-btn:active {
+    transform: scale(0.95);
+  }
+
+  .kode-info {
+    font-size: 12px;
+    color: #888;
+    margin-bottom: 8px;
+  }
+
+  body.dark .kode-info {
+    color: #9ca3af;
+  }
+
+  .file-upload {
+    border: 2px dashed #ddd;
+    border-radius: 8px;
+    padding: 14px;
+    text-align: center;
+    cursor: pointer;
+    font-size: 13px;
+    color: #888;
+    transition: 0.2s;
+  }
+
+  body.dark .file-upload {
+    border-color: #404040;
+  }
+
+  .file-upload.has-file {
+    border-color: #34d399;
+  }
+
+  .file-upload:active {
+    transform: scale(0.97);
+  }
+
+  .file-preview {
+    display: flex;
+    align-items: center;
+    gap: 8px;
+    padding: 6px 10px;
+    background: #f0f0f0;
+    border-radius: 6px;
+    margin-top: 6px;
+    font-size: 13px;
+  }
+
+  body.dark .file-preview {
+    background: #262626;
+  }
+
+  .file-preview .remove {
+    color: #dc2626;
+    cursor: pointer;
+    font-weight: 700;
+    font-size: 16px;
+  }
+
+  .file-exists {
+    font-size: 12px;
+    color: #888;
+    margin-top: 4px;
+  }
+
+  .info-grid {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: 8px;
+    margin-bottom: 8px;
+  }
+
+  .info-box {
+    background: #f0f0f0;
+    padding: 10px 12px;
+    border-radius: 8px;
+    text-align: center;
+  }
+
+  body.dark .info-box {
+    background: #262626;
+  }
+
+  .info-box .label {
+    font-size: 10px;
+    color: #888;
+    text-transform: uppercase;
+    letter-spacing: 0.3px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    gap: 4px;
+  }
+
+  .info-box .label svg {
+    width: 12px;
+    height: 12px;
+    stroke: #888;
+  }
+
+  body.dark .info-box .label svg {
+    stroke: #9ca3af;
+  }
+
+  .info-box .value {
+    font-size: 14px;
+    font-weight: 600;
+    margin-top: 2px;
+  }
+
+  .info-jadwal {
+    background: #f0f0f0;
+    padding: 8px 12px;
+    border-radius: 8px;
+  }
+
+  body.dark .info-jadwal {
+    background: #262626;
+  }
+
+  .info-jadwal .label {
+    font-size: 10px;
+    color: #888;
+    text-transform: uppercase;
+    letter-spacing: 0.3px;
+    display: flex;
+    align-items: center;
+    gap: 4px;
+  }
+
+  .info-jadwal .label svg {
+    width: 12px;
+    height: 12px;
+    stroke: #888;
+  }
+
+  body.dark .info-jadwal .label svg {
+    stroke: #9ca3af;
+  }
+
+  .info-jadwal .value {
+    font-size: 13px;
+    font-weight: 500;
+    margin-top: 2px;
+  }
+
+  .info-readonly-note {
+    font-size: 11px;
+    color: #888;
+    margin-top: 6px;
+    text-align: center;
+  }
+
+  .fitur-item {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    padding: 10px 0;
+    border-bottom: 1px solid #eee;
+  }
+
+  body.dark .fitur-item {
+    border-bottom-color: #2a2a2a;
+  }
+
+  .fitur-item:last-child {
+    border-bottom: none;
+  }
+
+  .fitur-item .left {
+    display: flex;
+    align-items: center;
+    gap: 10px;
+  }
+
+  .fitur-item .left svg {
+    width: 18px;
+    height: 18px;
+    stroke: #888;
+    flex-shrink: 0;
+  }
+
+  body.dark .fitur-item .left svg {
+    stroke: #9ca3af;
+  }
+
+  .fitur-item .left .name {
+    font-size: 14px;
+    font-weight: 500;
+  }
+
+  .toggle {
+    width: 40px;
+    height: 22px;
+    background: #ccc;
+    border-radius: 11px;
+    position: relative;
+    cursor: pointer;
+    transition: 0.3s;
+    flex-shrink: 0;
+  }
+
+  body.dark .toggle {
+    background: #404040;
+  }
+
+  .toggle.active {
+    background: #2563eb;
+  }
+
+  .toggle .slider {
+    width: 18px;
+    height: 18px;
+    background: white;
+    border-radius: 50%;
+    position: absolute;
+    top: 2px;
+    left: 2px;
+    transition: 0.3s;
+  }
+
+  .toggle.active .slider {
+    left: 20px;
+  }
+
+  .toggle.disabled {
+    opacity: 0.4;
+    cursor: not-allowed;
+  }
+
+  .badge-fitur {
+    font-size: 10px;
+    padding: 2px 10px;
+    border-radius: 10px;
+    font-weight: 600;
+  }
+
+  .badge-fitur.aktif {
+    background: #d1fae5;
+    color: #065f46;
+  }
+
+  .badge-fitur.nonaktif {
+    background: #f3f4f6;
+    color: #6b7280;
+  }
+
+  body.dark .badge-fitur.aktif {
+    background: #064e3b;
+    color: #6ee7b7;
+  }
+
+  body.dark .badge-fitur.nonaktif {
+    background: #374151;
+    color: #9ca3af;
+  }
+
+  .section-content {
+    padding-top: 10px;
+  }
+
+  .section-content .row-input {
+    display: flex;
+    gap: 8px;
+    margin-bottom: 8px;
+  }
+
+  .section-content .row-input input {
+    flex: 1;
+    margin: 0;
+  }
+
+  .btn {
+    padding: 8px 14px;
+    border: none;
+    border-radius: 8px;
+    font-weight: 600;
+    font-size: 13px;
+    cursor: pointer;
+    transition: 0.2s;
+    white-space: nowrap;
+  }
+
+  .btn:active {
+    transform: scale(0.95);
+  }
+
+  .btn-primary {
+    background: #2563eb;
+    color: white;
+  }
+
+  .btn-danger {
+    background: #dc2626;
+    color: white;
+  }
+
+  .btn-secondary {
+    background: #e5e7eb;
+    color: #1a1a1a;
+  }
+
+  body.dark .btn-secondary {
+    background: #374151;
+    color: #f0f0f0;
+  }
+
+  .murid-container {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 6px;
+    padding: 4px 0;
+    min-height: 30px;
+  }
+
+  .murid-item {
+    display: inline-flex;
+    align-items: center;
+    gap: 4px;
+    background: #dbeafe;
+    color: #2563eb;
+    padding: 2px 10px;
+    border-radius: 20px;
+    font-size: 12px;
+    font-weight: 500;
+  }
+
+  body.dark .murid-item {
+    background: #1e3a5f;
+    color: #60a5fa;
+  }
+
+  .murid-item .remove {
+    cursor: pointer;
+    font-weight: 700;
+    color: #dc2626;
+    font-size: 14px;
+  }
+
+  .counter {
+    font-size: 12px;
+    color: #888;
+    margin-top: 4px;
+  }
+
+  body.dark .counter {
+    color: #9ca3af;
+  }
+
+  .blokir-item {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    padding: 6px 10px;
+    background: #f0f0f0;
+    border-radius: 6px;
+    margin-bottom: 4px;
+    font-size: 13px;
+  }
+
+  body.dark .blokir-item {
+    background: #262626;
+  }
+
+  .blokir-item .unblock {
+    background: none;
+    border: none;
+    color: #dc2626;
+    cursor: pointer;
+    font-weight: 600;
+    font-size: 12px;
+  }
+
+  .empty-text {
+    font-size: 12px;
+    color: #888;
+    padding: 4px 0;
+  }
+
+  .stat-item {
+    display: flex;
+    justify-content: space-between;
+    padding: 6px 0;
+    border-bottom: 1px solid #eee;
+    font-size: 14px;
+  }
+
+  body.dark .stat-item {
+    border-bottom-color: #2a2a2a;
+  }
+
+  .stat-item:last-child {
+    border-bottom: none;
+  }
+
+  .stat-item .label {
+    color: #888;
+  }
+
+  body.dark .stat-item .label {
+    color: #9ca3af;
+  }
+
+  .stat-item .value {
+    font-weight: 600;
+  }
+
+  .stat-detail {
+    margin-top: 8px;
+  }
+
+  .stat-detail .title {
+    font-size: 12px;
+    font-weight: 600;
+    margin-bottom: 4px;
+  }
+
+  .stat-detail-item {
+    display: flex;
+    justify-content: space-between;
+    padding: 4px 8px;
+    background: #f0f0f0;
+    border-radius: 4px;
+    margin-bottom: 4px;
+    font-size: 12px;
+  }
+
+  body.dark .stat-detail-item {
+    background: #262626;
+  }
+
+  .laporan-item {
+    padding: 8px 10px;
+    background: #f0f0f0;
+    border-radius: 6px;
+    margin-bottom: 4px;
+  }
+
+  body.dark .laporan-item {
+    background: #262626;
+  }
+
+  .laporan-item .top {
+    display: flex;
+    justify-content: space-between;
+    font-size: 13px;
+    font-weight: 500;
+  }
+
+  .laporan-item .top .status-selesai {
+    color: #059669;
+  }
+
+  .laporan-item .top .status-habis {
+    color: #dc2626;
+  }
+
+  .laporan-item .jawaban {
+    font-size: 12px;
+    color: #888;
+    margin-top: 2px;
+  }
+
+  .laporan-item .foto-link {
+    font-size: 12px;
+    color: #2563eb;
+    cursor: pointer;
+    margin-top: 2px;
+  }
+
+  .btn-row {
+    display: flex;
+    gap: 10px;
+    margin-top: 4px;
+  }
+
+  .btn-row .btn-save {
+    flex: 1;
+  }
+
+  .btn-save {
+    width: 100%;
+    padding: 14px;
+    border: none;
+    border-radius: 12px;
+    background: #2563eb;
+    color: white;
+    font-weight: 600;
+    font-size: 15px;
+    cursor: pointer;
+    transition: 0.2s;
+  }
+
+  .btn-save:active {
+    transform: scale(0.97);
+  }
+
+  .btn-save.btn-danger {
+    background: #dc2626;
+    margin-top: 10px;
+  }
+
+  .btn-save.btn-secondary {
+    background: #e5e7eb;
+    color: #1a1a1a;
+  }
+
+  body.dark .btn-save.btn-secondary {
+    background: #374151;
+    color: #f0f0f0;
+  }
+
+  .toast {
+    position: fixed;
+    bottom: 20px;
+    left: 50%;
+    transform: translateX(-50%);
+    background: #1a1a1a;
+    color: white;
+    padding: 10px 20px;
+    border-radius: 10px;
+    font-size: 14px;
+    opacity: 0;
+    pointer-events: none;
+    transition: 0.3s;
+    z-index: 999;
+  }
+
+  .toast.show {
+    opacity: 1;
+  }
+
+  .toast.error {
+    background: #991b1b;
+  }
+
+  .alert-overlay {
+    position: fixed;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    background: rgba(0,0,0,0.5);
+    display: none;
+    justify-content: center;
+    align-items: center;
+    z-index: 200;
+  }
+
+  .alert-box {
+    background: white;
+    padding: 24px;
+    border-radius: 16px;
+    max-width: 300px;
+    width: 90%;
+    text-align: center;
+  }
+
+  body.dark .alert-box {
+    background: #1a1a1a;
+  }
+
+  .alert-box p {
+    margin-bottom: 16px;
+    line-height: 1.5;
+    font-size: 15px;
+  }
+
+  .alert-box .btn-full {
+    width: 100%;
+    padding: 10px;
+    border: none;
+    border-radius: 8px;
+    background: #2563eb;
+    color: white;
+    font-weight: 600;
+    cursor: pointer;
+  }
+
+  .hidden {
+    display: none !important;
+  }
+
+  .loading-state {
+    text-align: center;
+    padding: 40px 0;
+    color: #888;
+  }
+
+  .loading-state .spin {
+    width: 30px;
+    height: 30px;
+    border: 3px solid #e0e0e0;
+    border-top-color: #2563eb;
+    border-radius: 50%;
+    animation: spin 0.8s linear infinite;
+    margin: 0 auto 10px;
+  }
+
+  @keyframes spin {
+    to { transform: rotate(360deg); }
+  }
+
+  .not-found {
+    text-align: center;
+    padding: 40px 0;
+  }
+
+  .not-found svg {
+    width: 48px;
+    height: 48px;
+    stroke: #ccc;
+    margin-bottom: 10px;
+  }
+
+  .not-found h3 {
+    font-size: 17px;
+    margin-bottom: 4px;
+  }
+
+  .not-found p {
+    color: #888;
+    font-size: 14px;
+  }
+</style>
+</head>
+<body>
+
+<div class="header">
+  <div class="left">
+    <svg viewBox="0 0 24 24" fill="none" stroke="#2563EB" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+      <polygon points="12 2 15.09 8.26 22 9.27 17 14.14 18.18 21.02 12 17.77 5.82 21.02 7 14.14 2 9.27 8.91 8.26 12 2"/>
+    </svg>
+    <h1>Edit Tugas</h1>
+  </div>
+  <button class="back" onclick="goTo('daftar-tugas.html')">
+    <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+      <polyline points="15 18 9 12 15 6"/>
+    </svg>
+    Kembali
+  </button>
+</div>
+
+<div id="loadingState" class="loading-state">
+  <div class="spin"></div>
+  <div>Memuat tugas...</div>
+</div>
+
+<div id="notFoundState" class="not-found hidden">
+  <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round">
+    <rect x="2" y="3" width="20" height="14" rx="2" ry="2"/>
+    <line x1="8" y1="21" x2="16" y2="21"/>
+    <line x1="12" y1="17" x2="12" y2="21"/>
+  </svg>
+  <h3>Tugas Tidak Ditemukan</h3>
+  <p>Kode tugas tidak valid atau sudah dihapus.</p>
+  <button class="btn btn-primary" style="margin-top:12px;" onclick="goTo('daftar-tugas.html')">Kembali ke Daftar</button>
+</div>
+
+<div id="mainContent" class="hidden">
+
+  <div class="card">
+    <div class="card-title">
+      <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.7" stroke-linecap="round" stroke-linejoin="round">
+        <rect x="2" y="3" width="20" height="14" rx="2" ry="2"/>
+        <line x1="8" y1="21" x2="16" y2="21"/>
+        <line x1="12" y1="17" x2="12" y2="21"/>
+      </svg>
+      Info Tugas
+    </div>
+    <div class="kode-info">Kode: <span id="tugasKodeDisplay">-</span></div>
+    <div class="link-box">
+      <span class="link-text" id="tugasLink">-</span>
+      <button class="copy-btn" onclick="copyLink()">Salin</button>
+    </div>
+  </div>
+
+  <div class="card">
+    <div class="card-title">
+      <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.7" stroke-linecap="round" stroke-linejoin="round">
+        <path d="M11 4H4a2 2 0 0 0-2 2v14a2 2 0 0 0 2 2h14a2 2 0 0 0 2-2v-7"/>
+        <path d="M18.5 2.5a2.121 2.121 0 0 1 3 3L12 15l-4 1 1-4 9.5-9.5z"/>
+      </svg>
+      Edit Tugas
+    </div>
+
+    <div class="input-group">
+      <label>Judul Tugas</label>
+      <input type="text" id="editJudul" placeholder="Masukkan judul tugas...">
+    </div>
+
+    <div class="input-group">
+      <label>Deskripsi</label>
+      <textarea id="editDeskripsi" placeholder="Deskripsi tugas..."></textarea>
+    </div>
+
+    <div class="input-group">
+      <label>Foto Soal</label>
+      <div class="file-upload" id="fileUpload" onclick="document.getElementById('fileInput').click()">
+        Klik untuk upload foto soal
+      </div>
+      <input type="file" id="fileInput" accept="image/*" style="display:none;">
+      <div id="filePreview" class="file-preview hidden">
+        <span id="fileName">file.jpg</span>
+        <span class="remove" onclick="hapusFile()">×</span>
+      </div>
+      <div id="existingFileInfo" class="file-exists hidden">Foto soal tersimpan</div>
+    </div>
+  </div>
+
+  <div class="card">
+    <div class="card-title">
+      <svg viewBox="0 0 24 24" fill="none" stroke="#888" stroke-width="1.7" stroke-linecap="round" stroke-linejoin="round">
+        <circle cx="12" cy="12" r="10"/>
+        <line x1="12" y1="8" x2="12" y2="12"/>
+        <line x1="12" y1="16" x2="12.01" y2="16"/>
+      </svg>
+      Informasi (Hanya Baca)
+    </div>
+
+    <div class="info-grid">
+      <div class="info-box">
+        <div class="label">
+          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.7" stroke-linecap="round" stroke-linejoin="round">
+            <circle cx="12" cy="12" r="10"/>
+            <polyline points="12 6 12 12 16 14"/>
+          </svg>
+          Durasi
+        </div>
+        <div class="value" id="editDurasiDisplay">- menit</div>
+      </div>
+      <div class="info-box">
+        <div class="label">
+          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.7" stroke-linecap="round" stroke-linejoin="round">
+            <path d="M3 6h18"/>
+            <path d="M19 6v14a2 2 0 0 1-2 2H7a2 2 0 0 1-2-2V6m3 0V4a2 2 0 0 1 2-2h4a2 2 0 0 1 2 2v2"/>
+          </svg>
+          Hapus Otomatis
+        </div>
+        <div class="value" id="editHapusDisplay">- hari</div>
+      </div>
+    </div>
+
+    <div class="info-jadwal">
+      <div class="label">
+        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.7" stroke-linecap="round" stroke-linejoin="round">
+          <rect x="3" y="4" width="18" height="18" rx="2" ry="2"/>
+          <line x1="16" y1="2" x2="16" y2="6"/>
+          <line x1="8" y1="2" x2="8" y2="6"/>
+          <line x1="3" y1="10" x2="21" y2="10"/>
+        </svg>
+        Jadwal
+      </div>
+      <div class="value" id="editJadwalDisplay">Tidak diatur</div>
+    </div>
+
+    <div class="info-readonly-note">
+      <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.7" stroke-linecap="round" stroke-linejoin="round" style="width:12px;height:12px;vertical-align:middle;stroke:#888;">
+        <circle cx="12" cy="12" r="10"/>
+        <line x1="12" y1="8" x2="12" y2="12"/>
+        <line x1="12" y1="16" x2="12.01" y2="16"/>
+      </svg>
+      Fitur di atas tidak dapat diedit
+    </div>
+  </div>
+
+  <div class="card">
+    <div class="card-title">
+      <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.7" stroke-linecap="round" stroke-linejoin="round">
+        <polygon points="12 2 15.09 8.26 22 9.27 17 14.14 18.18 21.02 12 17.77 5.82 21.02 7 14.14 2 9.27 8.91 8.26 12 2"/>
+      </svg>
+      Fitur yang Dapat Diedit
+    </div>
+
+    <!-- DAFTAR MURID -->
+    <div class="fitur-item">
+      <div class="left">
+        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.7" stroke-linecap="round" stroke-linejoin="round">
+          <path d="M17 21v-2a4 4 0 0 0-4-4H5a4 4 0 0 0-4 4v2"/>
+          <circle cx="9" cy="7" r="4"/>
+          <path d="M23 21v-2a4 4 0 0 0-3-3.87"/>
+          <path d="M16 3.13a4 4 0 0 1 0 7.75"/>
+        </svg>
+        <span class="name">Daftar Murid</span>
+        <span class="badge-fitur nonaktif" id="muridBadge">Tidak Aktif</span>
+      </div>
+      <div class="toggle" id="muridToggle" onclick="toggleFeature('murid')">
+        <div class="slider"></div>
+      </div>
+    </div>
+    <div id="muridSection" class="section-content hidden">
+      <div class="row-input">
+        <input type="text" id="editInputMurid" placeholder="Nama murid">
+        <button class="btn btn-primary" onclick="tambahMuridEdit()">Tambah</button>
+      </div>
+      <div class="murid-container" id="editDaftarMuridContainer"></div>
+      <div class="counter" id="editMuridCounter">0 murid</div>
+    </div>
+
+    <!-- BLOKIR MURID -->
+    <div class="fitur-item">
+      <div class="left">
+        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.7" stroke-linecap="round" stroke-linejoin="round">
+          <circle cx="12" cy="12" r="10"/>
+          <line x1="4.93" y1="4.93" x2="19.07" y2="19.07"/>
+        </svg>
+        <span class="name">Blokir Murid</span>
+        <span class="badge-fitur nonaktif" id="blokirBadge">Tidak Aktif</span>
+      </div>
+      <div class="toggle" id="blokirToggle" onclick="toggleFeature('blokir')">
+        <div class="slider"></div>
+      </div>
+    </div>
+    <div id="blokirSection" class="section-content hidden">
+      <div class="row-input">
+        <input type="text" id="editInputBlokir" placeholder="Nama murid diblokir">
+        <button class="btn btn-danger" onclick="tambahBlokirEdit()">Blokir</button>
+      </div>
+      <div id="editDaftarBlokirContainer"></div>
+    </div>
+
+    <!-- STATISTIK -->
+    <div class="fitur-item">
+      <div class="left">
+        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.7" stroke-linecap="round" stroke-linejoin="round">
+          <line x1="18" y1="20" x2="18" y2="10"/>
+          <line x1="12" y1="20" x2="12" y2="4"/>
+          <line x1="6" y1="20" x2="6" y2="14"/>
+        </svg>
+        <span class="name">Statistik</span>
+        <span class="badge-fitur nonaktif" id="statistikBadge">Tidak Aktif</span>
+      </div>
+      <div class="toggle" id="statistikToggle" onclick="toggleFeature('statistik')">
+        <div class="slider"></div>
+      </div>
+    </div>
+    <div id="statistikSection" class="section-content hidden">
+      <div class="stat-item"><span class="label">Total Jawaban</span><span class="value" id="statTotal">0</span></div>
+      <div class="stat-item"><span class="label">Selesai</span><span class="value" id="statSelesai">0</span></div>
+      <div class="stat-item"><span class="label">Terlambat</span><span class="value" id="statTerlambat">0</span></div>
+      <div id="statPremium" class="hidden">
+        <div class="stat-item"><span class="label">Rata-rata Waktu</span><span class="value" id="statRata">0 menit</span></div>
+        <div class="stat-item"><span class="label">Nilai Rata-rata</span><span class="value" id="statNilai">-</span></div>
+        <div class="stat-detail">
+          <div class="title">Detail Jawaban</div>
+          <div id="statDetailContainer"></div>
+        </div>
+      </div>
+    </div>
+
+    <!-- LAPORAN -->
+    <div class="fitur-item">
+      <div class="left">
+        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.7" stroke-linecap="round" stroke-linejoin="round">
+          <path d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8z"/>
+          <polyline points="14 2 14 8 20 8"/>
+          <line x1="16" y1="13" x2="8" y2="13"/>
+          <line x1="16" y1="17" x2="8" y2="17"/>
+        </svg>
+        <span class="name">Laporan</span>
+        <span class="badge-fitur nonaktif" id="laporanBadge">Tidak Aktif</span>
+      </div>
+      <div class="toggle" id="laporanToggle" onclick="toggleFeature('laporan')">
+        <div class="slider"></div>
+      </div>
+    </div>
+    <div id="laporanSection" class="section-content hidden">
+      <div id="laporanContainer">
+        <div class="empty-text">Belum ada data laporan.</div>
+      </div>
+    </div>
+  </div>
+
+  <div class="card">
+    <div class="btn-row">
+      <button class="btn-save" onclick="simpanPerubahan()">Simpan Perubahan</button>
+      <button class="btn-save btn-secondary" onclick="goTo('daftar-tugas.html')">Batal</button>
+    </div>
+    <button class="btn-save btn-danger" onclick="hapusTugas()">Hapus Tugas</button>
+  </div>
+
+</div>
+
+<div id="toast" class="toast"></div>
+
+<div id="globalAlert" class="alert-overlay">
+  <div class="alert-box">
+    <p id="alertMessage">Pemberitahuan</p>
+    <button class="btn-full" onclick="closeAlert()">Mengerti</button>
+  </div>
+</div>
+
+<script>
+const firebaseConfig = {
+  apiKey: "AIzaSyDgr_nHqvpMsiG4lBkYckzxRErkskXj_6E",
+  authDomain: "laporanstartools-c18b2.firebaseapp.com",
+  databaseURL: "https://laporanstartools-c18b2-default-rtdb.asia-southeast1.firebasedatabase.app",
+  projectId: "laporanstartools-c18b2",
+};
+
+if (!firebase.apps.length) {
+  firebase.initializeApp(firebaseConfig);
+}
+const db = firebase.database();
+
+let currentUser = null;
+let tugasData = null;
+let tugasKode = null;
+let isPremium = false;
+let trialActive = false;
+let trialExpired = false;
+let daftarMurid = [];
+let daftarBlokir = [];
+let fileBase64 = null;
+let existingFileUrl = null;
+
+firebase.auth().onAuthStateChanged(function(user) {
+  if (user) {
+    currentUser = user;
+    loadPremiumStatus();
+    loadTrialStatus();
+    loadTugas();
+  } else {
+    window.location.href = 'login.html';
+  }
+});
+
+if (localStorage.getItem('theme') === 'dark') {
+  document.body.classList.add('dark');
+}
+
+function goTo(page) {
+  window.location.href = page;
+}
+
+function loadPremiumStatus() {
+  if (!currentUser) return;
+  db.ref('users/' + currentUser.uid + '/premium').on('value', function(snap) {
+    isPremium = snap.val() === true;
+  });
+}
+
+function loadTrialStatus() {
+  if (!currentUser) return;
+  db.ref('users/' + currentUser.uid + '/trial').once('value').then(function(snap) {
+    var data = snap.val();
+    if (data && data.active === true) {
+      trialActive = true;
+      var start = new Date(data.start_date);
+      var now = new Date();
+      var diffDays = (now - start) / (1000 * 60 * 60 * 24);
+      if (diffDays > 7) {
+        trialExpired = true;
+        trialActive = false;
+      }
+    }
+  });
+}
+
+function isPremiumActive() {
+  return isPremium || (trialActive && !trialExpired);
+}
+
+function loadTugas() {
+  var urlParams = new URLSearchParams(window.location.search);
+  tugasKode = urlParams.get('kode');
+
+  if (!tugasKode) {
+    document.getElementById('loadingState').classList.add('hidden');
+    document.getElementById('notFoundState').classList.remove('hidden');
+    return;
+  }
+
+  db.ref('tugas/' + tugasKode).once('value').then(function(snap) {
+    var data = snap.val();
+    if (!data) {
+      document.getElementById('loadingState').classList.add('hidden');
+      document.getElementById('notFoundState').classList.remove('hidden');
+      return;
+    }
+
+    if (data.pembuat_id !== currentUser.uid) {
+      showAlert('Anda tidak memiliki akses!');
+      document.getElementById('loadingState').classList.add('hidden');
+      document.getElementById('notFoundState').classList.remove('hidden');
+      return;
+    }
+
+    tugasData = data;
+    tampilkanData();
+    document.getElementById('loadingState').classList.add('hidden');
+    document.getElementById('mainContent').classList.remove('hidden');
+  }).catch(function(err) {
+    showAlert('Gagal: ' + err.message);
+    document.getElementById('loadingState').classList.add('hidden');
+    document.getElementById('notFoundState').classList.remove('hidden');
+  });
+}
+
+function tampilkanData() {
+  if (!tugasData) return;
+
+  document.getElementById('tugasKodeDisplay').innerText = tugasData.kode;
+  var link = window.location.origin + '/demo-stools/tugas.html?kode=' + tugasData.kode;
+  document.getElementById('tugasLink').innerText = link;
+
+  document.getElementById('editJudul').value = tugasData.judul || '';
+  document.getElementById('editDeskripsi').value = tugasData.deskripsi || '';
+
+  document.getElementById('editDurasiDisplay').innerText = (tugasData.durasi || 0) + ' menit';
+  document.getElementById('editHapusDisplay').innerText = (tugasData.waktu_hapus || 1) + ' hari';
+
+  if (tugasData.jadwal && tugasData.jadwal.buka && tugasData.jadwal.tutup) {
+    var buka = new Date(tugasData.jadwal.buka);
+    var tutup = new Date(tugasData.jadwal.tutup);
+    document.getElementById('editJadwalDisplay').innerText = buka.toLocaleString('id-ID') + ' - ' + tutup.toLocaleString('id-ID');
+  } else {
+    document.getElementById('editJadwalDisplay').innerText = 'Tidak diatur';
+  }
+
+  if (tugasData.foto_soal) {
+    existingFileUrl = tugasData.foto_soal;
+    document.getElementById('existingFileInfo').classList.remove('hidden');
+  }
+
+  var fitur = tugasData.fitur || {};
+
+  if (fitur.murid) {
+    document.getElementById('muridToggle').classList.add('active');
+    document.getElementById('muridBadge').innerText = 'Aktif';
+    document.getElementById('muridBadge').className = 'badge-fitur aktif';
+    document.getElementById('muridSection').classList.remove('hidden');
+    if (tugasData.daftar_murid) {
+      daftarMurid = Object.keys(tugasData.daftar_murid);
+    }
+    renderMurid();
+  }
+
+  if (fitur.blokir) {
+    document.getElementById('blokirToggle').classList.add('active');
+    document.getElementById('blokirBadge').innerText = 'Aktif';
+    document.getElementById('blokirBadge').className = 'badge-fitur aktif';
+    document.getElementById('blokirSection').classList.remove('hidden');
+    if (tugasData.blokir) {
+      daftarBlokir = tugasData.blokir;
+    }
+    renderBlokir();
+  }
+
+  if (fitur.statistik) {
+    document.getElementById('statistikToggle').classList.add('active');
+    document.getElementById('statistikBadge').innerText = 'Aktif';
+    document.getElementById('statistikBadge').className = 'badge-fitur aktif';
+    document.getElementById('statistikSection').classList.remove('hidden');
+    loadStatistik();
+  }
+
+  if (fitur.laporan) {
+    document.getElementById('laporanToggle').classList.add('active');
+    document.getElementById('laporanBadge').innerText = 'Aktif';
+    document.getElementById('laporanBadge').className = 'badge-fitur aktif';
+    document.getElementById('laporanSection').classList.remove('hidden');
+    loadLaporan();
+  }
+}
+
+function toggleFeature(name) {
+  var isActive = isPremiumActive();
+
+  if (name === 'murid') {
+    var toggle = document.getElementById('muridToggle');
+    var active = toggle.classList.contains('active');
+    if (!active && !isActive && daftarMurid.length > 0) {
+      showAlert('Fitur ini hanya untuk Premium!');
+      return;
+    }
+    if (!active) {
+      toggle.classList.add('active');
+      document.getElementById('muridBadge').innerText = 'Aktif';
+      document.getElementById('muridBadge').className = 'badge-fitur aktif';
+      document.getElementById('muridSection').classList.remove('hidden');
+    } else {
+      toggle.classList.remove('active');
+      document.getElementById('muridBadge').innerText = 'Tidak Aktif';
+      document.getElementById('muridBadge').className = 'badge-fitur nonaktif';
+      document.getElementById('muridSection').classList.add('hidden');
+      daftarMurid = [];
+      renderMurid();
+    }
+  }
+
+  if (name === 'blokir') {
+    var toggle = document.getElementById('blokirToggle');
+    var active = toggle.classList.contains('active');
+    if (!active && !isActive && daftarBlokir.length > 0) {
+      showAlert('Fitur ini hanya untuk Premium!');
+      return;
+    }
+    if (!active) {
+      toggle.classList.add('active');
+      document.getElementById('blokirBadge').innerText = 'Aktif';
+      document.getElementById('blokirBadge').className = 'badge-fitur aktif';
+      document.getElementById('blokirSection').classList.remove('hidden');
+    } else {
+      toggle.classList.remove('active');
+      document.getElementById('blokirBadge').innerText = 'Tidak Aktif';
+      document.getElementById('blokirBadge').className = 'badge-fitur nonaktif';
+      document.getElementById('blokirSection').classList.add('hidden');
+      daftarBlokir = [];
+      renderBlokir();
+    }
+  }
+
+  if (name === 'statistik') {
+    var toggle = document.getElementById('statistikToggle');
+    var active = toggle.classList.contains('active');
+    if (!active) {
+      toggle.classList.add('active');
+      document.getElementById('statistikBadge').innerText = 'Aktif';
+      document.getElementById('statistikBadge').className = 'badge-fitur aktif';
+      document.getElementById('statistikSection').classList.remove('hidden');
+      loadStatistik();
+    } else {
+      toggle.classList.remove('active');
+      document.getElementById('statistikBadge').innerText = 'Tidak Aktif';
+      document.getElementById('statistikBadge').className = 'badge-fitur nonaktif';
+      document.getElementById('statistikSection').classList.add('hidden');
+    }
+  }
+
+  if (name === 'laporan') {
+    var toggle = document.getElementById('laporanToggle');
+    var active = toggle.classList.contains('active');
+    if (!active) {
+      toggle.classList.add('active');
+      document.getElementById('laporanBadge').innerText = 'Aktif';
+      document.getElementById('laporanBadge').className = 'badge-fitur aktif';
+      document.getElementById('laporanSection').classList.remove('hidden');
+      loadLaporan();
+    } else {
+      toggle.classList.remove('active');
+      document.getElementById('laporanBadge').innerText = 'Tidak Aktif';
+      document.getElementById('laporanBadge').className = 'badge-fitur nonaktif';
+      document.getElementById('laporanSection').classList.add('hidden');
+    }
+  }
+}
+
+function tambahMuridEdit() {
+  if (!document.getElementById('muridToggle').classList.contains('active')) {
+    showAlert('Aktifkan fitur Daftar Murid dulu!');
+    return;
+  }
+  var input = document.getElementById('editInputMurid');
+  var nama = input.value.trim();
+  if (!nama) return;
+  if (daftarMurid.includes(nama)) {
+    showToast('Nama sudah ada!', 'error');
+    return;
+  }
+  daftarMurid.push(nama);
+  input.value = '';
+  renderMurid();
+}
+
+function hapusMuridEdit(index) {
+  daftarMurid.splice(index, 1);
+  renderMurid();
+}
+
+function renderMurid() {
+  var container = document.getElementById('editDaftarMuridContainer');
+  var counter = document.getElementById('editMuridCounter');
+  container.innerHTML = '';
+  if (daftarMurid.length === 0) {
+    container.innerHTML = '<span class="empty-text">Belum ada murid</span>';
+  } else {
+    daftarMurid.forEach(function(nama, i) {
+      var el = document.createElement('span');
+      el.className = 'murid-item';
+      el.innerHTML = nama + ' <span class="remove" onclick="hapusMuridEdit(' + i + ')">×</span>';
+      container.appendChild(el);
+    });
+  }
+  counter.innerText = daftarMurid.length + ' murid';
+}
+
+function tambahBlokirEdit() {
+  if (!document.getElementById('blokirToggle').classList.contains('active')) {
+    showAlert('Aktifkan fitur Blokir Murid dulu!');
+    return;
+  }
+  var input = document.getElementById('editInputBlokir');
+  var nama = input.value.trim();
+  if (!nama) return;
+  if (daftarBlokir.includes(nama)) {
+    showToast('Sudah diblokir!', 'error');
+    return;
+  }
+  daftarBlokir.push(nama);
+  input.value = '';
+  renderBlokir();
+}
+
+function hapusBlokirEdit(index) {
+  daftarBlokir.splice(index, 1);
+  renderBlokir();
+}
+
+function renderBlokir() {
+  var container = document.getElementById('editDaftarBlokirContainer');
+  container.innerHTML = '';
+  if (daftarBlokir.length === 0) {
+    container.innerHTML = '<span class="empty-text">Belum ada blokir</span>';
+    return;
+  }
+  daftarBlokir.forEach(function(nama, i) {
+    var el = document.createElement('div');
+    el.className = 'blokir-item';
+    el.innerHTML = '<span>' + nama + '</span><button class="unblock" onclick="hapusBlokirEdit(' + i + ')">Buka</button>';
+    container.appendChild(el);
+  });
+}
+
+function loadStatistik() {
+  if (!tugasKode) return;
+  db.ref('tugas/' + tugasKode + '/jawaban').once('value').then(function(snap) {
+    var data = snap.val();
+    if (!data) {
+      document.getElementById('statTotal').innerText = '0';
+      document.getElementById('statSelesai').innerText = '0';
+      document.getElementById('statTerlambat').innerText = '0';
+      return;
+    }
+    var total = 0, selesai = 0, terlambat = 0, totalWaktu = 0, totalNilai = 0, nilaiCount = 0;
+    Object.keys(data).forEach(function(key) {
+      var item = data[key];
+      total++;
+      if (item.status === 'selesai') selesai++;
+      else if (item.status === 'habis' || item.status === 'terlambat') terlambat++;
+      if (item.waktu_selesai && item.waktu_mulai) {
+        totalWaktu += (new Date(item.waktu_selesai) - new Date(item.waktu_mulai)) / 1000 / 60;
+      }
+      if (item.nilai !== undefined && item.nilai !== null) {
+        totalNilai += item.nilai;
+        nilaiCount++;
+      }
+    });
+    document.getElementById('statTotal').innerText = total;
+    document.getElementById('statSelesai').innerText = selesai;
+    document.getElementById('statTerlambat').innerText = terlambat;
+
+    if (isPremiumActive()) {
+      document.getElementById('statPremium').classList.remove('hidden');
+      document.getElementById('statRata').innerText = (total > 0 ? Math.round(totalWaktu / total) : 0) + ' menit';
+      document.getElementById('statNilai').innerText = nilaiCount > 0 ? Math.round(totalNilai / nilaiCount) : '-';
+      var html = '';
+      Object.keys(data).forEach(function(key) {
+        var item = data[key];
+        html += '<div class="stat-detail-item">';
+        html += '<span>' + (item.nama || 'Tidak Diketahui') + '</span>';
+        html += '<span>' + (item.status === 'selesai' ? 'Selesai' : 'Habis') + (item.nilai !== undefined ? ' | ' + item.nilai : '') + '</span>';
+        html += '</div>';
+      });
+      document.getElementById('statDetailContainer').innerHTML = html;
+    }
+  });
+}
+
+function loadLaporan() {
+  if (!tugasKode) return;
+  db.ref('tugas/' + tugasKode + '/jawaban').once('value').then(function(snap) {
+    var data = snap.val();
+    var container = document.getElementById('laporanContainer');
+    if (!data) {
+      container.innerHTML = '<div class="empty-text">Belum ada laporan.</div>';
+      return;
+    }
+    var html = '';
+    Object.keys(data).forEach(function(key) {
+      var item = data[key];
+      var statusClass = item.status === 'selesai' ? 'status-selesai' : 'status-habis';
+      var statusText = item.status === 'selesai' ? 'Selesai' : 'Waktu Habis';
+      html += '<div class="laporan-item">';
+      html += '<div class="top">';
+      html += '<span>' + (item.nama || 'Tidak Diketahui') + '</span>';
+      html += '<span class="' + statusClass + '">' + statusText + '</span>';
+      html += '</div>';
+      if (item.jawaban) {
+        html += '<div class="jawaban">' + item.jawaban.substring(0, 80) + (item.jawaban.length > 80 ? '...' : '') + '</div>';
+      }
+      if (item.foto) {
+        html += '<div class="foto-link" onclick="window.open(\'' + item.foto + '\')">Lihat Foto</div>';
+      }
+      html += '</div>';
+    });
+    container.innerHTML = html;
+  });
+}
+
+document.getElementById('fileInput').addEventListener('change', function(e) {
+  var file = e.target.files[0];
+  if (!file) return;
+  if (file.size > 5 * 1024 * 1024) {
+    showToast('File maksimal 5MB!', 'error');
+    this.value = '';
+    return;
+  }
+  var reader = new FileReader();
+  reader.onload = function(event) {
+    fileBase64 = event.target.result;
+    document.getElementById('fileUpload').classList.add('has-file');
+    document.getElementById('filePreview').classList.remove('hidden');
+    document.getElementById('fileName').innerText = file.name;
+    document.getElementById('existingFileInfo').classList.add('hidden');
+  };
+  reader.readAsDataURL(file);
+});
+
+function hapusFile() {
+  fileBase64 = null;
+  document.getElementById('fileInput').value = '';
+  document.getElementById('fileUpload').classList.remove('has-file');
+  document.getElementById('filePreview').classList.add('hidden');
+  if (existingFileUrl) {
+    document.getElementById('existingFileInfo').classList.remove('hidden');
+  }
+}
+
+function copyLink() {
+  var text = document.getElementById('tugasLink').innerText;
+  navigator.clipboard.writeText(text).then(function() {
+    showToast('Link disalin!');
+  }).catch(function() {
+    var ta = document.createElement('textarea');
+    ta.value = text;
+    document.body.appendChild(ta);
+    ta.select();
+    document.execCommand('copy');
+    document.body.removeChild(ta);
+    showToast('Link disalin!');
+  });
+}
+
+function simpanPerubahan() {
+  var judul = document.getElementById('editJudul').value.trim();
+  if (!judul) {
+    showAlert('Judul wajib diisi!');
+    return;
+  }
+
+  var updates = {
+    judul: judul,
+    deskripsi: document.getElementById('editDeskripsi').value.trim() || 'Tidak ada deskripsi'
+  };
+
+  if (fileBase64) updates.foto_soal = fileBase64;
+  else if (!existingFileUrl) updates.foto_soal = null;
+
+  updates.fitur = {
+    jadwal: tugasData.fitur && tugasData.fitur.jadwal || false,
+    murid: document.getElementById('muridToggle').classList.contains('active'),
+    blokir: document.getElementById('blokirToggle').classList.contains('active'),
+    statistik: document.getElementById('statistikToggle').classList.contains('active'),
+    hapus: tugasData.fitur && tugasData.fitur.hapus || false,
+    laporan: document.getElementById('laporanToggle').classList.contains('active')
+  };
+
+  if (updates.fitur.murid && daftarMurid.length > 0) {
+    updates.daftar_murid = {};
+    daftarMurid.forEach(function(nama) {
+      updates.daftar_murid[nama] = { status: 'belum' };
+    });
+  } else {
+    updates.daftar_murid = null;
+  }
+
+  if (updates.fitur.blokir && daftarBlokir.length > 0) {
+    updates.blokir = daftarBlokir;
+  } else {
+    updates.blokir = null;
+  }
+
+  db.ref('tugas/' + tugasKode).update(updates).then(function() {
+    showToast('Perubahan disimpan!');
+    loadTugas();
+  }).catch(function(err) {
+    showAlert('Gagal: ' + err.message);
+  });
+}
+
+function hapusTugas() {
+  if (!confirm('Yakin hapus tugas ini?')) return;
+  db.ref('tugas/' + tugasKode).remove().then(function() {
+    showToast('Tugas dihapus!');
+    setTimeout(function() { goTo('daftar-tugas.html'); }, 1000);
+  }).catch(function(err) {
+    showAlert('Gagal: ' + err.message);
+  });
+}
+
+function showToast(msg, type) {
+  var t = document.getElementById('toast');
+  t.textContent = msg;
+  t.className = 'toast show';
+  if (type === 'error') t.classList.add('error');
+  clearTimeout(t._timer);
+  t._timer = setTimeout(function() { t.classList.remove('show'); }, 2500);
+}
+
+function showAlert(msg) {
+  document.getElementById('alertMessage').textContent = msg;
+  document.getElementById('globalAlert').style.display = 'flex';
+}
+
+function closeAlert() {
+  document.getElementById('globalAlert').style.display = 'none';
+}
+</script>
+
+</body>
+</html>
