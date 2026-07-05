@@ -1,0 +1,1842 @@
+<!DOCTYPE html>
+<html lang="id">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=no, viewport-fit=cover">
+<title>Edit Tugas - Star Tools</title>
+
+<script src="https://www.gstatic.com/firebasejs/8.10.1/firebase-app.js"></script>
+<script src="https://www.gstatic.com/firebasejs/8.10.1/firebase-auth.js"></script>
+<script src="https://www.gstatic.com/firebasejs/8.10.1/firebase-database.js"></script>
+
+<style>
+  * {
+    margin: 0;
+    padding: 0;
+    box-sizing: border-box;
+    -webkit-tap-highlight-color: transparent;
+  }
+
+  html, body {
+    height: 100%;
+    overflow-x: hidden;
+  }
+
+  body {
+    font-family: 'Inter', system-ui, -apple-system, 'Segoe UI', Roboto, sans-serif;
+    background: #F1F5F9;
+    color: #0F172A;
+  }
+
+  body.dark {
+    background: #0B1120;
+    color: #F1F5F9;
+  }
+
+  body.dark .card,
+  body.dark .app-header,
+  body.dark .sidebar-nav,
+  body.dark .alert-box,
+  body.dark .premium-code-box,
+  body.dark .feature-card,
+  body.dark .murid-item,
+  body.dark .blocked-item,
+  body.dark .stat-item,
+  body.dark .stat-detail-item,
+  body.dark .file-preview,
+  body.dark .info-box {
+    background: #111827;
+    border-color: #1E293B;
+  }
+
+  body.dark .input-field {
+    background: #1E293B;
+    border-color: #334155;
+    color: #F1F5F9;
+  }
+
+  body.dark .input-field::placeholder {
+    color: #64748B;
+  }
+
+  body.dark .btn-secondary {
+    background: #475569;
+  }
+
+  body.dark .link-box {
+    background: #1E293B;
+    border-color: #334155;
+  }
+
+  body.dark .link-box .link-text {
+    color: #60A5FA;
+  }
+
+  body.dark .link-box .copy-btn {
+    background: #334155;
+    color: #F1F5F9;
+  }
+
+  .app-container {
+    max-width: 560px;
+    margin: 0 auto;
+    background: #F1F5F9;
+    min-height: 100vh;
+    display: flex;
+    flex-direction: column;
+    position: relative;
+    overflow-x: hidden;
+  }
+
+  body.dark .app-container {
+    background: #0B1120;
+  }
+
+  .app-header {
+    background: #FFFFFF;
+    padding: 16px 20px;
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    border-bottom: 1px solid #E2E8F0;
+    position: sticky;
+    top: 0;
+    z-index: 20;
+    flex-shrink: 0;
+  }
+
+  body.dark .app-header {
+    background: #111827;
+    border-bottom-color: #1E293B;
+  }
+
+  .logo-area {
+    display: flex;
+    align-items: center;
+    gap: 12px;
+  }
+
+  .menu-icon {
+    width: 40px;
+    height: 40px;
+    background: #F8FAFE;
+    border-radius: 32px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    cursor: pointer;
+    border: 1px solid #E2E8F0;
+    flex-shrink: 0;
+  }
+
+  body.dark .menu-icon {
+    background: #1E293B;
+    border-color: #334155;
+  }
+
+  .menu-icon svg {
+    stroke: #0F172A;
+  }
+
+  body.dark .menu-icon svg {
+    stroke: #F1F5F9;
+  }
+
+  .app-title {
+    font-weight: 700;
+    font-size: 20px;
+    letter-spacing: -0.3px;
+    background: linear-gradient(135deg, #2563EB, #60A5FA);
+    -webkit-background-clip: text;
+    background-clip: text;
+    color: transparent;
+    white-space: nowrap;
+  }
+
+  .header-action {
+    display: flex;
+    align-items: center;
+    gap: 8px;
+    flex-shrink: 0;
+  }
+
+  .back-btn {
+    display: flex;
+    align-items: center;
+    gap: 6px;
+    cursor: pointer;
+    color: #0F172A;
+    font-weight: 500;
+    font-size: 14px;
+    border: none;
+    background: none;
+    padding: 4px 8px;
+    border-radius: 8px;
+    flex-shrink: 0;
+  }
+
+  body.dark .back-btn {
+    color: #F1F5F9;
+  }
+
+  .back-btn svg {
+    stroke: #0F172A;
+    width: 20px;
+    height: 20px;
+  }
+
+  body.dark .back-btn svg {
+    stroke: #F1F5F9;
+  }
+
+  .back-btn:active {
+    transform: scale(0.95);
+  }
+
+  .page-container {
+    flex: 1;
+    padding: 20px 18px 30px;
+    overflow-y: auto;
+  }
+
+  .card {
+    background: #FFFFFF;
+    border-radius: 28px;
+    padding: 20px;
+    margin-bottom: 20px;
+    box-shadow: 0 2px 8px rgba(0, 0, 0, 0.04);
+    border: 1px solid #E2E8F0;
+  }
+
+  .section-title {
+    font-size: 18px;
+    font-weight: 700;
+    margin-bottom: 4px;
+    display: flex;
+    align-items: center;
+    gap: 8px;
+  }
+
+  .section-sub {
+    font-size: 14px;
+    color: #64748B;
+    margin-bottom: 16px;
+    line-height: 1.5;
+  }
+
+  body.dark .section-sub {
+    color: #94A3B8;
+  }
+
+  .input-field {
+    width: 100%;
+    padding: 14px 16px;
+    border-radius: 14px;
+    border: 1px solid #E2E8F0;
+    background: #FFFFFF;
+    color: #0F172A;
+    font-size: 14px;
+    margin-bottom: 12px;
+    font-family: inherit;
+  }
+
+  .input-field:focus {
+    outline: none;
+    border-color: #2563EB;
+  }
+
+  .input-field::placeholder {
+    color: #94A3B8;
+  }
+
+  .input-field:disabled {
+    opacity: 0.6;
+    cursor: not-allowed;
+  }
+
+  textarea.input-field {
+    min-height: 100px;
+    resize: vertical;
+    font-family: inherit;
+  }
+
+  .btn-save {
+    width: 100%;
+    padding: 14px;
+    border: none;
+    border-radius: 14px;
+    background: #2563EB;
+    color: white;
+    font-weight: 600;
+    font-size: 15px;
+    cursor: pointer;
+    transition: 0.2s;
+  }
+
+  .btn-save:active {
+    transform: scale(0.97);
+    background: #1D4ED8;
+  }
+
+  .btn-save:disabled {
+    opacity: 0.6;
+    cursor: not-allowed;
+  }
+
+  .btn-sm {
+    padding: 8px 16px;
+    border: none;
+    border-radius: 10px;
+    font-weight: 600;
+    font-size: 13px;
+    cursor: pointer;
+    transition: 0.2s;
+  }
+
+  .btn-sm:active {
+    transform: scale(0.95);
+  }
+
+  .btn-primary {
+    background: #2563EB;
+    color: white;
+  }
+
+  .btn-danger {
+    background: #DC2626;
+    color: white;
+  }
+
+  .btn-secondary {
+    background: #94A3B8;
+    color: white;
+  }
+
+  .form-group {
+    margin-bottom: 16px;
+  }
+
+  .form-group label {
+    display: block;
+    font-size: 13px;
+    font-weight: 600;
+    color: #475569;
+    margin-bottom: 4px;
+  }
+
+  body.dark .form-group label {
+    color: #94A3B8;
+  }
+
+  .form-group .hint {
+    font-size: 12px;
+    color: #94A3B8;
+    margin-top: 4px;
+    line-height: 1.5;
+  }
+
+  .row-2 {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: 12px;
+  }
+
+  .footer-app {
+    text-align: center;
+    padding: 20px;
+    font-size: 12px;
+    color: #64748B;
+    border-top: 1px solid #E2E8F0;
+    flex-shrink: 0;
+  }
+
+  body.dark .footer-app {
+    color: #94A3B8;
+    border-top-color: #1E293B;
+  }
+
+  .murid-item {
+    display: inline-flex;
+    align-items: center;
+    gap: 6px;
+    background: #DBEAFE;
+    color: #2563EB;
+    padding: 4px 10px;
+    border-radius: 40px;
+    font-size: 12px;
+    font-weight: 500;
+    border: 1px solid #93C5FD;
+  }
+
+  body.dark .murid-item {
+    background: #1E293B;
+    color: #60A5FA;
+    border-color: #334155;
+  }
+
+  .murid-item .remove {
+    cursor: pointer;
+    font-weight: 700;
+    font-size: 14px;
+    color: #DC2626;
+  }
+
+  .murid-container {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 6px;
+    padding: 8px 0;
+    min-height: 40px;
+  }
+
+  .info-box {
+    background: #F8FAFE;
+    border: 1px solid #E2E8F0;
+    border-radius: 12px;
+    padding: 12px 14px;
+    margin-top: 8px;
+  }
+
+  body.dark .info-box {
+    background: #1E293B;
+    border-color: #334155;
+  }
+
+  .info-box p {
+    font-size: 13px;
+    color: #64748B;
+    line-height: 1.5;
+  }
+
+  body.dark .info-box p {
+    color: #94A3B8;
+  }
+
+  .badge-status {
+    font-size: 10px;
+    padding: 2px 10px;
+    border-radius: 40px;
+    font-weight: 600;
+    white-space: nowrap;
+  }
+
+  .badge-status.active {
+    background: #34D39920;
+    color: #059669;
+    border: 1px solid #34D39940;
+  }
+
+  .badge-status.inactive {
+    background: #F1F5F9;
+    color: #64748B;
+    border: 1px solid #E2E8F0;
+  }
+
+  body.dark .badge-status.inactive {
+    background: #1E293B;
+    color: #94A3B8;
+    border-color: #334155;
+  }
+
+  .badge-status.premium {
+    background: #2563EB20;
+    color: #2563EB;
+    border: 1px solid #2563EB40;
+  }
+
+  .alert-overlay {
+    position: fixed;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    background: rgba(0, 0, 0, 0.6);
+    backdrop-filter: blur(6px);
+    display: none;
+    justify-content: center;
+    align-items: center;
+    z-index: 200;
+  }
+
+  .alert-box {
+    background: #FFFFFF;
+    width: 300px;
+    border-radius: 28px;
+    padding: 24px 22px;
+    text-align: center;
+    border: 1px solid #E2E8F0;
+    max-width: 90%;
+  }
+
+  body.dark .alert-box {
+    background: #111827;
+    border-color: #1E293B;
+  }
+
+  .alert-box p {
+    font-size: 15px;
+    line-height: 1.6;
+    margin-bottom: 20px;
+    white-space: pre-line;
+  }
+
+  .btn-full {
+    background: #2563EB;
+    border: none;
+    color: white;
+    font-weight: 600;
+    padding: 12px;
+    border-radius: 40px;
+    font-size: 14px;
+    width: 100%;
+    cursor: pointer;
+  }
+
+  .alert-actions {
+    display: flex;
+    gap: 10px;
+    flex-direction: column;
+  }
+
+  .hidden {
+    display: none !important;
+  }
+
+  .toast {
+    position: fixed;
+    top: 70px;
+    left: 50%;
+    transform: translateX(-50%);
+    background: #1E293B;
+    color: white;
+    padding: 12px 24px;
+    border-radius: 14px;
+    font-size: 14px;
+    opacity: 0;
+    pointer-events: none;
+    transition: all 0.3s ease;
+    z-index: 300;
+    border-left: 4px solid #2563EB;
+  }
+
+  .toast.show {
+    opacity: 1;
+    transform: translateX(-50%) translateY(0);
+  }
+
+  .toast.error {
+    border-left-color: #DC2626;
+  }
+
+  .stat-item {
+    display: flex;
+    justify-content: space-between;
+    padding: 10px 0;
+    border-bottom: 1px solid #E2E8F0;
+  }
+
+  body.dark .stat-item {
+    border-bottom-color: #1E293B;
+  }
+
+  .stat-item:last-child {
+    border-bottom: none;
+  }
+
+  .stat-item .stat-label {
+    font-size: 14px;
+    color: #64748B;
+  }
+
+  body.dark .stat-item .stat-label {
+    color: #94A3B8;
+  }
+
+  .stat-item .stat-value {
+    font-size: 14px;
+    font-weight: 600;
+  }
+
+  .stat-detail-item {
+    display: flex;
+    justify-content: space-between;
+    padding: 8px 12px;
+    background: #F8FAFE;
+    border: 1px solid #E2E8F0;
+    border-radius: 8px;
+    margin-bottom: 6px;
+  }
+
+  body.dark .stat-detail-item {
+    background: #1E293B;
+    border-color: #334155;
+  }
+
+  .stat-detail-item .name {
+    font-size: 13px;
+  }
+
+  .stat-detail-item .value {
+    font-size: 13px;
+    font-weight: 500;
+  }
+
+  .blocked-item {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    padding: 10px 14px;
+    background: #F8FAFE;
+    border: 1px solid #E2E8F0;
+    border-radius: 12px;
+    margin-bottom: 8px;
+  }
+
+  body.dark .blocked-item {
+    background: #1E293B;
+    border-color: #334155;
+  }
+
+  .blocked-item .name {
+    font-size: 14px;
+    font-weight: 500;
+  }
+
+  .blocked-item .unblock {
+    color: #DC2626;
+    cursor: pointer;
+    font-size: 12px;
+    font-weight: 600;
+    border: none;
+    background: none;
+  }
+
+  .file-preview {
+    display: flex;
+    align-items: center;
+    gap: 10px;
+    padding: 8px 12px;
+    background: #F1F5F9;
+    border-radius: 10px;
+    margin-top: 8px;
+  }
+
+  body.dark .file-preview {
+    background: #1E293B;
+  }
+
+  .file-preview .name {
+    flex: 1;
+    font-size: 13px;
+    overflow: hidden;
+    text-overflow: ellipsis;
+    white-space: nowrap;
+  }
+
+  .file-preview .remove {
+    color: #DC2626;
+    cursor: pointer;
+    font-weight: 700;
+    font-size: 18px;
+    line-height: 1;
+  }
+
+  .file-upload {
+    border: 2px dashed #E2E8F0;
+    border-radius: 14px;
+    padding: 16px;
+    text-align: center;
+    cursor: pointer;
+    transition: 0.2s;
+    margin-bottom: 12px;
+  }
+
+  body.dark .file-upload {
+    border-color: #334155;
+  }
+
+  .file-upload:active {
+    transform: scale(0.97);
+  }
+
+  .file-upload .icon {
+    display: flex;
+    justify-content: center;
+    margin-bottom: 4px;
+  }
+
+  .file-upload .icon svg {
+    width: 28px;
+    height: 28px;
+    stroke: #94A3B8;
+  }
+
+  .file-upload .text {
+    font-size: 13px;
+    color: #94A3B8;
+  }
+
+  .file-upload.has-file {
+    border-color: #34D399;
+    background: #34D39910;
+  }
+
+  .feature-badge {
+    display: inline-block;
+    padding: 2px 10px;
+    border-radius: 12px;
+    font-size: 10px;
+    font-weight: 600;
+    margin-left: 8px;
+  }
+
+  .feature-badge.active {
+    background: #34D39920;
+    color: #059669;
+  }
+
+  .feature-badge.inactive {
+    background: #F1F5F9;
+    color: #64748B;
+  }
+
+  .edit-disabled {
+    opacity: 0.6;
+    pointer-events: none;
+  }
+
+  .edit-disabled .input-field,
+  .edit-disabled .btn-sm {
+    opacity: 0.6;
+    cursor: not-allowed;
+  }
+
+  .feature-toggle-row {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    padding: 10px 0;
+    border-bottom: 1px solid #E2E8F0;
+  }
+
+  body.dark .feature-toggle-row {
+    border-bottom-color: #1E293B;
+  }
+
+  .feature-toggle-row:last-child {
+    border-bottom: none;
+  }
+
+  .feature-toggle-row .left {
+    display: flex;
+    align-items: center;
+    gap: 10px;
+  }
+
+  .feature-toggle-row .left .icon-sm {
+    width: 28px;
+    height: 28px;
+    border-radius: 8px;
+    background: #F1F5F9;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    flex-shrink: 0;
+  }
+
+  body.dark .feature-toggle-row .left .icon-sm {
+    background: #1E293B;
+  }
+
+  .feature-toggle-row .left .icon-sm svg {
+    width: 16px;
+    height: 16px;
+    stroke: #64748B;
+  }
+
+  .feature-toggle-row .left .name {
+    font-size: 14px;
+    font-weight: 500;
+  }
+
+  .toggle-switch {
+    width: 44px;
+    height: 24px;
+    background: #CBD5E1;
+    border-radius: 12px;
+    position: relative;
+    cursor: pointer;
+    transition: 0.3s;
+    flex-shrink: 0;
+  }
+
+  body.dark .toggle-switch {
+    background: #334155;
+  }
+
+  .toggle-switch.active {
+    background: #2563EB;
+  }
+
+  .toggle-switch .slider {
+    width: 20px;
+    height: 20px;
+    background: white;
+    border-radius: 50%;
+    position: absolute;
+    top: 2px;
+    left: 2px;
+    transition: 0.3s;
+  }
+
+  .toggle-switch.active .slider {
+    left: 22px;
+  }
+
+  .toggle-switch.disabled {
+    opacity: 0.4;
+    cursor: not-allowed;
+  }
+
+  .link-box {
+    background: #F8FAFE;
+    border: 1px solid #E2E8F0;
+    border-radius: 12px;
+    padding: 12px 14px;
+    display: flex;
+    align-items: center;
+    gap: 10px;
+  }
+
+  body.dark .link-box {
+    background: #1E293B;
+    border-color: #334155;
+  }
+
+  .link-box .link-text {
+    flex: 1;
+    font-size: 13px;
+    color: #2563EB;
+    font-weight: 500;
+    word-break: break-all;
+  }
+
+  body.dark .link-box .link-text {
+    color: #60A5FA;
+  }
+
+  .link-box .copy-btn {
+    background: #E2E8F0;
+    border: none;
+    padding: 6px 14px;
+    border-radius: 8px;
+    font-size: 12px;
+    font-weight: 600;
+    cursor: pointer;
+    color: #0F172A;
+    white-space: nowrap;
+    flex-shrink: 0;
+  }
+
+  body.dark .link-box .copy-btn {
+    background: #334155;
+    color: #F1F5F9;
+  }
+
+  .link-box .copy-btn:active {
+    transform: scale(0.95);
+  }
+</style>
+</head>
+<body>
+
+<div class="app-container">
+  <!-- HEADER -->
+  <div class="app-header">
+    <div class="logo-area">
+      <button class="back-btn" onclick="goTo('index.html')">
+        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+          <polyline points="15 18 9 12 15 6"/>
+        </svg>
+        <span>Beranda</span>
+      </button>
+    </div>
+    <span class="app-title">Edit Tugas</span>
+    <div class="header-action">
+      <button class="back-btn" onclick="window.location.reload()">
+        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+          <polyline points="1 4 1 10 7 10"/>
+          <path d="M3.51 15a9 9 0 1 0 2.13-9.36L1 10"/>
+        </svg>
+      </button>
+    </div>
+  </div>
+
+  <!-- PAGE CONTENT -->
+  <div class="page-container">
+    <!-- Loading -->
+    <div id="loadingState" class="card" style="text-align:center;padding:40px;">
+      <div style="font-size:16px;font-weight:500;margin-bottom:8px;">Memuat data tugas...</div>
+      <div style="font-size:13px;color:#94A3B8;">Harap tunggu sebentar</div>
+    </div>
+
+    <!-- Tugas Tidak Ditemukan -->
+    <div id="notFoundState" class="card hidden" style="text-align:center;padding:40px;">
+      <div style="font-size:48px;margin-bottom:12px;">📋</div>
+      <div style="font-size:16px;font-weight:600;margin-bottom:8px;">Tugas Tidak Ditemukan</div>
+      <div style="font-size:13px;color:#94A3B8;margin-bottom:16px;">Kode tugas tidak valid atau sudah dihapus.</div>
+      <button class="btn-save" onclick="goTo('index.html')">Kembali ke Beranda</button>
+    </div>
+
+    <!-- Main Content -->
+    <div id="mainContent" class="hidden">
+      <!-- Info Tugas -->
+      <div class="card">
+        <div class="section-title">
+          <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="#2563EB" stroke-width="1.7" stroke-linecap="round" stroke-linejoin="round">
+            <rect x="2" y="3" width="20" height="14" rx="2" ry="2"/>
+            <line x1="8" y1="21" x2="16" y2="21"/>
+            <line x1="12" y1="17" x2="12" y2="21"/>
+          </svg>
+          Edit Tugas
+        </div>
+        <div class="section-sub" id="tugasInfo">Kode: <span id="tugasKodeDisplay">-</span> | Dibuat: <span id="tugasTanggalDisplay">-</span></div>
+
+        <!-- Link Tugas -->
+        <div style="margin-bottom:16px;">
+          <div style="font-size:13px;font-weight:600;margin-bottom:4px;">Link Tugas:</div>
+          <div class="link-box">
+            <span class="link-text" id="tugasLink">https://...</span>
+            <button class="copy-btn" onclick="copyLink()">Salin</button>
+          </div>
+        </div>
+
+        <!-- Form Edit -->
+        <div class="form-group">
+          <label>Judul Tugas</label>
+          <input type="text" id="editJudul" class="input-field" placeholder="Judul tugas...">
+        </div>
+
+        <div class="form-group">
+          <label>Deskripsi Tugas</label>
+          <textarea id="editDeskripsi" class="input-field" placeholder="Deskripsi tugas..."></textarea>
+        </div>
+
+        <div class="form-group">
+          <label>Upload Soal (Foto)</label>
+          <div class="file-upload" id="fileUpload" onclick="document.getElementById('fileInput').click()">
+            <div class="icon">
+              <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round">
+                <rect x="3" y="3" width="18" height="18" rx="2"/>
+                <circle cx="8.5" cy="8.5" r="1.5"/>
+                <path d="M21 15l-5-5L5 21"/>
+              </svg>
+            </div>
+            <span class="text">Klik untuk upload foto soal</span>
+          </div>
+          <input type="file" id="fileInput" accept="image/*" style="display:none;">
+          <div id="filePreview" class="hidden file-preview">
+            <span class="name" id="fileName">file.jpg</span>
+            <span class="remove" onclick="hapusFile()">×</span>
+          </div>
+          <div id="existingFileInfo" class="hidden" style="font-size:12px;color:#64748B;margin-top:4px;">
+            📷 Foto soal saat ini tersimpan
+          </div>
+        </div>
+
+        <!-- Fitur yang Tidak Bisa Diedit (Hanya Tampil) -->
+        <div style="border-top:1px solid #E2E8F0;padding-top:16px;margin-top:4px;">
+          <div style="display:flex;align-items:center;gap:8px;margin-bottom:12px;">
+            <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="#64748B" stroke-width="1.7" stroke-linecap="round" stroke-linejoin="round">
+              <circle cx="12" cy="12" r="10"/>
+              <polyline points="12 6 12 12 16 14"/>
+            </svg>
+            <span style="font-weight:600;font-size:15px;color:#64748B;">Fitur Hanya Baca (Tidak Dapat Diedit)</span>
+          </div>
+
+          <div style="display:grid;grid-template-columns:1fr 1fr;gap:10px;">
+            <div class="card" style="padding:12px;margin:0;border-radius:12px;">
+              <div style="font-size:12px;color:#94A3B8;">Durasi</div>
+              <div style="font-weight:600;" id="editDurasiDisplay">- menit</div>
+            </div>
+            <div class="card" style="padding:12px;margin:0;border-radius:12px;">
+              <div style="font-size:12px;color:#94A3B8;">Hapus Otomatis</div>
+              <div style="font-weight:600;" id="editHapusDisplay">- hari</div>
+            </div>
+          </div>
+
+          <div class="card" style="padding:12px;margin:8px 0 0;border-radius:12px;">
+            <div style="font-size:12px;color:#94A3B8;">Jadwal</div>
+            <div style="font-weight:600;" id="editJadwalDisplay">Tidak diatur</div>
+          </div>
+        </div>
+
+        <!-- Fitur yang Bisa Diedit (Toggle) -->
+        <div style="border-top:1px solid #E2E8F0;padding-top:16px;margin-top:16px;">
+          <div style="display:flex;align-items:center;gap:8px;margin-bottom:12px;">
+            <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="#2563EB" stroke-width="1.7" stroke-linecap="round" stroke-linejoin="round">
+              <polygon points="12 2 15.09 8.26 22 9.27 17 14.14 18.18 21.02 12 17.77 5.82 21.02 7 14.14 2 9.27 8.91 8.26 12 2"/>
+            </svg>
+            <span style="font-weight:600;font-size:15px;">Fitur yang Dapat Diedit</span>
+          </div>
+
+          <!-- Daftar Murid -->
+          <div class="feature-toggle-row">
+            <div class="left">
+              <div class="icon-sm">
+                <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.7" stroke-linecap="round" stroke-linejoin="round">
+                  <path d="M17 21v-2a4 4 0 0 0-4-4H5a4 4 0 0 0-4 4v2"/>
+                  <circle cx="9" cy="7" r="4"/>
+                  <path d="M23 21v-2a4 4 0 0 0-3-3.87"/>
+                  <path d="M16 3.13a4 4 0 0 1 0 7.75"/>
+                </svg>
+              </div>
+              <span class="name">Daftar Murid</span>
+              <span class="feature-badge" id="muridBadge">Tidak Aktif</span>
+            </div>
+            <div class="toggle-switch" id="muridToggle" onclick="toggleFeature('murid')">
+              <div class="slider"></div>
+            </div>
+          </div>
+
+          <!-- Daftar Murid Container -->
+          <div id="muridSection" class="hidden" style="padding:8px 0 12px;">
+            <div style="display:flex;gap:8px;margin-bottom:8px;">
+              <input type="text" id="editInputMurid" class="input-field" placeholder="Tambah nama murid" style="flex:1;padding:10px 12px;margin-bottom:0;">
+              <button class="btn-sm btn-primary" onclick="tambahMuridEdit()">Tambah</button>
+            </div>
+            <div class="murid-container" id="editDaftarMuridContainer"></div>
+            <div id="editMuridCounter" style="font-size:12px;color:#94A3B8;margin-top:4px;">0 murid</div>
+          </div>
+
+          <!-- Blokir Murid -->
+          <div class="feature-toggle-row">
+            <div class="left">
+              <div class="icon-sm">
+                <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.7" stroke-linecap="round" stroke-linejoin="round">
+                  <circle cx="12" cy="12" r="10"/>
+                  <line x1="4.93" y1="4.93" x2="19.07" y2="19.07"/>
+                </svg>
+              </div>
+              <span class="name">Blokir Murid</span>
+              <span class="feature-badge" id="blokirBadge">Tidak Aktif</span>
+            </div>
+            <div class="toggle-switch" id="blokirToggle" onclick="toggleFeature('blokir')">
+              <div class="slider"></div>
+            </div>
+          </div>
+
+          <!-- Blokir Murid Container -->
+          <div id="blokirSection" class="hidden" style="padding:8px 0 12px;">
+            <div style="display:flex;gap:8px;margin-bottom:8px;">
+              <input type="text" id="editInputBlokir" class="input-field" placeholder="Nama murid yang diblokir" style="flex:1;padding:10px 12px;margin-bottom:0;">
+              <button class="btn-sm btn-danger" onclick="tambahBlokirEdit()">Blokir</button>
+            </div>
+            <div id="editDaftarBlokirContainer"></div>
+          </div>
+
+          <!-- Statistik -->
+          <div class="feature-toggle-row">
+            <div class="left">
+              <div class="icon-sm">
+                <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.7" stroke-linecap="round" stroke-linejoin="round">
+                  <line x1="18" y1="20" x2="18" y2="10"/>
+                  <line x1="12" y1="20" x2="12" y2="4"/>
+                  <line x1="6" y1="20" x2="6" y2="14"/>
+                </svg>
+              </div>
+              <span class="name">Statistik</span>
+              <span class="feature-badge" id="statistikBadge">Tidak Aktif</span>
+            </div>
+            <div class="toggle-switch" id="statistikToggle" onclick="toggleFeature('statistik')">
+              <div class="slider"></div>
+            </div>
+          </div>
+
+          <!-- Statistik Container -->
+          <div id="statistikSection" class="hidden" style="padding:8px 0 12px;">
+            <div id="statDasar">
+              <div class="stat-item">
+                <span class="stat-label">Total Jawaban</span>
+                <span class="stat-value" id="statTotal">0</span>
+              </div>
+              <div class="stat-item">
+                <span class="stat-label">Selesai Tepat Waktu</span>
+                <span class="stat-value" id="statSelesai">0</span>
+              </div>
+              <div class="stat-item">
+                <span class="stat-label">Terlambat / Waktu Habis</span>
+                <span class="stat-value" id="statTerlambat">0</span>
+              </div>
+            </div>
+            <div id="statPremium" class="hidden" style="margin-top:12px;">
+              <div class="stat-item">
+                <span class="stat-label">Rata-rata Waktu Pengerjaan</span>
+                <span class="stat-value" id="statRata">0 menit</span>
+              </div>
+              <div class="stat-item">
+                <span class="stat-label">Nilai Rata-rata</span>
+                <span class="stat-value" id="statNilai">-</span>
+              </div>
+              <div style="margin-top:12px;">
+                <div style="font-size:13px;font-weight:600;margin-bottom:8px;">Detail Jawaban Murid</div>
+                <div id="statDetailContainer"></div>
+              </div>
+            </div>
+            <div class="info-box">
+              <p id="statInfoBox">Statistik dasar tersedia untuk semua user. Statistik lengkap hanya untuk Premium.</p>
+            </div>
+          </div>
+
+          <!-- Laporan -->
+          <div class="feature-toggle-row">
+            <div class="left">
+              <div class="icon-sm">
+                <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.7" stroke-linecap="round" stroke-linejoin="round">
+                  <path d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8z"/>
+                  <polyline points="14 2 14 8 20 8"/>
+                  <line x1="16" y1="13" x2="8" y2="13"/>
+                  <line x1="16" y1="17" x2="8" y2="17"/>
+                  <polyline points="10 9 9 9 8 9"/>
+                </svg>
+              </div>
+              <span class="name">Laporan</span>
+              <span class="feature-badge" id="laporanBadge">Tidak Aktif</span>
+            </div>
+            <div class="toggle-switch" id="laporanToggle" onclick="toggleFeature('laporan')">
+              <div class="slider"></div>
+            </div>
+          </div>
+
+          <!-- Laporan Container -->
+          <div id="laporanSection" class="hidden" style="padding:8px 0 12px;">
+            <div id="laporanContainer">
+              <div class="info-box">
+                <p>Belum ada data laporan.</p>
+              </div>
+            </div>
+          </div>
+        </div>
+
+        <!-- Action Buttons -->
+        <div style="display:flex;gap:10px;margin-top:16px;">
+          <button class="btn-save" onclick="simpanPerubahan()" style="flex:1;">Simpan Perubahan</button>
+          <button class="btn-save btn-secondary" onclick="goTo('index.html')" style="flex:0.5;">Batal</button>
+        </div>
+
+        <button class="btn-save" style="margin-top:10px;background:#DC2626;" onclick="hapusTugas()">Hapus Tugas</button>
+      </div>
+    </div>
+  </div>
+
+  <div class="footer-app">
+    <p>Star Platform | Star Tools 2026</p>
+  </div>
+</div>
+
+<!-- ALERT & TOAST -->
+<div id="globalAlert" class="alert-overlay">
+  <div class="alert-box">
+    <p id="alertMessage">Pemberitahuan</p>
+    <div class="alert-actions">
+      <button class="btn-full" onclick="closeAlertGlobal()" id="alertBtnOk">Mengerti</button>
+    </div>
+  </div>
+</div>
+
+<div id="toast" class="toast"></div>
+
+<script>
+const firebaseConfig = {
+  apiKey: "AIzaSyDgr_nHqvpMsiG4lBkYckzxRErkskXj_6E",
+  authDomain: "laporanstartools-c18b2.firebaseapp.com",
+  databaseURL: "https://laporanstartools-c18b2-default-rtdb.asia-southeast1.firebasedatabase.app",
+  projectId: "laporanstartools-c18b2",
+};
+
+if (!firebase.apps.length) {
+  firebase.initializeApp(firebaseConfig);
+}
+const db = firebase.database();
+
+let currentUser = null;
+let tugasData = null;
+let tugasKode = null;
+let isPremium = false;
+let trialActive = false;
+let trialExpired = false;
+let daftarMurid = [];
+let daftarBlokir = [];
+let fileBase64 = null;
+let existingFileUrl = null;
+
+// ======================== AUTH ========================
+firebase.auth().onAuthStateChanged(function(user) {
+  if (user) {
+    currentUser = user;
+    loadPremiumStatus();
+    loadTrialStatus();
+    loadTugas();
+  } else {
+    window.location.href = 'login.html';
+  }
+});
+
+// ======================== THEME ========================
+if (localStorage.getItem('theme') === 'dark') {
+  document.body.classList.add('dark');
+}
+
+// ======================== PREMIUM & TRIAL ========================
+function loadPremiumStatus() {
+  if (!currentUser) return;
+  db.ref('users/' + currentUser.uid + '/premium').on('value', function(snap) {
+    isPremium = snap.val() === true;
+  });
+}
+
+function loadTrialStatus() {
+  if (!currentUser) return;
+  db.ref('users/' + currentUser.uid + '/trial').once('value').then(function(snap) {
+    var data = snap.val();
+    if (data && data.active === true) {
+      trialActive = true;
+      var start = new Date(data.start_date);
+      var now = new Date();
+      var diffDays = (now - start) / (1000 * 60 * 60 * 24);
+      if (diffDays > 7) {
+        trialExpired = true;
+        trialActive = false;
+      }
+    }
+    updateUI();
+  });
+}
+
+function isPremiumActive() {
+  return isPremium || (trialActive && !trialExpired);
+}
+
+// ======================== LOAD TUGAS ========================
+function loadTugas() {
+  var urlParams = new URLSearchParams(window.location.search);
+  tugasKode = urlParams.get('kode');
+
+  if (!tugasKode) {
+    document.getElementById('loadingState').classList.add('hidden');
+    document.getElementById('notFoundState').classList.remove('hidden');
+    return;
+  }
+
+  db.ref('tugas/' + tugasKode).once('value').then(function(snap) {
+    var data = snap.val();
+    if (!data) {
+      document.getElementById('loadingState').classList.add('hidden');
+      document.getElementById('notFoundState').classList.remove('hidden');
+      return;
+    }
+
+    // Cek apakah user adalah pembuat
+    if (data.pembuat_id !== currentUser.uid) {
+      showAlert('Anda tidak memiliki akses untuk mengedit tugas ini!');
+      document.getElementById('loadingState').classList.add('hidden');
+      document.getElementById('notFoundState').classList.remove('hidden');
+      return;
+    }
+
+    tugasData = data;
+    tampilkanDataTugas();
+    document.getElementById('loadingState').classList.add('hidden');
+    document.getElementById('mainContent').classList.remove('hidden');
+  }).catch(function(err) {
+    showAlert('Gagal memuat data: ' + err.message);
+    document.getElementById('loadingState').classList.add('hidden');
+    document.getElementById('notFoundState').classList.remove('hidden');
+  });
+}
+
+// ======================== TAMPILKAN DATA TUGAS ========================
+function tampilkanDataTugas() {
+  if (!tugasData) return;
+
+  // Info dasar
+  document.getElementById('tugasKodeDisplay').innerText = tugasData.kode;
+  var tanggal = new Date(tugasData.created_at);
+  document.getElementById('tugasTanggalDisplay').innerText = tanggal.toLocaleDateString('id-ID') + ' ' + tanggal.toLocaleTimeString('id-ID');
+
+  // Link
+  var link = window.location.origin + '/demo-stools/tugas.html?kode=' + tugasData.kode;
+  document.getElementById('tugasLink').innerText = link;
+
+  // Form
+  document.getElementById('editJudul').value = tugasData.judul || '';
+  document.getElementById('editDeskripsi').value = tugasData.deskripsi || '';
+
+  // Durasi (readonly)
+  document.getElementById('editDurasiDisplay').innerText = (tugasData.durasi || 0) + ' menit';
+
+  // Hapus otomatis (readonly)
+  document.getElementById('editHapusDisplay').innerText = (tugasData.waktu_hapus || 1) + ' hari';
+
+  // Jadwal (readonly)
+  if (tugasData.jadwal && tugasData.jadwal.buka && tugasData.jadwal.tutup) {
+    var buka = new Date(tugasData.jadwal.buka);
+    var tutup = new Date(tugasData.jadwal.tutup);
+    document.getElementById('editJadwalDisplay').innerText = buka.toLocaleString('id-ID') + ' - ' + tutup.toLocaleString('id-ID');
+  } else {
+    document.getElementById('editJadwalDisplay').innerText = 'Tidak diatur';
+  }
+
+  // Foto soal
+  if (tugasData.foto_soal) {
+    existingFileUrl = tugasData.foto_soal;
+    document.getElementById('existingFileInfo').classList.remove('hidden');
+  }
+
+  // Fitur yang bisa diedit
+  var fitur = tugasData.fitur || {};
+
+  // Daftar Murid
+  if (fitur.murid) {
+    document.getElementById('muridToggle').classList.add('active');
+    document.getElementById('muridBadge').innerText = 'Aktif';
+    document.getElementById('muridBadge').className = 'feature-badge active';
+    document.getElementById('muridSection').classList.remove('hidden');
+
+    if (tugasData.daftar_murid) {
+      daftarMurid = Object.keys(tugasData.daftar_murid);
+    }
+    renderDaftarMuridEdit();
+  } else {
+    document.getElementById('muridToggle').classList.remove('active');
+    document.getElementById('muridBadge').innerText = 'Tidak Aktif';
+    document.getElementById('muridBadge').className = 'feature-badge inactive';
+    document.getElementById('muridSection').classList.add('hidden');
+  }
+
+  // Blokir Murid
+  if (fitur.blokir) {
+    document.getElementById('blokirToggle').classList.add('active');
+    document.getElementById('blokirBadge').innerText = 'Aktif';
+    document.getElementById('blokirBadge').className = 'feature-badge active';
+    document.getElementById('blokirSection').classList.remove('hidden');
+
+    if (tugasData.blokir) {
+      daftarBlokir = tugasData.blokir;
+    }
+    renderDaftarBlokirEdit();
+  } else {
+    document.getElementById('blokirToggle').classList.remove('active');
+    document.getElementById('blokirBadge').innerText = 'Tidak Aktif';
+    document.getElementById('blokirBadge').className = 'feature-badge inactive';
+    document.getElementById('blokirSection').classList.add('hidden');
+  }
+
+  // Statistik
+  if (fitur.statistik) {
+    document.getElementById('statistikToggle').classList.add('active');
+    document.getElementById('statistikBadge').innerText = 'Aktif';
+    document.getElementById('statistikBadge').className = 'feature-badge active';
+    document.getElementById('statistikSection').classList.remove('hidden');
+    loadStatistik();
+  } else {
+    document.getElementById('statistikToggle').classList.remove('active');
+    document.getElementById('statistikBadge').innerText = 'Tidak Aktif';
+    document.getElementById('statistikBadge').className = 'feature-badge inactive';
+    document.getElementById('statistikSection').classList.add('hidden');
+  }
+
+  // Laporan
+  if (fitur.laporan) {
+    document.getElementById('laporanToggle').classList.add('active');
+    document.getElementById('laporanBadge').innerText = 'Aktif';
+    document.getElementById('laporanBadge').className = 'feature-badge active';
+    document.getElementById('laporanSection').classList.remove('hidden');
+    loadLaporan();
+  } else {
+    document.getElementById('laporanToggle').classList.remove('active');
+    document.getElementById('laporanBadge').innerText = 'Tidak Aktif';
+    document.getElementById('laporanBadge').className = 'feature-badge inactive';
+    document.getElementById('laporanSection').classList.add('hidden');
+  }
+
+  updateUI();
+}
+
+// ======================== TOGGLE FEATURE ========================
+function toggleFeature(name) {
+  var isActive = isPremiumActive();
+
+  if (name === 'murid') {
+    var toggle = document.getElementById('muridToggle');
+    var isCurrentlyActive = toggle.classList.contains('active');
+
+    if (!isCurrentlyActive && !isActive && daftarMurid.length > 0) {
+      showAlert('Fitur Daftar Murid hanya tersedia untuk Premium!');
+      return;
+    }
+
+    if (!isCurrentlyActive) {
+      toggle.classList.add('active');
+      document.getElementById('muridBadge').innerText = 'Aktif';
+      document.getElementById('muridBadge').className = 'feature-badge active';
+      document.getElementById('muridSection').classList.remove('hidden');
+    } else {
+      toggle.classList.remove('active');
+      document.getElementById('muridBadge').innerText = 'Tidak Aktif';
+      document.getElementById('muridBadge').className = 'feature-badge inactive';
+      document.getElementById('muridSection').classList.add('hidden');
+      daftarMurid = [];
+      renderDaftarMuridEdit();
+    }
+  }
+
+  if (name === 'blokir') {
+    var toggle = document.getElementById('blokirToggle');
+    var isCurrentlyActive = toggle.classList.contains('active');
+
+    if (!isCurrentlyActive && !isActive && daftarBlokir.length > 0) {
+      showAlert('Fitur Blokir Murid hanya tersedia untuk Premium!');
+      return;
+    }
+
+    if (!isCurrentlyActive) {
+      toggle.classList.add('active');
+      document.getElementById('blokirBadge').innerText = 'Aktif';
+      document.getElementById('blokirBadge').className = 'feature-badge active';
+      document.getElementById('blokirSection').classList.remove('hidden');
+    } else {
+      toggle.classList.remove('active');
+      document.getElementById('blokirBadge').innerText = 'Tidak Aktif';
+      document.getElementById('blokirBadge').className = 'feature-badge inactive';
+      document.getElementById('blokirSection').classList.add('hidden');
+      daftarBlokir = [];
+      renderDaftarBlokirEdit();
+    }
+  }
+
+  if (name === 'statistik') {
+    var toggle = document.getElementById('statistikToggle');
+    var isCurrentlyActive = toggle.classList.contains('active');
+
+    if (!isCurrentlyActive) {
+      toggle.classList.add('active');
+      document.getElementById('statistikBadge').innerText = 'Aktif';
+      document.getElementById('statistikBadge').className = 'feature-badge active';
+      document.getElementById('statistikSection').classList.remove('hidden');
+      loadStatistik();
+    } else {
+      toggle.classList.remove('active');
+      document.getElementById('statistikBadge').innerText = 'Tidak Aktif';
+      document.getElementById('statistikBadge').className = 'feature-badge inactive';
+      document.getElementById('statistikSection').classList.add('hidden');
+    }
+  }
+
+  if (name === 'laporan') {
+    var toggle = document.getElementById('laporanToggle');
+    var isCurrentlyActive = toggle.classList.contains('active');
+
+    if (!isCurrentlyActive) {
+      toggle.classList.add('active');
+      document.getElementById('laporanBadge').innerText = 'Aktif';
+      document.getElementById('laporanBadge').className = 'feature-badge active';
+      document.getElementById('laporanSection').classList.remove('hidden');
+      loadLaporan();
+    } else {
+      toggle.classList.remove('active');
+      document.getElementById('laporanBadge').innerText = 'Tidak Aktif';
+      document.getElementById('laporanBadge').className = 'feature-badge inactive';
+      document.getElementById('laporanSection').classList.add('hidden');
+    }
+  }
+}
+
+// ======================== DAFTAR MURID EDIT ========================
+function tambahMuridEdit() {
+  var isActive = isPremiumActive();
+  var maxMurid = isActive ? 999 : 20;
+
+  if (!document.getElementById('muridToggle').classList.contains('active')) {
+    showAlert('Aktifkan fitur Daftar Murid terlebih dahulu!');
+    return;
+  }
+
+  if (daftarMurid.length >= maxMurid) {
+    showAlert('Maksimal ' + maxMurid + ' murid' + (isActive ? ' (Premium: Bebas)' : ' (Standar)'));
+    return;
+  }
+
+  var input = document.getElementById('editInputMurid');
+  var nama = input.value.trim();
+  if (!nama) return;
+  if (daftarMurid.includes(nama)) {
+    showToast('Nama sudah ada di daftar!', 'error');
+    return;
+  }
+  daftarMurid.push(nama);
+  input.value = '';
+  renderDaftarMuridEdit();
+}
+
+function hapusMuridEdit(index) {
+  daftarMurid.splice(index, 1);
+  renderDaftarMuridEdit();
+}
+
+function renderDaftarMuridEdit() {
+  var container = document.getElementById('editDaftarMuridContainer');
+  var counter = document.getElementById('editMuridCounter');
+
+  container.innerHTML = '';
+  if (daftarMurid.length === 0) {
+    container.innerHTML = '<span style="font-size:12px;color:#94A3B8;">Belum ada murid yang terdaftar</span>';
+  } else {
+    daftarMurid.forEach(function(nama, i) {
+      var el = document.createElement('span');
+      el.className = 'murid-item';
+      el.innerHTML = nama + ' <span class="remove" onclick="hapusMuridEdit(' + i + ')">×</span>';
+      container.appendChild(el);
+    });
+  }
+
+  counter.innerText = daftarMurid.length + ' murid';
+}
+
+// ======================== DAFTAR BLOKIR EDIT ========================
+function tambahBlokirEdit() {
+  var isActive = isPremiumActive();
+  var maxBlokir = isActive ? 999 : 5;
+
+  if (!document.getElementById('blokirToggle').classList.contains('active')) {
+    showAlert('Aktifkan fitur Blokir Murid terlebih dahulu!');
+    return;
+  }
+
+  if (daftarBlokir.length >= maxBlokir) {
+    showAlert('Maksimal ' + maxBlokir + ' murid diblokir' + (isActive ? ' (Premium: Bebas)' : ' (Standar)'));
+    return;
+  }
+
+  var input = document.getElementById('editInputBlokir');
+  var nama = input.value.trim();
+  if (!nama) return;
+  if (daftarBlokir.includes(nama)) {
+    showToast('Murid sudah diblokir!', 'error');
+    return;
+  }
+  daftarBlokir.push(nama);
+  input.value = '';
+  renderDaftarBlokirEdit();
+}
+
+function hapusBlokirEdit(index) {
+  daftarBlokir.splice(index, 1);
+  renderDaftarBlokirEdit();
+}
+
+function renderDaftarBlokirEdit() {
+  var container = document.getElementById('editDaftarBlokirContainer');
+  container.innerHTML = '';
+  if (daftarBlokir.length === 0) {
+    container.innerHTML = '<span style="font-size:12px;color:#94A3B8;">Belum ada murid yang diblokir</span>';
+    return;
+  }
+  daftarBlokir.forEach(function(nama, i) {
+    var el = document.createElement('div');
+    el.className = 'blocked-item';
+    el.innerHTML = '<span class="name">' + nama + '</span><button class="unblock" onclick="hapusBlokirEdit(' + i + ')">Buka Blokir</button>';
+    container.appendChild(el);
+  });
+}
+
+// ======================== STATISTIK ========================
+function loadStatistik() {
+  if (!tugasKode) return;
+
+  var isActive = isPremiumActive();
+
+  db.ref('tugas/' + tugasKode + '/jawaban').once('value').then(function(snap) {
+    var data = snap.val();
+    if (!data) {
+      document.getElementById('statTotal').innerText = '0';
+      document.getElementById('statSelesai').innerText = '0';
+      document.getElementById('statTerlambat').innerText = '0';
+      document.getElementById('statRata').innerText = '0 menit';
+      document.getElementById('statNilai').innerText = '-';
+      document.getElementById('statDetailContainer').innerHTML = '<p style="font-size:13px;color:#94A3B8;">Belum ada data.</p>';
+      return;
+    }
+
+    var total = 0;
+    var selesai = 0;
+    var terlambat = 0;
+    var totalWaktu = 0;
+    var totalNilai = 0;
+    var nilaiCount = 0;
+
+    Object.keys(data).forEach(function(key) {
+      var item = data[key];
+      total++;
+      if (item.status === 'selesai') {
+        selesai++;
+      } else if (item.status === 'habis' || item.status === 'terlambat') {
+        terlambat++;
+      }
+
+      if (item.waktu_selesai && item.waktu_mulai) {
+        var mulai = new Date(item.waktu_mulai);
+        var selesaiWaktu = new Date(item.waktu_selesai);
+        var diff = (selesaiWaktu - mulai) / 1000 / 60;
+        totalWaktu += diff;
+      }
+
+      if (item.nilai !== undefined && item.nilai !== null) {
+        totalNilai += item.nilai;
+        nilaiCount++;
+      }
+    });
+
+    document.getElementById('statTotal').innerText = total;
+    document.getElementById('statSelesai').innerText = selesai;
+    document.getElementById('statTerlambat').innerText = terlambat;
+
+    if (isActive) {
+      var rataWaktu = total > 0 ? Math.round(totalWaktu / total) : 0;
+      var rataNilai = nilaiCount > 0 ? Math.round(totalNilai / nilaiCount) : '-';
+
+      document.getElementById('statRata').innerText = rataWaktu + ' menit';
+      document.getElementById('statNilai').innerText = rataNilai;
+
+      var detailContainer = document.getElementById('statDetailContainer');
+      var detailHtml = '';
+      Object.keys(data).forEach(function(key) {
+        var item = data[key];
+        var status = item.status === 'selesai' ? '✅ Selesai' : '⏰ Habis';
+        detailHtml += '<div class="stat-detail-item">';
+        detailHtml += '<span class="name">' + (item.nama || 'Tidak Diketahui') + '</span>';
+        detailHtml += '<span class="value">' + status + (item.nilai !== undefined ? ' | Nilai: ' + item.nilai : '') + '</span>';
+        detailHtml += '</div>';
+      });
+      detailContainer.innerHTML = detailHtml || '<p style="font-size:13px;color:#94A3B8;">Belum ada detail.</p>';
+
+      document.getElementById('statPremium').classList.remove('hidden');
+      document.getElementById('statInfoBox').innerHTML = '<p>Statistik lengkap tersedia (Premium).</p>';
+    } else {
+      document.getElementById('statPremium').classList.add('hidden');
+      document.getElementById('statInfoBox').innerHTML = '<p>Statistik dasar tersedia untuk semua user. Statistik lengkap hanya untuk Premium.</p>';
+    }
+  });
+}
+
+// ======================== LAPORAN ========================
+function loadLaporan() {
+  if (!tugasKode) return;
+
+  db.ref('tugas/' + tugasKode + '/jawaban').once('value').then(function(snap) {
+    var data = snap.val();
+    var container = document.getElementById('laporanContainer');
+    container.innerHTML = '';
+
+    if (!data) {
+      container.innerHTML = '<div class="info-box"><p>Belum ada data laporan.</p></div>';
+      return;
+    }
+
+    var html = '';
+    Object.keys(data).forEach(function(key) {
+      var item = data[key];
+      var status = item.status === 'selesai' ? 'Selesai' : 'Waktu Habis';
+      html += '<div class="blocked-item" style="flex-direction:column;align-items:flex-start;gap:4px;">';
+      html += '<div style="display:flex;justify-content:space-between;width:100%;">';
+      html += '<span class="name">' + (item.nama || 'Tidak Diketahui') + '</span>';
+      html += '<span style="font-size:12px;font-weight:600;color:' + (item.status === 'selesai' ? '#059669' : '#DC2626') + ';">' + status + '</span>';
+      html += '</div>';
+      if (item.jawaban) {
+        html += '<div style="font-size:13px;color:#64748B;width:100%;">' + item.jawaban.substring(0, 100) + (item.jawaban.length > 100 ? '...' : '') + '</div>';
+      }
+      if (item.foto) {
+        html += '<div style="font-size:12px;color:#2563EB;cursor:pointer;" onclick="window.open(\'' + item.foto + '\')">Lihat Foto</div>';
+      }
+      if (item.waktu_selesai) {
+        var date = new Date(item.waktu_selesai);
+        html += '<div style="font-size:11px;color:#94A3B8;">' + date.toLocaleString('id-ID') + '</div>';
+      }
+      html += '</div>';
+    });
+
+    container.innerHTML = html;
+  });
+}
+
+// ======================== FILE UPLOAD ========================
+document.getElementById('fileInput').addEventListener('change', function(e) {
+  var file = e.target.files[0];
+  if (!file) return;
+  if (file.size > 5 * 1024 * 1024) {
+    showToast('File maksimal 5MB!', 'error');
+    this.value = '';
+    return;
+  }
+
+  var reader = new FileReader();
+  reader.onload = function(event) {
+    fileBase64 = event.target.result;
+    document.getElementById('fileUpload').classList.add('has-file');
+    document.getElementById('filePreview').classList.remove('hidden');
+    document.getElementById('fileName').innerText = file.name;
+    document.getElementById('existingFileInfo').classList.add('hidden');
+  };
+  reader.readAsDataURL(file);
+});
+
+function hapusFile() {
+  fileBase64 = null;
+  document.getElementById('fileInput').value = '';
+  document.getElementById('fileUpload').classList.remove('has-file');
+  document.getElementById('filePreview').classList.add('hidden');
+  if (existingFileUrl) {
+    document.getElementById('existingFileInfo').classList.remove('hidden');
+  }
+}
+
+// ======================== COPY LINK ========================
+function copyLink() {
+  var linkText = document.getElementById('tugasLink').innerText;
+  navigator.clipboard.writeText(linkText).then(function() {
+    showToast('Link berhasil disalin!');
+  }).catch(function() {
+    var ta = document.createElement('textarea');
+    ta.value = linkText;
+    document.body.appendChild(ta);
+    ta.select();
+    document.execCommand('copy');
+    document.body.removeChild(ta);
+    showToast('Link berhasil disalin!');
+  });
+}
+
+// ======================== SIMPAN PERUBAHAN ========================
+function simpanPerubahan() {
+  if (!currentUser || !tugasData) {
+    showAlert('Data tidak valid!');
+    return;
+  }
+
+  var judul = document.getElementById('editJudul').value.trim();
+  var deskripsi = document.getElementById('editDeskripsi').value.trim();
+
+  if (!judul) {
+    showAlert('Judul tugas wajib diisi!');
+    return;
+  }
+
+  var updates = {
+    judul: judul,
+    deskripsi: deskripsi || 'Tidak ada deskripsi'
+  };
+
+  // Update foto jika ada
+  if (fileBase64) {
+    updates.foto_soal = fileBase64;
+  } else if (!existingFileUrl) {
+    updates.foto_soal = null;
+  }
+
+  // Update fitur
+  var fitur = {
+    jadwal: tugasData.fitur && tugasData.fitur.jadwal || false,
+    murid: document.getElementById('muridToggle').classList.contains('active'),
+    blokir: document.getElementById('blokirToggle').classList.contains('active'),
+    statistik: document.getElementById('statistikToggle').classList.contains('active'),
+    hapus: tugasData.fitur && tugasData.fitur.hapus || false,
+    laporan: document.getElementById('laporanToggle').classList.contains('active')
+  };
+  updates.fitur = fitur;
+
+  // Update daftar murid
+  if (fitur.murid && daftarMurid.length > 0) {
+    updates.daftar_murid = {};
+    daftarMurid.forEach(function(nama) {
+      updates.daftar_murid[nama] = { status: 'belum' };
+    });
+  } else {
+    updates.daftar_murid = null;
+  }
+
+  // Update blokir
+  if (fitur.blokir && daftarBlokir.length > 0) {
+    updates.blokir = daftarBlokir;
+  } else {
+    updates.blokir = null;
+  }
+
+  db.ref('tugas/' + tugasKode).update(updates).then(function() {
+    showToast('Perubahan berhasil disimpan!');
+    // Reload data
+    loadTugas();
+  }).catch(function(err) {
+    showAlert('Gagal menyimpan perubahan: ' + err.message);
+  });
+}
+
+// ======================== HAPUS TUGAS ========================
+function hapusTugas() {
+  if (!confirm('Apakah Anda yakin ingin menghapus tugas ini? Tindakan ini tidak dapat dibatalkan!')) {
+    return;
+  }
+
+  if (!currentUser || !tugasData) {
+    showAlert('Data tidak valid!');
+    return;
+  }
+
+  db.ref('tugas/' + tugasKode).remove().then(function() {
+    showToast('Tugas berhasil dihapus!');
+    setTimeout(function() {
+      window.location.href = 'index.html';
+    }, 1000);
+  }).catch(function(err) {
+    showAlert('Gagal menghapus tugas: ' + err.message);
+  });
+}
+
+// ======================== TOAST & ALERT ========================
+function showToast(message, type) {
+  var toast = document.getElementById('toast');
+  toast.innerText = message;
+  toast.className = 'toast show';
+  if (type === 'error') toast.classList.add('error');
+  clearTimeout(toast._timer);
+  toast._timer = setTimeout(function() {
+    toast.classList.remove('show');
+  }, 3000);
+}
+
+function showAlert(message) {
+  document.getElementById('alertMessage').innerText = message;
+  document.getElementById('globalAlert').style.display = 'flex';
+}
+
+function closeAlertGlobal() {
+  document.getElementById('globalAlert').style.display = 'none';
+}
+
+function goTo(page) {
+  window.location.href = page;
+}
+
+function updateUI() {
+  // Update UI jika diperlukan
+}
+
+// ======================== KEYBOARD ========================
+document.addEventListener('keydown', function(e) {
+  if (e.key === 'Escape') {
+    closeAlertGlobal();
+  }
+});
+</script>
+
+</body>
+</html>
