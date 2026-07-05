@@ -76,7 +76,6 @@
   body.dark .header .back {
     color: #60a5fa;
   }
-
   body.dark .header .back svg {
     stroke: #60a5fa;
   }
@@ -86,40 +85,35 @@
     border-radius: 12px;
     padding: 16px;
     margin-bottom: 12px;
+    box-shadow: 0 1px 3px rgba(0,0,0,0.04);
   }
 
   body.dark .card {
     background: #1a1a1a;
   }
 
-  .card .label {
-    font-size: 12px;
+  .card-title {
+    font-size: 13px;
     font-weight: 600;
     color: #888;
-    margin-bottom: 4px;
+    margin-bottom: 10px;
+    display: flex;
+    align-items: center;
+    gap: 6px;
   }
 
-  body.dark .card .label {
+  body.dark .card-title {
     color: #9ca3af;
   }
 
-  .card .label svg {
-    width: 14px;
-    height: 14px;
+  .card-title svg {
+    width: 16px;
+    height: 16px;
     stroke: #888;
-    display: inline;
-    vertical-align: middle;
-    margin-right: 4px;
   }
 
-  body.dark .card .label svg {
+  body.dark .card-title svg {
     stroke: #9ca3af;
-  }
-
-  .card .kode {
-    font-size: 12px;
-    color: #888;
-    margin-bottom: 8px;
   }
 
   input, textarea {
@@ -145,23 +139,95 @@
   }
 
   textarea {
-    min-height: 80px;
+    min-height: 70px;
     resize: vertical;
   }
 
   input:disabled {
-    opacity: 0.6;
+    opacity: 0.5;
     cursor: not-allowed;
+  }
+
+  .input-group {
+    margin-bottom: 10px;
+  }
+
+  .input-group label {
+    display: block;
+    font-size: 12px;
+    font-weight: 500;
+    color: #888;
+    margin-bottom: 4px;
+  }
+
+  body.dark .input-group label {
+    color: #9ca3af;
+  }
+
+  .link-box {
+    display: flex;
+    align-items: center;
+    gap: 8px;
+    background: #f0f0f0;
+    padding: 8px 12px;
+    border-radius: 8px;
+  }
+
+  body.dark .link-box {
+    background: #262626;
+  }
+
+  .link-box .link-text {
+    flex: 1;
+    font-size: 13px;
+    color: #2563eb;
+    word-break: break-all;
+  }
+
+  body.dark .link-box .link-text {
+    color: #60a5fa;
+  }
+
+  .link-box .copy-btn {
+    background: #ddd;
+    border: none;
+    padding: 4px 12px;
+    border-radius: 6px;
+    font-size: 12px;
+    font-weight: 600;
+    cursor: pointer;
+    color: #1a1a1a;
+    flex-shrink: 0;
+  }
+
+  body.dark .link-box .copy-btn {
+    background: #404040;
+    color: #f0f0f0;
+  }
+
+  .link-box .copy-btn:active {
+    transform: scale(0.95);
+  }
+
+  .kode-info {
+    font-size: 12px;
+    color: #888;
+    margin-bottom: 8px;
+  }
+
+  body.dark .kode-info {
+    color: #9ca3af;
   }
 
   .file-upload {
     border: 2px dashed #ddd;
     border-radius: 8px;
-    padding: 16px;
+    padding: 14px;
     text-align: center;
     cursor: pointer;
     font-size: 13px;
     color: #888;
+    transition: 0.2s;
   }
 
   body.dark .file-upload {
@@ -170,6 +236,10 @@
 
   .file-upload.has-file {
     border-color: #34d399;
+  }
+
+  .file-upload:active {
+    transform: scale(0.97);
   }
 
   .file-preview {
@@ -194,33 +264,98 @@
     font-size: 16px;
   }
 
-  .info-row {
-    display: flex;
-    gap: 10px;
+  .file-exists {
+    font-size: 12px;
+    color: #888;
+    margin-top: 4px;
   }
 
-  .info-row .box {
-    flex: 1;
+  .info-grid {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: 8px;
+    margin-bottom: 8px;
+  }
+
+  .info-box {
     background: #f0f0f0;
     padding: 10px 12px;
     border-radius: 8px;
     text-align: center;
   }
 
-  body.dark .info-row .box {
+  body.dark .info-box {
     background: #262626;
   }
 
-  .info-row .box .label {
+  .info-box .label {
     font-size: 10px;
     color: #888;
     text-transform: uppercase;
+    letter-spacing: 0.3px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    gap: 4px;
   }
 
-  .info-row .box .value {
+  .info-box .label svg {
+    width: 12px;
+    height: 12px;
+    stroke: #888;
+  }
+
+  body.dark .info-box .label svg {
+    stroke: #9ca3af;
+  }
+
+  .info-box .value {
     font-size: 14px;
     font-weight: 600;
     margin-top: 2px;
+  }
+
+  .info-jadwal {
+    background: #f0f0f0;
+    padding: 8px 12px;
+    border-radius: 8px;
+  }
+
+  body.dark .info-jadwal {
+    background: #262626;
+  }
+
+  .info-jadwal .label {
+    font-size: 10px;
+    color: #888;
+    text-transform: uppercase;
+    letter-spacing: 0.3px;
+    display: flex;
+    align-items: center;
+    gap: 4px;
+  }
+
+  .info-jadwal .label svg {
+    width: 12px;
+    height: 12px;
+    stroke: #888;
+  }
+
+  body.dark .info-jadwal .label svg {
+    stroke: #9ca3af;
+  }
+
+  .info-jadwal .value {
+    font-size: 13px;
+    font-weight: 500;
+    margin-top: 2px;
+  }
+
+  .info-readonly-note {
+    font-size: 11px;
+    color: #888;
+    margin-top: 6px;
+    text-align: center;
   }
 
   .fitur-item {
@@ -249,10 +384,16 @@
     width: 18px;
     height: 18px;
     stroke: #888;
+    flex-shrink: 0;
+  }
+
+  body.dark .fitur-item .left svg {
+    stroke: #9ca3af;
   }
 
   .fitur-item .left .name {
     font-size: 14px;
+    font-weight: 500;
   }
 
   .toggle {
@@ -296,7 +437,7 @@
 
   .badge-fitur {
     font-size: 10px;
-    padding: 1px 8px;
+    padding: 2px 10px;
     border-radius: 10px;
     font-weight: 600;
   }
@@ -321,11 +462,61 @@
     color: #9ca3af;
   }
 
-  .murid-container, .blokir-container {
+  .section-content {
+    padding-top: 10px;
+  }
+
+  .section-content .row-input {
+    display: flex;
+    gap: 8px;
+    margin-bottom: 8px;
+  }
+
+  .section-content .row-input input {
+    flex: 1;
+    margin: 0;
+  }
+
+  .btn {
+    padding: 8px 14px;
+    border: none;
+    border-radius: 8px;
+    font-weight: 600;
+    font-size: 13px;
+    cursor: pointer;
+    transition: 0.2s;
+    white-space: nowrap;
+  }
+
+  .btn:active {
+    transform: scale(0.95);
+  }
+
+  .btn-primary {
+    background: #2563eb;
+    color: white;
+  }
+
+  .btn-danger {
+    background: #dc2626;
+    color: white;
+  }
+
+  .btn-secondary {
+    background: #e5e7eb;
+    color: #1a1a1a;
+  }
+
+  body.dark .btn-secondary {
+    background: #374151;
+    color: #f0f0f0;
+  }
+
+  .murid-container {
     display: flex;
     flex-wrap: wrap;
     gap: 6px;
-    padding: 8px 0;
+    padding: 4px 0;
     min-height: 30px;
   }
 
@@ -350,81 +541,47 @@
     cursor: pointer;
     font-weight: 700;
     color: #dc2626;
-  }
-
-  .btn {
-    padding: 10px 16px;
-    border: none;
-    border-radius: 8px;
-    font-weight: 600;
     font-size: 14px;
-    cursor: pointer;
-    transition: 0.2s;
   }
 
-  .btn:active {
-    transform: scale(0.97);
+  .counter {
+    font-size: 12px;
+    color: #888;
+    margin-top: 4px;
   }
 
-  .btn-primary {
-    background: #2563eb;
-    color: white;
+  body.dark .counter {
+    color: #9ca3af;
   }
 
-  .btn-danger {
-    background: #dc2626;
-    color: white;
-  }
-
-  .btn-secondary {
-    background: #e5e7eb;
-    color: #1a1a1a;
-  }
-
-  body.dark .btn-secondary {
-    background: #374151;
-    color: #f0f0f0;
-  }
-
-  .btn-save {
-    width: 100%;
-    padding: 14px;
-    border: none;
-    border-radius: 12px;
-    background: #2563eb;
-    color: white;
-    font-weight: 600;
-    font-size: 15px;
-    cursor: pointer;
-    margin-top: 8px;
-  }
-
-  .btn-save:active {
-    transform: scale(0.97);
-  }
-
-  .btn-save.btn-danger {
-    background: #dc2626;
-    margin-top: 10px;
-  }
-
-  .btn-row {
+  .blokir-item {
     display: flex;
-    gap: 10px;
+    justify-content: space-between;
+    align-items: center;
+    padding: 6px 10px;
+    background: #f0f0f0;
+    border-radius: 6px;
+    margin-bottom: 4px;
+    font-size: 13px;
   }
 
-  .btn-row .btn-save {
-    flex: 1;
+  body.dark .blokir-item {
+    background: #262626;
   }
 
-  .btn-row .btn-save.btn-secondary {
-    background: #e5e7eb;
-    color: #1a1a1a;
+  .blokir-item .unblock {
+    background: none;
+    border: none;
+    color: #dc2626;
+    cursor: pointer;
+    font-weight: 600;
+    font-size: 12px;
   }
 
-  body.dark .btn-row .btn-save.btn-secondary {
-    background: #374151;
-    color: #f0f0f0;
+  .empty-text {
+    font-size: 12px;
+    color: #888;
+    padding: 4px 0;
   }
 
   .stat-item {
@@ -455,48 +612,109 @@
     font-weight: 600;
   }
 
-  .link-box {
-    display: flex;
-    align-items: center;
-    gap: 8px;
-    background: #f0f0f0;
-    padding: 8px 12px;
-    border-radius: 8px;
+  .stat-detail {
+    margin-top: 8px;
   }
 
-  body.dark .link-box {
+  .stat-detail .title {
+    font-size: 12px;
+    font-weight: 600;
+    margin-bottom: 4px;
+  }
+
+  .stat-detail-item {
+    display: flex;
+    justify-content: space-between;
+    padding: 4px 8px;
+    background: #f0f0f0;
+    border-radius: 4px;
+    margin-bottom: 4px;
+    font-size: 12px;
+  }
+
+  body.dark .stat-detail-item {
     background: #262626;
   }
 
-  .link-box .link-text {
-    flex: 1;
-    font-size: 13px;
-    color: #2563eb;
-    word-break: break-all;
-  }
-
-  body.dark .link-box .link-text {
-    color: #60a5fa;
-  }
-
-  .link-box .copy-btn {
-    background: #ddd;
-    border: none;
-    padding: 4px 12px;
+  .laporan-item {
+    padding: 8px 10px;
+    background: #f0f0f0;
     border-radius: 6px;
+    margin-bottom: 4px;
+  }
+
+  body.dark .laporan-item {
+    background: #262626;
+  }
+
+  .laporan-item .top {
+    display: flex;
+    justify-content: space-between;
+    font-size: 13px;
+    font-weight: 500;
+  }
+
+  .laporan-item .top .status-selesai {
+    color: #059669;
+  }
+
+  .laporan-item .top .status-habis {
+    color: #dc2626;
+  }
+
+  .laporan-item .jawaban {
     font-size: 12px;
-    font-weight: 600;
+    color: #888;
+    margin-top: 2px;
+  }
+
+  .laporan-item .foto-link {
+    font-size: 12px;
+    color: #2563eb;
     cursor: pointer;
+    margin-top: 2px;
+  }
+
+  .btn-row {
+    display: flex;
+    gap: 10px;
+    margin-top: 4px;
+  }
+
+  .btn-row .btn-save {
+    flex: 1;
+  }
+
+  .btn-save {
+    width: 100%;
+    padding: 14px;
+    border: none;
+    border-radius: 12px;
+    background: #2563eb;
+    color: white;
+    font-weight: 600;
+    font-size: 15px;
+    cursor: pointer;
+    transition: 0.2s;
+  }
+
+  .btn-save:active {
+    transform: scale(0.97);
+  }
+
+  .btn-save.btn-danger {
+    background: #dc2626;
+    margin-top: 10px;
+  }
+
+  .btn-save.btn-secondary {
+    background: #e5e7eb;
     color: #1a1a1a;
   }
 
-  body.dark .link-box .copy-btn {
-    background: #404040;
+  body.dark .btn-save.btn-secondary {
+    background: #374151;
     color: #f0f0f0;
-  }
-
-  .link-box .copy-btn:active {
-    transform: scale(0.95);
   }
 
   .toast {
@@ -552,6 +770,7 @@
   .alert-box p {
     margin-bottom: 16px;
     line-height: 1.5;
+    font-size: 15px;
   }
 
   .alert-box .btn-full {
@@ -583,6 +802,10 @@
     border-radius: 50%;
     animation: spin 0.8s linear infinite;
     margin: 0 auto 10px;
+  }
+
+  @keyframes spin {
+    to { transform: rotate(360deg); }
   }
 
   .not-found {
@@ -625,13 +848,11 @@
   </button>
 </div>
 
-<!-- Loading -->
 <div id="loadingState" class="loading-state">
   <div class="spin"></div>
   <div>Memuat tugas...</div>
 </div>
 
-<!-- Not Found -->
 <div id="notFoundState" class="not-found hidden">
   <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round">
     <rect x="2" y="3" width="20" height="14" rx="2" ry="2"/>
@@ -643,90 +864,122 @@
   <button class="btn btn-primary" style="margin-top:12px;" onclick="goTo('daftar-tugas.html')">Kembali ke Daftar</button>
 </div>
 
-<!-- Main Content -->
 <div id="mainContent" class="hidden">
 
-  <!-- Info & Link -->
   <div class="card">
-    <div class="label">Kode Tugas</div>
-    <div class="kode" id="tugasKodeDisplay">-</div>
-
-    <div class="label" style="margin-top:10px;">Link Tugas</div>
+    <div class="card-title">
+      <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.7" stroke-linecap="round" stroke-linejoin="round">
+        <rect x="2" y="3" width="20" height="14" rx="2" ry="2"/>
+        <line x1="8" y1="21" x2="16" y2="21"/>
+        <line x1="12" y1="17" x2="12" y2="21"/>
+      </svg>
+      Info Tugas
+    </div>
+    <div class="kode-info">Kode: <span id="tugasKodeDisplay">-</span></div>
     <div class="link-box">
       <span class="link-text" id="tugasLink">-</span>
       <button class="copy-btn" onclick="copyLink()">Salin</button>
     </div>
   </div>
 
-  <!-- Form Edit -->
   <div class="card">
-    <div class="label">
-      <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round">
-        <rect x="2" y="3" width="20" height="14" rx="2" ry="2"/>
-        <line x1="8" y1="21" x2="16" y2="21"/>
-        <line x1="12" y1="17" x2="12" y2="21"/>
+    <div class="card-title">
+      <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.7" stroke-linecap="round" stroke-linejoin="round">
+        <path d="M11 4H4a2 2 0 0 0-2 2v14a2 2 0 0 0 2 2h14a2 2 0 0 0 2-2v-7"/>
+        <path d="M18.5 2.5a2.121 2.121 0 0 1 3 3L12 15l-4 1 1-4 9.5-9.5z"/>
       </svg>
-      Judul Tugas
+      Edit Tugas
     </div>
-    <input type="text" id="editJudul" placeholder="Judul tugas...">
 
-    <div class="label" style="margin-top:10px;">
-      <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round">
-        <path d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8z"/>
-        <polyline points="14 2 14 8 20 8"/>
-        <line x1="16" y1="13" x2="8" y2="13"/>
-        <line x1="16" y1="17" x2="8" y2="17"/>
-      </svg>
-      Deskripsi
+    <div class="input-group">
+      <label>Judul Tugas</label>
+      <input type="text" id="editJudul" placeholder="Masukkan judul tugas...">
     </div>
-    <textarea id="editDeskripsi" placeholder="Deskripsi tugas..."></textarea>
 
-    <div class="label" style="margin-top:10px;">
-      <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round">
-        <rect x="3" y="3" width="18" height="18" rx="2"/>
-        <circle cx="8.5" cy="8.5" r="1.5"/>
-        <path d="M21 15l-5-5L5 21"/>
-      </svg>
-      Foto Soal
+    <div class="input-group">
+      <label>Deskripsi</label>
+      <textarea id="editDeskripsi" placeholder="Deskripsi tugas..."></textarea>
     </div>
-    <div class="file-upload" id="fileUpload" onclick="document.getElementById('fileInput').click()">
-      Klik untuk upload foto soal
-    </div>
-    <input type="file" id="fileInput" accept="image/*" style="display:none;">
-    <div id="filePreview" class="file-preview hidden">
-      <span id="fileName">file.jpg</span>
-      <span class="remove" onclick="hapusFile()">×</span>
-    </div>
-    <div id="existingFileInfo" class="hidden" style="font-size:12px;color:#888;margin-top:4px;">
-      📷 Foto soal tersimpan
+
+    <div class="input-group">
+      <label>Foto Soal</label>
+      <div class="file-upload" id="fileUpload" onclick="document.getElementById('fileInput').click()">
+        Klik untuk upload foto soal
+      </div>
+      <input type="file" id="fileInput" accept="image/*" style="display:none;">
+      <div id="filePreview" class="file-preview hidden">
+        <span id="fileName">file.jpg</span>
+        <span class="remove" onclick="hapusFile()">×</span>
+      </div>
+      <div id="existingFileInfo" class="file-exists hidden">Foto soal tersimpan</div>
     </div>
   </div>
 
-  <!-- Info Baca (Durasi, Hapus, Jadwal) -->
   <div class="card">
-    <div class="label" style="margin-bottom:8px;">Fitur Hanya Baca</div>
-    <div class="info-row">
-      <div class="box">
-        <div class="label">Durasi</div>
+    <div class="card-title">
+      <svg viewBox="0 0 24 24" fill="none" stroke="#888" stroke-width="1.7" stroke-linecap="round" stroke-linejoin="round">
+        <circle cx="12" cy="12" r="10"/>
+        <line x1="12" y1="8" x2="12" y2="12"/>
+        <line x1="12" y1="16" x2="12.01" y2="16"/>
+      </svg>
+      Informasi (Hanya Baca)
+    </div>
+
+    <div class="info-grid">
+      <div class="info-box">
+        <div class="label">
+          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.7" stroke-linecap="round" stroke-linejoin="round">
+            <circle cx="12" cy="12" r="10"/>
+            <polyline points="12 6 12 12 16 14"/>
+          </svg>
+          Durasi
+        </div>
         <div class="value" id="editDurasiDisplay">- menit</div>
       </div>
-      <div class="box">
-        <div class="label">Hapus Otomatis</div>
+      <div class="info-box">
+        <div class="label">
+          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.7" stroke-linecap="round" stroke-linejoin="round">
+            <path d="M3 6h18"/>
+            <path d="M19 6v14a2 2 0 0 1-2 2H7a2 2 0 0 1-2-2V6m3 0V4a2 2 0 0 1 2-2h4a2 2 0 0 1 2 2v2"/>
+          </svg>
+          Hapus Otomatis
+        </div>
         <div class="value" id="editHapusDisplay">- hari</div>
       </div>
     </div>
-    <div style="margin-top:8px;background:#f0f0f0;padding:8px 12px;border-radius:8px;">
-      <div style="font-size:10px;color:#888;text-transform:uppercase;">Jadwal</div>
-      <div style="font-size:13px;font-weight:500;" id="editJadwalDisplay">Tidak diatur</div>
+
+    <div class="info-jadwal">
+      <div class="label">
+        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.7" stroke-linecap="round" stroke-linejoin="round">
+          <rect x="3" y="4" width="18" height="18" rx="2" ry="2"/>
+          <line x1="16" y1="2" x2="16" y2="6"/>
+          <line x1="8" y1="2" x2="8" y2="6"/>
+          <line x1="3" y1="10" x2="21" y2="10"/>
+        </svg>
+        Jadwal
+      </div>
+      <div class="value" id="editJadwalDisplay">Tidak diatur</div>
     </div>
-    <div style="font-size:11px;color:#888;margin-top:4px;">⛔ Fitur ini tidak dapat diedit</div>
+
+    <div class="info-readonly-note">
+      <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.7" stroke-linecap="round" stroke-linejoin="round" style="width:12px;height:12px;vertical-align:middle;stroke:#888;">
+        <circle cx="12" cy="12" r="10"/>
+        <line x1="12" y1="8" x2="12" y2="12"/>
+        <line x1="12" y1="16" x2="12.01" y2="16"/>
+      </svg>
+      Fitur di atas tidak dapat diedit
+    </div>
   </div>
 
-  <!-- Fitur yang Bisa Diedit -->
   <div class="card">
-    <div class="label" style="margin-bottom:8px;">Fitur yang Dapat Diedit</div>
+    <div class="card-title">
+      <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.7" stroke-linecap="round" stroke-linejoin="round">
+        <polygon points="12 2 15.09 8.26 22 9.27 17 14.14 18.18 21.02 12 17.77 5.82 21.02 7 14.14 2 9.27 8.91 8.26 12 2"/>
+      </svg>
+      Fitur yang Dapat Diedit
+    </div>
 
-    <!-- Daftar Murid -->
+    <!-- DAFTAR MURID -->
     <div class="fitur-item">
       <div class="left">
         <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.7" stroke-linecap="round" stroke-linejoin="round">
@@ -742,16 +995,16 @@
         <div class="slider"></div>
       </div>
     </div>
-    <div id="muridSection" class="hidden" style="padding-top:10px;">
-      <div style="display:flex;gap:8px;">
-        <input type="text" id="editInputMurid" placeholder="Nama murid" style="flex:1;">
+    <div id="muridSection" class="section-content hidden">
+      <div class="row-input">
+        <input type="text" id="editInputMurid" placeholder="Nama murid">
         <button class="btn btn-primary" onclick="tambahMuridEdit()">Tambah</button>
       </div>
       <div class="murid-container" id="editDaftarMuridContainer"></div>
-      <div id="editMuridCounter" style="font-size:12px;color:#888;">0 murid</div>
+      <div class="counter" id="editMuridCounter">0 murid</div>
     </div>
 
-    <!-- Blokir Murid -->
+    <!-- BLOKIR MURID -->
     <div class="fitur-item">
       <div class="left">
         <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.7" stroke-linecap="round" stroke-linejoin="round">
@@ -765,15 +1018,15 @@
         <div class="slider"></div>
       </div>
     </div>
-    <div id="blokirSection" class="hidden" style="padding-top:10px;">
-      <div style="display:flex;gap:8px;">
-        <input type="text" id="editInputBlokir" placeholder="Nama murid diblokir" style="flex:1;">
+    <div id="blokirSection" class="section-content hidden">
+      <div class="row-input">
+        <input type="text" id="editInputBlokir" placeholder="Nama murid diblokir">
         <button class="btn btn-danger" onclick="tambahBlokirEdit()">Blokir</button>
       </div>
       <div id="editDaftarBlokirContainer"></div>
     </div>
 
-    <!-- Statistik -->
+    <!-- STATISTIK -->
     <div class="fitur-item">
       <div class="left">
         <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.7" stroke-linecap="round" stroke-linejoin="round">
@@ -788,23 +1041,21 @@
         <div class="slider"></div>
       </div>
     </div>
-    <div id="statistikSection" class="hidden" style="padding-top:10px;">
-      <div id="statDasar">
-        <div class="stat-item"><span class="label">Total Jawaban</span><span class="value" id="statTotal">0</span></div>
-        <div class="stat-item"><span class="label">Selesai</span><span class="value" id="statSelesai">0</span></div>
-        <div class="stat-item"><span class="label">Terlambat</span><span class="value" id="statTerlambat">0</span></div>
-      </div>
-      <div id="statPremium" class="hidden" style="margin-top:8px;">
+    <div id="statistikSection" class="section-content hidden">
+      <div class="stat-item"><span class="label">Total Jawaban</span><span class="value" id="statTotal">0</span></div>
+      <div class="stat-item"><span class="label">Selesai</span><span class="value" id="statSelesai">0</span></div>
+      <div class="stat-item"><span class="label">Terlambat</span><span class="value" id="statTerlambat">0</span></div>
+      <div id="statPremium" class="hidden">
         <div class="stat-item"><span class="label">Rata-rata Waktu</span><span class="value" id="statRata">0 menit</span></div>
         <div class="stat-item"><span class="label">Nilai Rata-rata</span><span class="value" id="statNilai">-</span></div>
-        <div style="margin-top:8px;">
-          <div style="font-size:12px;font-weight:600;">Detail Jawaban</div>
+        <div class="stat-detail">
+          <div class="title">Detail Jawaban</div>
           <div id="statDetailContainer"></div>
         </div>
       </div>
     </div>
 
-    <!-- Laporan -->
+    <!-- LAPORAN -->
     <div class="fitur-item">
       <div class="left">
         <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.7" stroke-linecap="round" stroke-linejoin="round">
@@ -820,14 +1071,13 @@
         <div class="slider"></div>
       </div>
     </div>
-    <div id="laporanSection" class="hidden" style="padding-top:10px;">
+    <div id="laporanSection" class="section-content hidden">
       <div id="laporanContainer">
-        <div style="font-size:13px;color:#888;padding:8px 0;">Belum ada data laporan.</div>
+        <div class="empty-text">Belum ada data laporan.</div>
       </div>
     </div>
   </div>
 
-  <!-- Tombol -->
   <div class="card">
     <div class="btn-row">
       <button class="btn-save" onclick="simpanPerubahan()">Simpan Perubahan</button>
@@ -982,7 +1232,6 @@ function tampilkanData() {
 
   var fitur = tugasData.fitur || {};
 
-  // Murid
   if (fitur.murid) {
     document.getElementById('muridToggle').classList.add('active');
     document.getElementById('muridBadge').innerText = 'Aktif';
@@ -994,7 +1243,6 @@ function tampilkanData() {
     renderMurid();
   }
 
-  // Blokir
   if (fitur.blokir) {
     document.getElementById('blokirToggle').classList.add('active');
     document.getElementById('blokirBadge').innerText = 'Aktif';
@@ -1006,7 +1254,6 @@ function tampilkanData() {
     renderBlokir();
   }
 
-  // Statistik
   if (fitur.statistik) {
     document.getElementById('statistikToggle').classList.add('active');
     document.getElementById('statistikBadge').innerText = 'Aktif';
@@ -1015,7 +1262,6 @@ function tampilkanData() {
     loadStatistik();
   }
 
-  // Laporan
   if (fitur.laporan) {
     document.getElementById('laporanToggle').classList.add('active');
     document.getElementById('laporanBadge').innerText = 'Aktif';
@@ -1134,7 +1380,7 @@ function renderMurid() {
   var counter = document.getElementById('editMuridCounter');
   container.innerHTML = '';
   if (daftarMurid.length === 0) {
-    container.innerHTML = '<span style="font-size:12px;color:#888;">Belum ada murid</span>';
+    container.innerHTML = '<span class="empty-text">Belum ada murid</span>';
   } else {
     daftarMurid.forEach(function(nama, i) {
       var el = document.createElement('span');
@@ -1172,14 +1418,13 @@ function renderBlokir() {
   var container = document.getElementById('editDaftarBlokirContainer');
   container.innerHTML = '';
   if (daftarBlokir.length === 0) {
-    container.innerHTML = '<span style="font-size:12px;color:#888;">Belum ada blokir</span>';
+    container.innerHTML = '<span class="empty-text">Belum ada blokir</span>';
     return;
   }
   daftarBlokir.forEach(function(nama, i) {
     var el = document.createElement('div');
-    el.style.cssText = 'display:flex;justify-content:space-between;padding:6px 8px;background:#f0f0f0;border-radius:6px;margin-bottom:4px;font-size:13px;';
-    body.dark && (el.style.background = '#262626');
-    el.innerHTML = '<span>' + nama + '</span><button style="background:none;border:none;color:#dc2626;cursor:pointer;font-weight:600;" onclick="hapusBlokirEdit(' + i + ')">Buka</button>';
+    el.className = 'blokir-item';
+    el.innerHTML = '<span>' + nama + '</span><button class="unblock" onclick="hapusBlokirEdit(' + i + ')">Buka</button>';
     container.appendChild(el);
   });
 }
@@ -1219,9 +1464,9 @@ function loadStatistik() {
       var html = '';
       Object.keys(data).forEach(function(key) {
         var item = data[key];
-        html += '<div style="display:flex;justify-content:space-between;padding:4px 8px;background:#f0f0f0;border-radius:4px;margin-bottom:4px;font-size:12px;">';
+        html += '<div class="stat-detail-item">';
         html += '<span>' + (item.nama || 'Tidak Diketahui') + '</span>';
-        html += '<span>' + (item.status === 'selesai' ? '✅ Selesai' : '⏰ Habis') + (item.nilai !== undefined ? ' | ' + item.nilai : '') + '</span>';
+        html += '<span>' + (item.status === 'selesai' ? 'Selesai' : 'Habis') + (item.nilai !== undefined ? ' | ' + item.nilai : '') + '</span>';
         html += '</div>';
       });
       document.getElementById('statDetailContainer').innerHTML = html;
@@ -1235,22 +1480,24 @@ function loadLaporan() {
     var data = snap.val();
     var container = document.getElementById('laporanContainer');
     if (!data) {
-      container.innerHTML = '<div style="font-size:13px;color:#888;padding:8px 0;">Belum ada laporan.</div>';
+      container.innerHTML = '<div class="empty-text">Belum ada laporan.</div>';
       return;
     }
     var html = '';
     Object.keys(data).forEach(function(key) {
       var item = data[key];
-      html += '<div style="padding:8px 10px;background:#f0f0f0;border-radius:6px;margin-bottom:4px;">';
-      html += '<div style="display:flex;justify-content:space-between;font-size:13px;font-weight:500;">';
+      var statusClass = item.status === 'selesai' ? 'status-selesai' : 'status-habis';
+      var statusText = item.status === 'selesai' ? 'Selesai' : 'Waktu Habis';
+      html += '<div class="laporan-item">';
+      html += '<div class="top">';
       html += '<span>' + (item.nama || 'Tidak Diketahui') + '</span>';
-      html += '<span style="color:' + (item.status === 'selesai' ? '#059669' : '#dc2626') + ';">' + (item.status === 'selesai' ? 'Selesai' : 'Waktu Habis') + '</span>';
+      html += '<span class="' + statusClass + '">' + statusText + '</span>';
       html += '</div>';
       if (item.jawaban) {
-        html += '<div style="font-size:12px;color:#888;margin-top:2px;">' + item.jawaban.substring(0, 80) + (item.jawaban.length > 80 ? '...' : '') + '</div>';
+        html += '<div class="jawaban">' + item.jawaban.substring(0, 80) + (item.jawaban.length > 80 ? '...' : '') + '</div>';
       }
       if (item.foto) {
-        html += '<div style="font-size:12px;color:#2563eb;cursor:pointer;margin-top:2px;" onclick="window.open(\'' + item.foto + '\')">📷 Lihat Foto</div>';
+        html += '<div class="foto-link" onclick="window.open(\'' + item.foto + '\')">Lihat Foto</div>';
       }
       html += '</div>';
     });
