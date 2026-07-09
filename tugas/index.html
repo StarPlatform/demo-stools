@@ -1,0 +1,929 @@
+<!DOCTYPE html>
+<html lang="id">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=no, viewport-fit=cover">
+<title>Kerjakan Tugas - Star Tools</title>
+
+<script src="https://www.gstatic.com/firebasejs/8.10.1/firebase-app.js"></script>
+<script src="https://www.gstatic.com/firebasejs/8.10.1/firebase-auth.js"></script>
+<script src="https://www.gstatic.com/firebasejs/8.10.1/firebase-database.js"></script>
+
+<style>
+  * {
+    margin: 0;
+    padding: 0;
+    box-sizing: border-box;
+    -webkit-tap-highlight-color: transparent;
+  }
+
+  html, body {
+    height: 100%;
+    overflow-x: hidden;
+  }
+
+  body {
+    font-family: 'Inter', system-ui, -apple-system, 'Segoe UI', Roboto, sans-serif;
+    background: #F1F5F9;
+    color: #0F172A;
+  }
+
+  body.dark {
+    background: #0B1120;
+    color: #F1F5F9;
+  }
+
+  body.dark .app-header,
+  body.dark .card,
+  body.dark .alert-box {
+    background: #111827;
+    border-color: #1E293B;
+  }
+
+  body.dark .input-field {
+    background: #1E293B;
+    border-color: #334155;
+    color: #F1F5F9;
+  }
+
+  body.dark .input-field::placeholder {
+    color: #64748B;
+  }
+
+  body.dark .file-upload {
+    border-color: #334155;
+  }
+
+  body.dark .file-preview {
+    background: #1E293B;
+  }
+
+  body.dark .timer .value {
+    color: #60A5FA;
+  }
+
+  body.dark .timer .value.warning {
+    color: #F87171;
+  }
+
+  body.dark .status-info {
+    color: #94A3B8;
+  }
+
+  body.dark .status-info.selesai {
+    color: #34D399;
+  }
+
+  body.dark .status-info.habis {
+    color: #F87171;
+  }
+
+  .app-container {
+    max-width: 560px;
+    margin: 0 auto;
+    background: #F1F5F9;
+    min-height: 100vh;
+    display: flex;
+    flex-direction: column;
+    position: relative;
+    overflow-x: hidden;
+  }
+
+  body.dark .app-container {
+    background: #0B1120;
+  }
+
+  .app-header {
+    background: #FFFFFF;
+    padding: 16px 20px;
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    border-bottom: 1px solid #E2E8F0;
+    position: sticky;
+    top: 0;
+    z-index: 20;
+    flex-shrink: 0;
+  }
+
+  body.dark .app-header {
+    background: #111827;
+    border-bottom-color: #1E293B;
+  }
+
+  .logo-area {
+    display: flex;
+    align-items: center;
+    gap: 12px;
+  }
+
+  .app-title {
+    font-weight: 700;
+    font-size: 20px;
+    letter-spacing: -0.3px;
+    background: linear-gradient(135deg, #2563EB, #60A5FA);
+    -webkit-background-clip: text;
+    background-clip: text;
+    color: transparent;
+    white-space: nowrap;
+  }
+
+  .header-action {
+    display: flex;
+    align-items: center;
+    gap: 8px;
+    flex-shrink: 0;
+  }
+
+  .back-btn {
+    display: flex;
+    align-items: center;
+    gap: 6px;
+    cursor: pointer;
+    color: #0F172A;
+    font-weight: 500;
+    font-size: 14px;
+    border: none;
+    background: none;
+    padding: 4px 8px;
+    border-radius: 8px;
+    flex-shrink: 0;
+  }
+
+  body.dark .back-btn {
+    color: #F1F5F9;
+  }
+
+  .back-btn svg {
+    stroke: #0F172A;
+    width: 20px;
+    height: 20px;
+  }
+
+  body.dark .back-btn svg {
+    stroke: #F1F5F9;
+  }
+
+  .back-btn:active {
+    transform: scale(0.95);
+  }
+
+  .page-container {
+    flex: 1;
+    padding: 16px;
+    overflow-y: auto;
+    padding-bottom: 30px;
+  }
+
+  .card {
+    background: #FFFFFF;
+    border-radius: 16px;
+    padding: 16px;
+    margin-bottom: 12px;
+    border: 1px solid #E2E8F0;
+  }
+
+  body.dark .card {
+    background: #111827;
+    border-color: #1E293B;
+  }
+
+  .card-title {
+    font-size: 18px;
+    font-weight: 700;
+    margin-bottom: 4px;
+  }
+
+  .card-sub {
+    font-size: 14px;
+    color: #64748B;
+    line-height: 1.6;
+  }
+
+  body.dark .card-sub {
+    color: #94A3B8;
+  }
+
+  .foto-soal {
+    max-width: 100%;
+    border-radius: 10px;
+    margin-top: 10px;
+  }
+
+  .timer {
+    text-align: center;
+    padding: 8px 0;
+  }
+
+  .timer .value {
+    font-size: 36px;
+    font-weight: 700;
+    color: #2563EB;
+    font-variant-numeric: tabular-nums;
+  }
+
+  body.dark .timer .value {
+    color: #60A5FA;
+  }
+
+  .timer .value.warning {
+    color: #DC2626;
+    animation: blink 1s infinite;
+  }
+
+  @keyframes blink {
+    0%, 100% { opacity: 1; }
+    50% { opacity: 0.3; }
+  }
+
+  .timer .label {
+    font-size: 12px;
+    color: #94A3B8;
+    display: block;
+    margin-top: 2px;
+  }
+
+  .status-info {
+    text-align: center;
+    font-size: 14px;
+    color: #64748B;
+    padding: 8px 0 0;
+  }
+
+  body.dark .status-info {
+    color: #94A3B8;
+  }
+
+  .status-info.selesai {
+    color: #059669;
+  }
+
+  body.dark .status-info.selesai {
+    color: #34D399;
+  }
+
+  .status-info.habis {
+    color: #DC2626;
+  }
+
+  body.dark .status-info.habis {
+    color: #F87171;
+  }
+
+  .input-field {
+    width: 100%;
+    padding: 12px 14px;
+    border: 1px solid #E2E8F0;
+    border-radius: 10px;
+    background: #FFFFFF;
+    color: #0F172A;
+    font-size: 14px;
+    font-family: inherit;
+  }
+
+  body.dark .input-field {
+    background: #1E293B;
+    border-color: #334155;
+    color: #F1F5F9;
+  }
+
+  .input-field:focus {
+    outline: none;
+    border-color: #2563EB;
+  }
+
+  .input-field::placeholder {
+    color: #94A3B8;
+  }
+
+  textarea.input-field {
+    min-height: 100px;
+    resize: vertical;
+  }
+
+  .input-group {
+    margin-bottom: 12px;
+  }
+
+  .input-group label {
+    display: block;
+    font-size: 12px;
+    font-weight: 600;
+    color: #475569;
+    margin-bottom: 4px;
+  }
+
+  body.dark .input-group label {
+    color: #94A3B8;
+  }
+
+  .file-upload {
+    border: 2px dashed #E2E8F0;
+    border-radius: 10px;
+    padding: 14px;
+    text-align: center;
+    cursor: pointer;
+    font-size: 13px;
+    color: #94A3B8;
+    transition: 0.2s;
+  }
+
+  body.dark .file-upload {
+    border-color: #334155;
+  }
+
+  .file-upload.has-file {
+    border-color: #34D399;
+  }
+
+  .file-upload:active {
+    transform: scale(0.97);
+  }
+
+  .file-upload svg {
+    width: 28px;
+    height: 28px;
+    stroke: #94A3B8;
+    display: block;
+    margin: 0 auto 4px;
+  }
+
+  .file-preview {
+    display: flex;
+    align-items: center;
+    gap: 8px;
+    padding: 6px 10px;
+    background: #F1F5F9;
+    border-radius: 8px;
+    margin-top: 6px;
+    font-size: 13px;
+  }
+
+  body.dark .file-preview {
+    background: #1E293B;
+  }
+
+  .file-preview .remove {
+    color: #DC2626;
+    cursor: pointer;
+    font-weight: 700;
+    font-size: 18px;
+  }
+
+  .btn-save {
+    width: 100%;
+    padding: 14px;
+    border: none;
+    border-radius: 10px;
+    background: #2563EB;
+    color: white;
+    font-weight: 600;
+    font-size: 15px;
+    cursor: pointer;
+    transition: 0.2s;
+  }
+
+  .btn-save:active {
+    transform: scale(0.97);
+  }
+
+  .btn-save:disabled {
+    opacity: 0.6;
+    cursor: not-allowed;
+  }
+
+  .btn-save.btn-success {
+    background: #059669;
+  }
+
+  .btn-save.btn-danger {
+    background: #DC2626;
+  }
+
+  .footer-app {
+    text-align: center;
+    padding: 16px;
+    font-size: 12px;
+    color: #64748B;
+    border-top: 1px solid #E2E8F0;
+    flex-shrink: 0;
+  }
+
+  body.dark .footer-app {
+    color: #94A3B8;
+    border-top-color: #1E293B;
+  }
+
+  .toast {
+    position: fixed;
+    bottom: 24px;
+    left: 50%;
+    transform: translateX(-50%) translateY(100px);
+    background: #1E293B;
+    color: white;
+    padding: 12px 24px;
+    border-radius: 12px;
+    font-size: 14px;
+    opacity: 0;
+    pointer-events: none;
+    transition: 0.3s;
+    z-index: 999;
+    border-left: 4px solid #2563EB;
+    max-width: 90%;
+  }
+
+  .toast.show {
+    opacity: 1;
+    transform: translateX(-50%) translateY(0);
+  }
+
+  .toast.error {
+    border-left-color: #DC2626;
+  }
+
+  .alert-overlay {
+    position: fixed;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    background: rgba(0, 0, 0, 0.6);
+    backdrop-filter: blur(4px);
+    display: none;
+    justify-content: center;
+    align-items: center;
+    z-index: 200;
+  }
+
+  .alert-box {
+    background: #FFFFFF;
+    padding: 24px;
+    border-radius: 16px;
+    max-width: 320px;
+    width: 90%;
+    text-align: center;
+    border: 1px solid #E2E8F0;
+  }
+
+  body.dark .alert-box {
+    background: #111827;
+    border-color: #1E293B;
+  }
+
+  .alert-box p {
+    margin-bottom: 16px;
+    line-height: 1.6;
+    font-size: 15px;
+  }
+
+  .alert-box .btn-full {
+    width: 100%;
+    padding: 12px;
+    border: none;
+    border-radius: 10px;
+    background: #2563EB;
+    color: white;
+    font-weight: 600;
+    cursor: pointer;
+    font-size: 14px;
+  }
+
+  .alert-box .btn-full:active {
+    transform: scale(0.97);
+  }
+
+  .hidden {
+    display: none !important;
+  }
+
+  .loading-state {
+    text-align: center;
+    padding: 60px 20px;
+    color: #94A3B8;
+  }
+
+  .loading-state .spin {
+    width: 32px;
+    height: 32px;
+    border: 3px solid #E2E8F0;
+    border-top-color: #2563EB;
+    border-radius: 50%;
+    animation: spin 0.8s linear infinite;
+    margin: 0 auto 12px;
+  }
+
+  @keyframes spin {
+    to { transform: rotate(360deg); }
+  }
+
+  .not-found {
+    text-align: center;
+    padding: 60px 20px;
+  }
+
+  .not-found svg {
+    width: 48px;
+    height: 48px;
+    stroke: #94A3B8;
+    margin-bottom: 12px;
+  }
+
+  .not-found h3 {
+    font-size: 17px;
+    margin-bottom: 4px;
+  }
+
+  .not-found p {
+    color: #94A3B8;
+    font-size: 14px;
+  }
+
+  .not-found .btn {
+    margin-top: 16px;
+    padding: 12px 24px;
+    border: none;
+    border-radius: 10px;
+    background: #2563EB;
+    color: white;
+    font-weight: 600;
+    font-size: 14px;
+    cursor: pointer;
+  }
+
+  .not-found .btn:active {
+    transform: scale(0.97);
+  }
+</style>
+</head>
+<body>
+
+<div class="app-container">
+
+  <!-- HEADER -->
+  <div class="app-header">
+    <div class="logo-area">
+      <span class="app-title">Star Tools</span>
+    </div>
+    <div class="header-action">
+      <button class="back-btn" onclick="goTo('../index.html')">
+        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+          <polyline points="15 18 9 12 15 6"/>
+        </svg>
+        <span>Beranda</span>
+      </button>
+    </div>
+  </div>
+
+  <!-- PAGE CONTENT -->
+  <div class="page-container">
+
+    <!-- LOADING -->
+    <div id="loadingState" class="loading-state">
+      <div class="spin"></div>
+      <div>Memuat tugas...</div>
+    </div>
+
+    <!-- NOT FOUND -->
+    <div id="notFoundState" class="not-found hidden">
+      <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round">
+        <rect x="2" y="3" width="20" height="14" rx="2" ry="2"/>
+        <line x1="8" y1="21" x2="16" y2="21"/>
+        <line x1="12" y1="17" x2="12" y2="17"/>
+      </svg>
+      <h3>Tugas Tidak Ditemukan</h3>
+      <p>Link tidak valid atau tugas sudah dihapus.</p>
+      <button class="btn" onclick="goTo('../index.html')">Kembali ke Beranda</button>
+    </div>
+
+    <!-- MAIN CONTENT -->
+    <div id="mainContent" class="hidden">
+
+      <!-- INFO TUGAS -->
+      <div class="card">
+        <div class="card-title" id="tugasJudul">-</div>
+        <div class="card-sub" id="tugasDeskripsi">-</div>
+        <div id="fotoContainer"></div>
+      </div>
+
+      <!-- TIMER -->
+      <div class="card">
+        <div class="timer">
+          <div class="value" id="timerValue">--:--</div>
+          <span class="label">Sisa Waktu</span>
+        </div>
+        <div class="status-info" id="statusInfo">⏳ Silakan kerjakan tugas</div>
+      </div>
+
+      <!-- FORM JAWABAN -->
+      <div class="card" id="formJawaban">
+        <div class="input-group">
+          <label>Nama Kamu</label>
+          <input type="text" id="namaMurid" class="input-field" placeholder="Masukkan nama lengkap">
+        </div>
+
+        <div class="input-group">
+          <label>Jawaban</label>
+          <textarea id="jawabanMurid" class="input-field" placeholder="Tulis jawabanmu di sini..."></textarea>
+        </div>
+
+        <div class="input-group">
+          <label>Upload Foto Jawaban (Opsional)</label>
+          <div class="file-upload" id="fileUploadJawaban" onclick="document.getElementById('fileInputJawaban').click()">
+            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round">
+              <rect x="3" y="3" width="18" height="18" rx="2"/>
+              <circle cx="8.5" cy="8.5" r="1.5"/>
+              <path d="M21 15l-5-5L5 21"/>
+            </svg>
+            Klik untuk upload foto
+          </div>
+          <input type="file" id="fileInputJawaban" accept="image/*" style="display:none;">
+          <div id="filePreviewJawaban" class="file-preview hidden">
+            <span id="fileNameJawaban">file.jpg</span>
+            <span class="remove" onclick="hapusFileJawaban()">×</span>
+          </div>
+        </div>
+
+        <button class="btn-save" id="btnKirim" onclick="kirimJawaban()">Kirim Jawaban</button>
+      </div>
+
+    </div>
+  </div>
+
+  <div class="footer-app">
+    <p>Star Platform | Star Tools 2026</p>
+  </div>
+</div>
+
+<!-- TOAST -->
+<div id="toast" class="toast"></div>
+
+<!-- ALERT -->
+<div id="globalAlert" class="alert-overlay">
+  <div class="alert-box">
+    <p id="alertMessage">Pemberitahuan</p>
+    <button class="btn-full" onclick="closeAlert()">Mengerti</button>
+  </div>
+</div>
+
+<script>
+const firebaseConfig = {
+  apiKey: "AIzaSyDgr_nHqvpMsiG4lBkYckzxRErkskXj_6E",
+  authDomain: "laporanstartools-c18b2.firebaseapp.com",
+  databaseURL: "https://laporanstartools-c18b2-default-rtdb.asia-southeast1.firebasedatabase.app",
+  projectId: "laporanstartools-c18b2",
+};
+
+if (!firebase.apps.length) {
+  firebase.initializeApp(firebaseConfig);
+}
+const db = firebase.database();
+
+let tugasData = null;
+let tugasKode = null;
+let fileJawabanBase64 = null;
+let timerInterval = null;
+let waktuMulai = null;
+let waktuSelesai = null;
+let sudahKirim = false;
+
+// ===== AMBIL KODE DARI URL =====
+// URL: /tugas/ABC123
+var path = window.location.pathname;
+var parts = path.split('/');
+// parts = ['', 'tugas', 'ABC123']
+tugasKode = parts[parts.length - 1];
+
+if (!tugasKode || tugasKode === 'tugas' || tugasKode === 'index.html') {
+  document.getElementById('loadingState').classList.add('hidden');
+  document.getElementById('notFoundState').classList.remove('hidden');
+} else {
+  loadTugas();
+}
+
+if (localStorage.getItem('theme') === 'dark') {
+  document.body.classList.add('dark');
+}
+
+function goTo(page) {
+  window.location.href = page;
+}
+
+function loadTugas() {
+  db.ref('tugas/' + tugasKode).once('value').then(function(snap) {
+    var data = snap.val();
+    document.getElementById('loadingState').classList.add('hidden');
+
+    if (!data) {
+      document.getElementById('notFoundState').classList.remove('hidden');
+      return;
+    }
+
+    if (data.status === 'nonaktif') {
+      showAlert('Tugas ini sudah tidak aktif!');
+      document.getElementById('notFoundState').classList.remove('hidden');
+      return;
+    }
+
+    var now = Date.now();
+    var created = data.created_at;
+    var waktuHapus = data.waktu_hapus || 7;
+    var expiredTime = created + (waktuHapus * 24 * 60 * 60 * 1000);
+
+    if (now > expiredTime) {
+      db.ref('tugas/' + tugasKode + '/status').set('nonaktif');
+      showAlert('Tugas sudah kadaluarsa!');
+      document.getElementById('notFoundState').classList.remove('hidden');
+      return;
+    }
+
+    tugasData = data;
+    tampilkanTugas();
+    document.getElementById('mainContent').classList.remove('hidden');
+
+  }).catch(function(err) {
+    document.getElementById('loadingState').classList.add('hidden');
+    showAlert('Gagal memuat tugas: ' + err.message);
+    document.getElementById('notFoundState').classList.remove('hidden');
+  });
+}
+
+function tampilkanTugas() {
+  document.getElementById('tugasJudul').innerText = tugasData.judul || 'Tanpa Judul';
+  document.getElementById('tugasDeskripsi').innerText = tugasData.deskripsi || 'Tidak ada deskripsi';
+
+  if (tugasData.foto_soal) {
+    document.getElementById('fotoContainer').innerHTML = '<img src="' + tugasData.foto_soal + '" class="foto-soal" alt="Foto Soal">';
+  }
+
+  mulaiTimer(tugasData.durasi || 60);
+}
+
+function mulaiTimer(durasiMenit) {
+  var totalDetik = durasiMenit * 60;
+  waktuMulai = Date.now();
+  waktuSelesai = waktuMulai + (totalDetik * 1000);
+
+  updateTimerDisplay(totalDetik);
+
+  if (timerInterval) clearInterval(timerInterval);
+  timerInterval = setInterval(function() {
+    var now = Date.now();
+    var sisa = Math.max(0, Math.floor((waktuSelesai - now) / 1000));
+
+    if (sisa <= 0) {
+      clearInterval(timerInterval);
+      document.getElementById('timerValue').innerText = '00:00';
+      document.getElementById('timerValue').classList.add('warning');
+      document.getElementById('statusInfo').innerText = '⏰ Waktu habis! Jawaban otomatis dikirim.';
+      document.getElementById('statusInfo').className = 'status-info habis';
+      document.getElementById('btnKirim').disabled = true;
+      document.getElementById('btnKirim').innerText = '⏰ Waktu Habis';
+      if (!sudahKirim) {
+        kirimJawabanOtomatis();
+      }
+      return;
+    }
+
+    updateTimerDisplay(sisa);
+
+    if (sisa < 60) {
+      document.getElementById('timerValue').classList.add('warning');
+    } else {
+      document.getElementById('timerValue').classList.remove('warning');
+    }
+  }, 1000);
+}
+
+function updateTimerDisplay(detik) {
+  var menit = Math.floor(detik / 60);
+  var detikSisa = detik % 60;
+  document.getElementById('timerValue').innerText =
+    String(menit).padStart(2, '0') + ':' + String(detikSisa).padStart(2, '0');
+}
+
+document.getElementById('fileInputJawaban').addEventListener('change', function(e) {
+  var file = e.target.files[0];
+  if (!file) return;
+  if (file.size > 5 * 1024 * 1024) {
+    showToast('File maksimal 5MB!', 'error');
+    this.value = '';
+    return;
+  }
+  var reader = new FileReader();
+  reader.onload = function(event) {
+    fileJawabanBase64 = event.target.result;
+    document.getElementById('fileUploadJawaban').classList.add('has-file');
+    document.getElementById('filePreviewJawaban').classList.remove('hidden');
+    document.getElementById('fileNameJawaban').innerText = file.name;
+  };
+  reader.readAsDataURL(file);
+});
+
+function hapusFileJawaban() {
+  fileJawabanBase64 = null;
+  document.getElementById('fileInputJawaban').value = '';
+  document.getElementById('fileUploadJawaban').classList.remove('has-file');
+  document.getElementById('filePreviewJawaban').classList.add('hidden');
+}
+
+function kirimJawaban() {
+  if (sudahKirim) return;
+
+  var nama = document.getElementById('namaMurid').value.trim();
+  var jawaban = document.getElementById('jawabanMurid').value.trim();
+
+  if (!nama) {
+    showAlert('Nama wajib diisi!');
+    return;
+  }
+
+  if (!jawaban) {
+    showAlert('Jawaban wajib diisi!');
+    return;
+  }
+
+  var data = {
+    nama: nama,
+    jawaban: jawaban,
+    waktu_mulai: waktuMulai,
+    waktu_selesai: Date.now(),
+    status: 'selesai'
+  };
+
+  if (fileJawabanBase64) {
+    data.foto = fileJawabanBase64;
+  }
+
+  var key = nama + '_' + Date.now();
+
+  db.ref('tugas/' + tugasKode + '/jawaban/' + key).set(data).then(function() {
+    sudahKirim = true;
+    showToast('Jawaban berhasil dikirim! ✅');
+    document.getElementById('btnKirim').disabled = true;
+    document.getElementById('btnKirim').innerText = '✅ Jawaban Terkirim';
+    document.getElementById('btnKirim').className = 'btn-save btn-success';
+    document.getElementById('statusInfo').innerText = '✅ Jawaban berhasil dikirim!';
+    document.getElementById('statusInfo').className = 'status-info selesai';
+    clearInterval(timerInterval);
+  }).catch(function(err) {
+    showAlert('Gagal mengirim: ' + err.message);
+  });
+}
+
+  function kirimJawabanOtomatis() {
+  if (sudahKirim) return;
+  sudahKirim = true;
+
+  var nama = document.getElementById('namaMurid').value.trim();
+  var jawaban = document.getElementById('jawabanMurid').value.trim();
+
+  var data = {
+    nama: nama || 'Tidak Diketahui',
+    jawaban: jawaban || 'Waktu habis, tidak ada jawaban',
+    waktu_mulai: waktuMulai,
+    waktu_selesai: Date.now(),
+    status: 'habis'
+  };
+
+  if (fileJawabanBase64) {
+    data.foto = fileJawabanBase64;
+  }
+
+  var key = (nama || 'unknown') + '_' + Date.now();
+
+  db.ref('tugas/' + tugasKode + '/jawaban/' + key).set(data).then(function() {
+    document.getElementById('btnKirim').disabled = true;
+    document.getElementById('btnKirim').innerText = '⏰ Waktu Habis';
+    document.getElementById('btnKirim').className = 'btn-save btn-danger';
+    document.getElementById('statusInfo').innerText = '⏰ Waktu habis! Jawaban otomatis dikirim.';
+    document.getElementById('statusInfo').className = 'status-info habis';
+  });
+}
+
+function showToast(msg, type) {
+  var t = document.getElementById('toast');
+  t.textContent = msg;
+  t.className = 'toast show';
+  if (type === 'error') t.classList.add('error');
+  clearTimeout(t._timer);
+  t._timer = setTimeout(function() { t.classList.remove('show'); }, 2500);
+}
+
+function showAlert(msg) {
+  document.getElementById('alertMessage').textContent = msg;
+  document.getElementById('globalAlert').style.display = 'flex';
+}
+
+function closeAlert() {
+  document.getElementById('globalAlert').style.display = 'none';
+}
+
+document.addEventListener('keydown', function(e) {
+  if (e.key === 'Escape') {
+    closeAlert();
+  }
+});
+</script>
+
+</body>
+</html>
