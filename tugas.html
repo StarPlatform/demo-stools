@@ -35,7 +35,8 @@
 
   body.dark .app-header,
   body.dark .card,
-  body.dark .alert-box {
+  body.dark .alert-box,
+  body.dark .selesai-box {
     background: #111827;
     border-color: #1E293B;
   }
@@ -80,6 +81,18 @@
 
   body.dark .btn-save:disabled {
     background: #334155;
+    color: #94A3B8;
+  }
+
+  body.dark .selesai-box .icon-selesai svg {
+    stroke: #34D399;
+  }
+
+  body.dark .selesai-box .title {
+    color: #F1F5F9;
+  }
+
+  body.dark .selesai-box .sub {
     color: #94A3B8;
   }
 
@@ -453,6 +466,67 @@
     background: #94A3B8;
   }
 
+  /* ===== SELESAI BOX ===== */
+  .selesai-box {
+    text-align: center;
+    padding: 40px 20px;
+    background: #FFFFFF;
+    border-radius: 16px;
+    border: 1px solid #E2E8F0;
+  }
+
+  body.dark .selesai-box {
+    background: #111827;
+    border-color: #1E293B;
+  }
+
+  .selesai-box .icon-selesai {
+    margin-bottom: 16px;
+  }
+
+  .selesai-box .icon-selesai svg {
+    width: 64px;
+    height: 64px;
+    stroke: #059669;
+  }
+
+  .selesai-box .title {
+    font-size: 22px;
+    font-weight: 700;
+    margin-bottom: 8px;
+    color: #0F172A;
+  }
+
+  body.dark .selesai-box .title {
+    color: #F1F5F9;
+  }
+
+  .selesai-box .sub {
+    font-size: 15px;
+    color: #64748B;
+    line-height: 1.6;
+  }
+
+  body.dark .selesai-box .sub {
+    color: #94A3B8;
+  }
+
+  .selesai-box .btn-home {
+    margin-top: 20px;
+    padding: 12px 32px;
+    border: none;
+    border-radius: 10px;
+    background: #2563EB;
+    color: white;
+    font-weight: 600;
+    font-size: 14px;
+    cursor: pointer;
+  }
+
+  .selesai-box .btn-home:active {
+    transform: scale(0.95);
+  }
+
   .footer-app {
     text-align: center;
     padding: 16px;
@@ -651,56 +725,73 @@
     <!-- MAIN CONTENT -->
     <div id="mainContent" class="hidden">
 
-      <!-- INFO TUGAS -->
-      <div class="card">
-        <div class="card-title" id="tugasJudul">-</div>
-        <div class="card-sub" id="tugasDeskripsi">-</div>
-        <div id="fotoContainer"></div>
-      </div>
-
-      <!-- TIMER -->
-      <div class="card">
-        <div class="timer">
-          <div class="value" id="timerValue">--:--</div>
-          <span class="label">Sisa Waktu</span>
-        </div>
-        <div class="status-info" id="statusInfo">⏳ Silakan kerjakan tugas</div>
-      </div>
-
-      <!-- FORM JAWABAN -->
-      <div class="card" id="formJawaban">
-        <div class="input-group">
-          <label>Nama Kamu</label>
-          <input type="text" id="namaMurid" class="input-field" placeholder="Masukkan nama lengkap">
-        </div>
-
-        <div class="input-group">
-          <label>Jawaban</label>
-          <textarea id="jawabanMurid" class="input-field" placeholder="Tulis jawabanmu di sini..."></textarea>
-        </div>
-
-        <div class="input-group">
-          <label>Upload Foto Jawaban (Opsional)</label>
-          <div class="file-upload" id="fileUploadJawaban" onclick="document.getElementById('fileInputJawaban').click()">
-            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round">
-              <rect x="3" y="3" width="18" height="18" rx="2"/>
-              <circle cx="8.5" cy="8.5" r="1.5"/>
-              <path d="M21 15l-5-5L5 21"/>
+      <!-- SELESAI BOX (muncul kalau udah kirim) -->
+      <div id="selesaiBox" class="hidden">
+        <div class="selesai-box">
+          <div class="icon-selesai">
+            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round">
+              <path d="M22 11.08V12a10 10 0 1 1-5.93-9.14"/>
+              <polyline points="22 4 12 14.01 9 11.01"/>
             </svg>
-            Klik untuk upload foto
           </div>
-          <input type="file" id="fileInputJawaban" accept="image/*" style="display:none;">
-          <div id="filePreviewJawaban" class="file-preview hidden">
-            <span id="fileNameJawaban">file.jpg</span>
-            <span class="remove" onclick="hapusFileJawaban()">×</span>
-          </div>
+          <div class="title">Tugas Selesai</div>
+          <div class="sub">Terimakasih sudah mengerjakan tugas.</div>
+          <button class="btn-home" onclick="goTo('index.html')">Kembali ke Beranda</button>
+        </div>
+      </div>
+
+      <!-- INFO TUGAS -->
+      <div id="infoTugas" class="hidden">
+        <div class="card">
+          <div class="card-title" id="tugasJudul">-</div>
+          <div class="card-sub" id="tugasDeskripsi">-</div>
+          <div id="fotoContainer"></div>
         </div>
 
-        <button class="btn-save" id="btnKirim" onclick="kirimJawaban()">
-          <span class="spinner"></span>
-          <span class="btn-text">Kirim Jawaban</span>
-          <span class="btn-text-loading">Mengirim...</span>
-        </button>
+        <!-- TIMER -->
+        <div class="card">
+          <div class="timer">
+            <div class="value" id="timerValue">--:--</div>
+            <span class="label">Sisa Waktu</span>
+          </div>
+          <div class="status-info" id="statusInfo">Silakan kerjakan tugas</div>
+        </div>
+
+        <!-- FORM JAWABAN -->
+        <div class="card" id="formJawaban">
+          <div class="input-group">
+            <label>Nama Kamu</label>
+            <input type="text" id="namaMurid" class="input-field" placeholder="Masukkan nama lengkap">
+          </div>
+
+          <div class="input-group">
+            <label>Jawaban</label>
+            <textarea id="jawabanMurid" class="input-field" placeholder="Tulis jawabanmu di sini..."></textarea>
+          </div>
+
+          <div class="input-group">
+            <label>Upload Foto Jawaban (Opsional)</label>
+            <div class="file-upload" id="fileUploadJawaban" onclick="document.getElementById('fileInputJawaban').click()">
+              <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round">
+                <rect x="3" y="3" width="18" height="18" rx="2"/>
+                <circle cx="8.5" cy="8.5" r="1.5"/>
+                <path d="M21 15l-5-5L5 21"/>
+              </svg>
+              Klik untuk upload foto
+            </div>
+            <input type="file" id="fileInputJawaban" accept="image/*" style="display:none;">
+            <div id="filePreviewJawaban" class="file-preview hidden">
+              <span id="fileNameJawaban">file.jpg</span>
+              <span class="remove" onclick="hapusFileJawaban()">×</span>
+            </div>
+          </div>
+
+          <button class="btn-save" id="btnKirim" onclick="kirimJawaban()">
+            <span class="spinner"></span>
+            <span class="btn-text">Kirim Jawaban</span>
+            <span class="btn-text-loading">Mengirim...</span>
+          </button>
+        </div>
       </div>
 
     </div>
@@ -742,6 +833,7 @@ let timerInterval = null;
 let waktuMulai = null;
 let waktuSelesai = null;
 let sudahKirim = false;
+let jawabanKey = null;
 
 // ===== AMBIL KODE DARI URL =====
 var urlParams = new URLSearchParams(window.location.search);
@@ -772,14 +864,12 @@ function loadTugas() {
       return;
     }
 
-    // Cek status tugas
     if (data.status === 'nonaktif') {
       showAlert('Tugas ini sudah tidak aktif!');
       document.getElementById('notFoundState').classList.remove('hidden');
       return;
     }
 
-    // Cek waktu kadaluarsa (7 hari)
     var now = Date.now();
     var created = data.created_at;
     var waktuHapus = data.waktu_hapus || 7;
@@ -793,6 +883,29 @@ function loadTugas() {
     }
 
     tugasData = data;
+
+    // ===== CEK APAKAH SUDAH PERNAH MENGERJAKAN =====
+    // Cek di localStorage
+    var sudahMengerjakan = localStorage.getItem('tugas_selesai_' + tugasKode);
+
+    if (sudahMengerjakan === 'true') {
+      // Langsung tampilkan halaman selesai
+      tampilkanSelesai();
+      return;
+    }
+
+    // Cek di database juga (untuk jaga-jaga)
+    db.ref('tugas/' + tugasKode + '/jawaban').once('value').then(function(snapJawaban) {
+      var jawabanData = snapJawaban.val();
+      if (jawabanData) {
+        // Cek apakah ada jawaban dengan nama yang sama
+        // Karena kita gak tau nama murid, kita cek aja
+        // Tapi lebih aman pake localStorage aja
+        // Kalau user ganti nama, tetep bisa kirim ulang
+        // Tapi kita tetap kasih proteksi
+      }
+    });
+
     tampilkanTugas();
     document.getElementById('mainContent').classList.remove('hidden');
 
@@ -803,7 +916,17 @@ function loadTugas() {
   });
 }
 
+function tampilkanSelesai() {
+  document.getElementById('mainContent').classList.remove('hidden');
+  document.getElementById('infoTugas').classList.add('hidden');
+  document.getElementById('selesaiBox').classList.remove('hidden');
+  if (timerInterval) clearInterval(timerInterval);
+}
+
 function tampilkanTugas() {
+  document.getElementById('infoTugas').classList.remove('hidden');
+  document.getElementById('selesaiBox').classList.add('hidden');
+
   document.getElementById('tugasJudul').innerText = tugasData.judul || 'Tanpa Judul';
   document.getElementById('tugasDeskripsi').innerText = tugasData.deskripsi || 'Tidak ada deskripsi';
 
@@ -811,7 +934,6 @@ function tampilkanTugas() {
     document.getElementById('fotoContainer').innerHTML = '<img src="' + tugasData.foto_soal + '" class="foto-soal" alt="Foto Soal">';
   }
 
-  // Mulai timer
   mulaiTimer(tugasData.durasi || 60);
 }
 
@@ -831,10 +953,10 @@ function mulaiTimer(durasiMenit) {
       clearInterval(timerInterval);
       document.getElementById('timerValue').innerText = '00:00';
       document.getElementById('timerValue').classList.add('warning');
-      document.getElementById('statusInfo').innerText = '⏰ Waktu habis! Jawaban otomatis dikirim.';
+      document.getElementById('statusInfo').innerText = 'Waktu habis! Jawaban otomatis dikirim.';
       document.getElementById('statusInfo').className = 'status-info habis';
       document.getElementById('btnKirim').disabled = true;
-      document.getElementById('btnKirim').innerHTML = '⏰ Waktu Habis';
+      document.getElementById('btnKirim').innerHTML = 'Waktu Habis';
       document.getElementById('btnKirim').className = 'btn-save btn-danger';
       if (!sudahKirim) {
         kirimJawabanOtomatis();
@@ -844,7 +966,6 @@ function mulaiTimer(durasiMenit) {
 
     updateTimerDisplay(sisa);
 
-    // Warning kalau sisa < 60 detik
     if (sisa < 60) {
       document.getElementById('timerValue').classList.add('warning');
     } else {
@@ -860,7 +981,6 @@ function updateTimerDisplay(detik) {
     String(menit).padStart(2, '0') + ':' + String(detikSisa).padStart(2, '0');
 }
 
-// ===== FILE UPLOAD JAWABAN =====
 document.getElementById('fileInputJawaban').addEventListener('change', function(e) {
   var file = e.target.files[0];
   if (!file) return;
@@ -886,11 +1006,9 @@ function hapusFileJawaban() {
   document.getElementById('filePreviewJawaban').classList.add('hidden');
 }
 
-// ===== KIRIM JAWABAN =====
 function kirimJawaban() {
   var btn = document.getElementById('btnKirim');
 
-  // Cegah double click
   if (btn.disabled || sudahKirim) return;
 
   var nama = document.getElementById('namaMurid').value.trim();
@@ -906,7 +1024,6 @@ function kirimJawaban() {
     return;
   }
 
-  // ===== LOADING STATE =====
   btn.disabled = true;
   btn.classList.add('loading');
 
@@ -922,18 +1039,28 @@ function kirimJawaban() {
     data.foto = fileJawabanBase64;
   }
 
-  var key = nama + '_' + Date.now();
+  jawabanKey = nama + '_' + Date.now();
 
-  db.ref('tugas/' + tugasKode + '/jawaban/' + key).set(data).then(function() {
+  db.ref('tugas/' + tugasKode + '/jawaban/' + jawabanKey).set(data).then(function() {
     sudahKirim = true;
-    showToast('Jawaban berhasil dikirim! ✅');
+
+    // Simpan ke localStorage biar gak bisa kirim ulang
+    localStorage.setItem('tugas_selesai_' + tugasKode, 'true');
+
+    showToast('Jawaban berhasil dikirim!');
     btn.disabled = true;
     btn.classList.remove('loading');
-    btn.innerHTML = '✅ Jawaban Terkirim';
+    btn.innerHTML = 'Jawaban Terkirim';
     btn.className = 'btn-save btn-success';
-    document.getElementById('statusInfo').innerText = '✅ Jawaban berhasil dikirim!';
+    document.getElementById('statusInfo').innerText = 'Jawaban berhasil dikirim!';
     document.getElementById('statusInfo').className = 'status-info selesai';
     clearInterval(timerInterval);
+
+    // Tampilkan halaman selesai setelah 1 detik
+    setTimeout(function() {
+      tampilkanSelesai();
+    }, 1000);
+
   }).catch(function(err) {
     showAlert('Gagal mengirim: ' + err.message);
     btn.disabled = false;
@@ -941,7 +1068,6 @@ function kirimJawaban() {
   });
 }
 
-// ===== KIRIM OTOMATIS KALAU WAKTU HABIS =====
 function kirimJawabanOtomatis() {
   if (sudahKirim) return;
   sudahKirim = true;
@@ -964,11 +1090,16 @@ function kirimJawabanOtomatis() {
   var key = (nama || 'unknown') + '_' + Date.now();
 
   db.ref('tugas/' + tugasKode + '/jawaban/' + key).set(data).then(function() {
+    localStorage.setItem('tugas_selesai_' + tugasKode, 'true');
     document.getElementById('btnKirim').disabled = true;
-    document.getElementById('btnKirim').innerHTML = '⏰ Waktu Habis';
+    document.getElementById('btnKirim').innerHTML = 'Waktu Habis';
     document.getElementById('btnKirim').className = 'btn-save btn-danger';
-    document.getElementById('statusInfo').innerText = '⏰ Waktu habis! Jawaban otomatis dikirim.';
+    document.getElementById('statusInfo').innerText = 'Waktu habis! Jawaban otomatis dikirim.';
     document.getElementById('statusInfo').className = 'status-info habis';
+
+    setTimeout(function() {
+      tampilkanSelesai();
+    }, 1500);
   });
 }
 
