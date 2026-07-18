@@ -38,7 +38,6 @@
   body.dark .card,
   body.dark .link-box,
   body.dark .jawaban-item,
-  body.dark .alert-box,
   body.dark .modal-content {
     background: #111827;
     border-color: #1E293B;
@@ -96,6 +95,11 @@
 
   body.dark .custom-alert-box .alert-message {
     color: #94A3B8;
+  }
+
+  body.dark .custom-alert-box .alert-btn-secondary {
+    background: #334155;
+    color: #F1F5F9;
   }
 
   body.dark .modal-body .label {
@@ -1230,7 +1234,7 @@
           <button class="btn-save btn-secondary" onclick="goTo('daftar-tugas.html')">Batal</button>
         </div>
 
-        <button class="btn-save btn-danger" id="btnHapus" onclick="hapusTugas()" style="margin-top:10px;">
+        <button class="btn-save btn-danger" id="btnHapus" onclick="konfirmasiHapus()" style="margin-top:10px;">
           Hapus Tugas
         </button>
       </div>
@@ -1358,7 +1362,7 @@ function loadTugas() {
     }
 
     if (data.pembuat_id !== currentUser.uid) {
-      showAlert('Anda tidak memiliki akses ke tugas ini!', 'error');
+      showCustomAlert('Anda tidak memiliki akses ke tugas ini!', 'error');
       document.getElementById('notFoundState').classList.remove('hidden');
       return;
     }
@@ -1367,12 +1371,11 @@ function loadTugas() {
     tampilkanData();
     document.getElementById('mainContent').classList.remove('hidden');
 
-    // Load jawaban
     loadJawaban();
 
   }).catch(function(err) {
     document.getElementById('loadingState').classList.add('hidden');
-    showAlert('Gagal memuat tugas: ' + err.message, 'error');
+    showCustomAlert('Gagal memuat tugas: ' + err.message, 'error');
     document.getElementById('notFoundState').classList.remove('hidden');
   });
 }
@@ -1426,7 +1429,6 @@ function loadJawaban() {
     var keys = Object.keys(data);
     total.innerText = keys.length;
 
-    // Urutkan dari terbaru
     keys.sort(function(a, b) {
       return data[b].waktu_selesai - data[a].waktu_selesai;
     });
@@ -1468,7 +1470,7 @@ function openDetailJawaban(key) {
   db.ref('tugas/' + tugasKode + '/jawaban/' + key).once('value').then(function(snap) {
     var item = snap.val();
     if (!item) {
-      showAlert('Data jawaban tidak ditemukan!', 'error');
+      showCustomAlert('Data jawaban tidak ditemukan!', 'error');
       return;
     }
 
@@ -1584,7 +1586,7 @@ function simpanPerubahan() {
   var deskripsi = document.getElementById('editDeskripsi').value.trim();
 
   if (!judul) {
-    showAlert('Judul wajib diisi!', 'warning');
+    showCustomAlert('Judul wajib diisi!', 'warning');
     return;
   }
 
@@ -1603,46 +1605,61 @@ function simpanPerubahan() {
   }
 
   db.ref('tugas/' + tugasKode).update(updates).then(function() {
-    showAlert('Perubahan berhasil disimpan!', 'success');
+    showCustomAlert('Perubahan berhasil disimpan!', 'success');
     btn.disabled = false;
     btn.classList.remove('loading');
     loadTugas();
   }).catch(function(err) {
-    showAlert('Gagal menyimpan: ' + err.message, 'error');
+    showCustomAlert('Gagal menyimpan: ' + err.message, 'error');
     btn.disabled = false;
     btn.classList.remove('loading');
   });
 }
 
+// ===== KONFIRMASI HAPUS =====
+function konfirmasiHapus() {
+  showCustomAlertWithConfirm(
+    'Yakin ingin menghapus tugas ini? Tindakan ini tidak dapat dibatalkan!',
+    'warning',
+    'Ya, Hapus',
+    'Batal',
+    function() {
+      // Callback jika tekan Ya
+      hapusTugas();
+    },
+    function() {
+      // Callback jika tekan Batal
+      // Gak ngapa-ngapain
+    }
+  );
+}
+
 // ===== HAPUS TUGAS =====
 function hapusTugas() {
-  showAlert('Yakin ingin menghapus tugas ini? Tindakan ini tidak dapat dibatalkan!', 'warning', 'Ya, Hapus', function() {
-    var btn = document.getElementById('btnHapus');
-    btn.disabled = true;
-    btn.innerText = 'Menghapus...';
+  var btn = document.getElementById('btnHapus');
+  btn.disabled = true;
+  btn.innerText = 'Menghapus...';
 
-    db.ref('tugas/' + tugasKode).remove().then(function() {
-      showAlert('Tugas berhasil dihapus!', 'success');
-      setTimeout(function() {
-        goTo('daftar-tugas.html');
-      }, 1000);
-    }).catch(function(err) {
-      showAlert('Gagal menghapus: ' + err.message, 'error');
-      btn.disabled = false;
-      btn.innerText = 'Hapus Tugas';
-    });
+  db.ref('tugas/' + tugasKode).remove().then(function() {
+    showCustomAlert('Tugas berhasil dihapus!', 'success');
+    setTimeout(function() {
+      goTo('daftar-tugas.html');
+    }, 1000);
+  }).catch(function(err) {
+    showCustomAlert('Gagal menghapus: ' + err.message, 'error');
+    btn.disabled = false;
+    btn.innerText = 'Hapus Tugas';
   });
 }
 
-// ===== CUSTOM ALERT =====
-function showAlert(message, type, buttonText, callback) {
+// ===== CUSTOM ALERT (Single Button) =====
+function showCustomAlert(message, type) {
   var existing = document.querySelector('.custom-alert-overlay');
   if (existing) {
     existing.remove();
   }
 
   type = type || 'info';
-  buttonText = buttonText || 'Mengerti';
 
   var overlay = document.createElement('div');
   overlay.className = 'custom-alert-overlay active';
@@ -1674,7 +1691,7 @@ function showAlert(message, type, buttonText, callback) {
     <div class="alert-icon ${type}">${iconMap[type] || iconMap.info}</div>
     <div class="alert-title">${titleMap[type] || 'Informasi'}</div>
     <div class="alert-message">${message}</div>
-    <button class="alert-btn ${buttonClass[type] || 'info'}" id="customAlertBtn">${buttonText}</button>
+    <button class="alert-btn ${buttonClass[type] || 'info'}" id="customAlertBtn">Mengerti</button>
   `;
 
   overlay.appendChild(box);
@@ -1682,14 +1699,71 @@ function showAlert(message, type, buttonText, callback) {
 
   document.getElementById('customAlertBtn').onclick = function() {
     overlay.remove();
-    if (callback) callback();
   };
 
-  // Tutup kalau klik overlay
   overlay.onclick = function(e) {
     if (e.target === overlay) {
       overlay.remove();
-      if (callback) callback();
+    }
+  };
+}
+
+// ===== CUSTOM ALERT WITH CONFIRM (2 Tombol) =====
+function showCustomAlertWithConfirm(message, type, confirmText, cancelText, onConfirm, onCancel) {
+  var existing = document.querySelector('.custom-alert-overlay');
+  if (existing) {
+    existing.remove();
+  }
+
+  type = type || 'warning';
+  confirmText = confirmText || 'Ya';
+  cancelText = cancelText || 'Batal';
+
+  var overlay = document.createElement('div');
+  overlay.className = 'custom-alert-overlay active';
+
+  var iconMap = {
+    warning: '<svg viewBox="0 0 24 24" fill="none" stroke="white" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><path d="M12 22s8-4 8-10V5l-8-3-8 3v7c0 6 8 10 8 10z"/><line x1="12" y1="8" x2="12" y2="12"/><line x1="12" y1="16" x2="12.01" y2="16"/></svg>',
+    error: '<svg viewBox="0 0 24 24" fill="none" stroke="white" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="10"/><line x1="15" y1="9" x2="9" y2="15"/><line x1="9" y1="9" x2="15" y2="15"/></svg>'
+  };
+
+  var titleMap = {
+    warning: 'Peringatan!',
+    error: 'Perhatian!'
+  };
+
+  var buttonClass = {
+    warning: 'warning',
+    error: 'error'
+  };
+
+  var box = document.createElement('div');
+  box.className = 'custom-alert-box';
+  box.innerHTML = `
+    <div class="alert-icon ${type}">${iconMap[type] || iconMap.warning}</div>
+    <div class="alert-title">${titleMap[type] || 'Peringatan!'}</div>
+    <div class="alert-message">${message}</div>
+    <button class="alert-btn ${buttonClass[type] || 'warning'}" id="customAlertConfirmBtn">${confirmText}</button>
+    <button class="alert-btn-secondary" id="customAlertCancelBtn">${cancelText}</button>
+  `;
+
+  overlay.appendChild(box);
+  document.body.appendChild(overlay);
+
+  document.getElementById('customAlertConfirmBtn').onclick = function() {
+    overlay.remove();
+    if (onConfirm) onConfirm();
+  };
+
+  document.getElementById('customAlertCancelBtn').onclick = function() {
+    overlay.remove();
+    if (onCancel) onCancel();
+  };
+
+  overlay.onclick = function(e) {
+    if (e.target === overlay) {
+      overlay.remove();
+      if (onCancel) onCancel();
     }
   };
 }
@@ -1721,7 +1795,6 @@ document.addEventListener('keydown', function(e) {
   }
 });
 
-// Tutup modal kalau klik overlay
 document.getElementById('modalJawaban').addEventListener('click', function(e) {
   if (e.target === this) {
     closeModalJawaban();
