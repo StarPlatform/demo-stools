@@ -37,7 +37,8 @@
   body.dark .sidebar-nav,
   body.dark .card,
   body.dark .alert-box,
-  body.dark .link-box {
+  body.dark .link-box,
+  body.dark .jawaban-item {
     background: #111827;
     border-color: #1E293B;
   }
@@ -72,6 +73,30 @@
 
   body.dark .info-box .label {
     color: #94A3B8;
+  }
+
+  body.dark .jawaban-item .meta {
+    color: #94A3B8;
+  }
+
+  body.dark .jawaban-item .status-badge.selesai {
+    background: #064E3B;
+    color: #6EE7B7;
+  }
+
+  body.dark .jawaban-item .status-badge.habis {
+    background: #7F1D1D;
+    color: #FCA5A5;
+  }
+
+  body.dark .jawaban-item .foto-thumb {
+    background: #1E293B;
+    border-color: #334155;
+    color: #60A5FA;
+  }
+
+  body.dark .jawaban-item .foto-thumb svg {
+    stroke: #60A5FA;
   }
 
   body.dark .btn-save:disabled {
@@ -638,6 +663,202 @@
     flex: 1;
   }
 
+  /* ===== JAWABAN ===== */
+  .jawaban-item {
+    background: #F1F5F9;
+    border: 1px solid #E2E8F0;
+    border-radius: 12px;
+    padding: 12px 14px;
+    margin-bottom: 8px;
+  }
+
+  body.dark .jawaban-item {
+    background: #1E293B;
+    border-color: #334155;
+  }
+
+  .jawaban-item .header {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    margin-bottom: 4px;
+  }
+
+  .jawaban-item .header .nama {
+    font-size: 14px;
+    font-weight: 600;
+  }
+
+  .jawaban-item .status-badge {
+    font-size: 11px;
+    padding: 2px 10px;
+    border-radius: 12px;
+    font-weight: 600;
+  }
+
+  .jawaban-item .status-badge.selesai {
+    background: #D1FAE5;
+    color: #065F46;
+  }
+
+  .jawaban-item .status-badge.habis {
+    background: #FEE2E2;
+    color: #991B1B;
+  }
+
+  .jawaban-item .meta {
+    font-size: 11px;
+    color: #64748B;
+    margin-bottom: 4px;
+  }
+
+  .jawaban-item .jawaban-text {
+    font-size: 13px;
+    line-height: 1.5;
+    margin-bottom: 6px;
+    white-space: pre-wrap;
+    word-break: break-word;
+  }
+
+  .jawaban-item .foto-thumb {
+    display: inline-flex;
+    align-items: center;
+    gap: 6px;
+    padding: 4px 10px;
+    background: #FFFFFF;
+    border: 1px solid #E2E8F0;
+    border-radius: 6px;
+    cursor: pointer;
+    font-size: 12px;
+    color: #2563EB;
+    transition: 0.2s;
+  }
+
+  body.dark .jawaban-item .foto-thumb {
+    background: #111827;
+    border-color: #334155;
+    color: #60A5FA;
+  }
+
+  .jawaban-item .foto-thumb:active {
+    transform: scale(0.95);
+  }
+
+  .jawaban-item .foto-thumb svg {
+    width: 14px;
+    height: 14px;
+    stroke: #2563EB;
+  }
+
+  body.dark .jawaban-item .foto-thumb svg {
+    stroke: #60A5FA;
+  }
+
+  .jawaban-empty {
+    text-align: center;
+    padding: 20px 0;
+    color: #94A3B8;
+    font-size: 14px;
+  }
+
+  .jawaban-empty svg {
+    width: 40px;
+    height: 40px;
+    stroke: #94A3B8;
+    margin-bottom: 8px;
+  }
+
+  /* ===== MODAL ===== */
+  .modal-overlay {
+    position: fixed;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    background: rgba(0, 0, 0, 0.7);
+    backdrop-filter: blur(4px);
+    z-index: 300;
+    display: none;
+    justify-content: center;
+    align-items: center;
+    padding: 20px;
+  }
+
+  .modal-overlay.active {
+    display: flex;
+  }
+
+  .modal-content {
+    background: #FFFFFF;
+    border-radius: 16px;
+    max-width: 500px;
+    width: 100%;
+    max-height: 90vh;
+    overflow-y: auto;
+    padding: 20px;
+    border: 1px solid #E2E8F0;
+    position: relative;
+  }
+
+  body.dark .modal-content {
+    background: #111827;
+    border-color: #1E293B;
+  }
+
+  .modal-close {
+    position: absolute;
+    top: 12px;
+    right: 16px;
+    background: none;
+    border: none;
+    font-size: 24px;
+    cursor: pointer;
+    color: #64748B;
+    padding: 4px 8px;
+    border-radius: 8px;
+  }
+
+  body.dark .modal-close {
+    color: #94A3B8;
+  }
+
+  .modal-close:active {
+    transform: scale(0.95);
+  }
+
+  .modal-title {
+    font-size: 18px;
+    font-weight: 700;
+    margin-bottom: 4px;
+  }
+
+  .modal-sub {
+    font-size: 13px;
+    color: #94A3B8;
+    margin-bottom: 12px;
+  }
+
+  .modal-body img {
+    max-width: 100%;
+    border-radius: 8px;
+  }
+
+  .modal-body .label {
+    font-size: 11px;
+    font-weight: 600;
+    color: #94A3B8;
+    text-transform: uppercase;
+    margin-top: 12px;
+    margin-bottom: 4px;
+  }
+
+  .modal-body .value {
+    font-size: 14px;
+    line-height: 1.6;
+    white-space: pre-wrap;
+    word-break: break-word;
+  }
+
   .footer-app {
     text-align: center;
     padding: 16px;
@@ -952,11 +1173,47 @@
         </button>
       </div>
 
+      <!-- DAFTAR JAWABAN -->
+      <div class="card">
+        <div class="card-title">
+          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.7" stroke-linecap="round" stroke-linejoin="round">
+            <path d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8z"/>
+            <polyline points="14 2 14 8 20 8"/>
+            <line x1="16" y1="13" x2="8" y2="13"/>
+            <line x1="16" y1="17" x2="8" y2="17"/>
+          </svg>
+          Jawaban Terkirim
+          <span style="font-size:12px;font-weight:400;color:#94A3B8;margin-left:auto;" id="totalJawaban">0</span>
+        </div>
+
+        <div id="jawabanContainer">
+          <div class="jawaban-empty">
+            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round">
+              <path d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8z"/>
+              <polyline points="14 2 14 8 20 8"/>
+              <line x1="16" y1="13" x2="8" y2="13"/>
+              <line x1="16" y1="17" x2="8" y2="17"/>
+            </svg>
+            <div>Belum ada jawaban terkirim</div>
+          </div>
+        </div>
+      </div>
+
     </div>
   </div>
 
   <div class="footer-app">
     <p>Star Platform | Star Tools 2026</p>
+  </div>
+</div>
+
+<!-- MODAL FOTO -->
+<div class="modal-overlay" id="modalFoto">
+  <div class="modal-content">
+    <button class="modal-close" onclick="closeModal()">×</button>
+    <div class="modal-title" id="modalTitle">Foto Jawaban</div>
+    <div class="modal-sub" id="modalSub">-</div>
+    <div class="modal-body" id="modalBody"></div>
   </div>
 </div>
 
@@ -989,6 +1246,7 @@ let tugasData = null;
 let tugasKode = null;
 let fileBase64 = null;
 let existingFileUrl = null;
+let jawabanListener = null;
 
 firebase.auth().onAuthStateChanged(function(user) {
   if (user) {
@@ -1052,6 +1310,9 @@ function loadTugas() {
     tampilkanData();
     document.getElementById('mainContent').classList.remove('hidden');
 
+    // Load jawaban
+    loadJawaban();
+
   }).catch(function(err) {
     document.getElementById('loadingState').classList.add('hidden');
     showAlert('Gagal memuat tugas: ' + err.message);
@@ -1075,6 +1336,104 @@ function tampilkanData() {
     existingFileUrl = tugasData.foto_soal;
     document.getElementById('existingFileInfo').classList.remove('hidden');
   }
+}
+
+function loadJawaban() {
+  if (jawabanListener) {
+    jawabanListener.off();
+  }
+
+  jawabanListener = db.ref('tugas/' + tugasKode + '/jawaban');
+  jawabanListener.on('value', function(snap) {
+    var data = snap.val();
+    var container = document.getElementById('jawabanContainer');
+    var total = document.getElementById('totalJawaban');
+
+    if (!data) {
+      total.innerText = '0';
+      container.innerHTML = `
+        <div class="jawaban-empty">
+          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round">
+            <path d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8z"/>
+            <polyline points="14 2 14 8 20 8"/>
+            <line x1="16" y1="13" x2="8" y2="13"/>
+            <line x1="16" y1="17" x2="8" y2="17"/>
+          </svg>
+          <div>Belum ada jawaban terkirim</div>
+        </div>
+      `;
+      return;
+    }
+
+    var keys = Object.keys(data);
+    total.innerText = keys.length;
+
+    // Urutkan dari terbaru
+    keys.sort(function(a, b) {
+      return data[b].waktu_selesai - data[a].waktu_selesai;
+    });
+
+    var html = '';
+    keys.forEach(function(key) {
+      var item = data[key];
+      var statusClass = item.status === 'selesai' ? 'selesai' : 'habis';
+      var statusText = item.status === 'selesai' ? 'Selesai' : 'Waktu Habis';
+
+      var waktu = '-';
+      if (item.waktu_selesai) {
+        var date = new Date(item.waktu_selesai);
+        waktu = date.toLocaleDateString('id-ID') + ' ' + date.toLocaleTimeString('id-ID', {hour:'2-digit', minute:'2-digit'});
+      }
+
+      var durasiPengerjaan = '-';
+      if (item.waktu_mulai && item.waktu_selesai) {
+        durasiPengerjaan = Math.round((item.waktu_selesai - item.waktu_mulai) / 1000 / 60) + ' menit';
+      }
+
+      var fotoHtml = '';
+      if (item.foto) {
+        fotoHtml = `
+          <div class="foto-thumb" onclick="openFoto('${item.foto}', '${escapeHtml(item.nama || 'Tidak Diketahui')}')">
+            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+              <rect x="3" y="3" width="18" height="18" rx="2"/>
+              <circle cx="8.5" cy="8.5" r="1.5"/>
+              <path d="M21 15l-5-5L5 21"/>
+            </svg>
+            Lihat Foto
+          </div>
+        `;
+      }
+
+      html += `
+        <div class="jawaban-item">
+          <div class="header">
+            <span class="nama">${escapeHtml(item.nama || 'Tidak Diketahui')}</span>
+            <span class="status-badge ${statusClass}">${statusText}</span>
+          </div>
+          <div class="meta">
+            <span>${waktu}</span>
+            <span> | </span>
+            <span>${durasiPengerjaan}</span>
+          </div>
+          <div class="jawaban-text">${escapeHtml(item.jawaban || 'Tidak ada jawaban')}</div>
+          ${fotoHtml}
+        </div>
+      `;
+    });
+
+    container.innerHTML = html;
+  });
+}
+
+function openFoto(fotoUrl, nama) {
+  document.getElementById('modalTitle').innerText = 'Foto Jawaban';
+  document.getElementById('modalSub').innerText = 'Dari: ' + nama;
+  document.getElementById('modalBody').innerHTML = '<img src="' + fotoUrl + '" alt="Foto Jawaban">';
+  document.getElementById('modalFoto').classList.add('active');
+}
+
+function closeModal() {
+  document.getElementById('modalFoto').classList.remove('active');
 }
 
 document.getElementById('fileInput').addEventListener('change', function(e) {
@@ -1182,6 +1541,13 @@ function hapusTugas() {
   });
 }
 
+function escapeHtml(text) {
+  if (!text) return '';
+  var div = document.createElement('div');
+  div.textContent = text;
+  return div.innerHTML;
+}
+
 function showToast(msg, type) {
   var t = document.getElementById('toast');
   t.textContent = msg;
@@ -1200,10 +1566,18 @@ function closeAlert() {
   document.getElementById('globalAlert').style.display = 'none';
 }
 
+// Tutup modal kalau klik overlay
+document.getElementById('modalFoto').addEventListener('click', function(e) {
+  if (e.target === this) {
+    closeModal();
+  }
+});
+
 document.addEventListener('keydown', function(e) {
   if (e.key === 'Escape') {
     closeSidebar();
     closeAlert();
+    closeModal();
   }
 });
 </script>
