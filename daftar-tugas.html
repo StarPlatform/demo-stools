@@ -14,135 +14,404 @@
     margin: 0;
     padding: 0;
     box-sizing: border-box;
+    -webkit-tap-highlight-color: transparent;
+  }
+
+  html, body {
+    height: 100%;
+    overflow-x: hidden;
   }
 
   body {
-    font-family: -apple-system, 'Segoe UI', Roboto, sans-serif;
-    background: #f5f5f5;
-    color: #1a1a1a;
-    padding: 16px;
-    padding-bottom: 80px;
+    font-family: 'Inter', system-ui, -apple-system, 'Segoe UI', Roboto, sans-serif;
+    background: #F1F5F9;
+    color: #0F172A;
   }
 
   body.dark {
-    background: #0f0f0f;
-    color: #f0f0f0;
+    background: #0B1120;
+    color: #F1F5F9;
   }
 
-  .header {
+  body.dark .app-header,
+  body.dark .sidebar-nav,
+  body.dark .card,
+  body.dark .task-item,
+  body.dark .alert-box {
+    background: #111827;
+    border-color: #1E293B;
+  }
+
+  body.dark .task-item .meta {
+    color: #94A3B8;
+  }
+
+  body.dark .task-item .judul {
+    color: #F1F5F9;
+  }
+
+  body.dark .task-item .badge.aktif {
+    background: #064E3B;
+    color: #6EE7B7;
+  }
+
+  body.dark .task-item .badge.nonaktif {
+    background: #374151;
+    color: #9CA3AF;
+  }
+
+  body.dark .task-item .badge.premium {
+    background: #1E3A5F;
+    color: #60A5FA;
+  }
+
+  body.dark .task-item .badge.standar {
+    background: #374151;
+    color: #9CA3AF;
+  }
+
+  body.dark .empty-state p {
+    color: #94A3B8;
+  }
+
+  body.dark .btn-secondary {
+    background: #334155;
+    color: #F1F5F9;
+  }
+
+  .app-container {
+    max-width: 560px;
+    margin: 0 auto;
+    background: #F1F5F9;
+    min-height: 100vh;
+    display: flex;
+    flex-direction: column;
+    position: relative;
+    overflow-x: hidden;
+  }
+
+  body.dark .app-container {
+    background: #0B1120;
+  }
+
+  .app-header {
+    background: #FFFFFF;
+    padding: 16px 20px;
     display: flex;
     align-items: center;
     justify-content: space-between;
-    margin-bottom: 20px;
+    border-bottom: 1px solid #E2E8F0;
+    position: sticky;
+    top: 0;
+    z-index: 20;
+    flex-shrink: 0;
   }
 
-  .header .left {
+  body.dark .app-header {
+    background: #111827;
+    border-bottom-color: #1E293B;
+  }
+
+  .logo-area {
     display: flex;
     align-items: center;
-    gap: 10px;
+    gap: 12px;
   }
 
-  .header .left svg {
-    width: 28px;
-    height: 28px;
+  .menu-icon {
+    width: 40px;
+    height: 40px;
+    background: #F8FAFE;
+    border-radius: 32px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    cursor: pointer;
+    border: 1px solid #E2E8F0;
+    flex-shrink: 0;
   }
 
-  .header h1 {
-    font-size: 20px;
+  body.dark .menu-icon {
+    background: #1E293B;
+    border-color: #334155;
+  }
+
+  .menu-icon svg {
+    stroke: #0F172A;
+  }
+
+  body.dark .menu-icon svg {
+    stroke: #F1F5F9;
+  }
+
+  .app-title {
     font-weight: 700;
+    font-size: 20px;
+    letter-spacing: -0.3px;
     background: linear-gradient(135deg, #2563EB, #60A5FA);
     -webkit-background-clip: text;
-    -webkit-text-fill-color: transparent;
+    background-clip: text;
+    color: transparent;
+    white-space: nowrap;
   }
 
-  .header .back {
-    background: none;
-    border: none;
-    font-size: 14px;
-    color: #2563eb;
-    cursor: pointer;
-    padding: 6px 12px;
+  .header-action {
     display: flex;
     align-items: center;
+    gap: 8px;
+    flex-shrink: 0;
+  }
+
+  .back-btn {
+    display: flex;
+    align-items: center;
+    gap: 6px;
+    cursor: pointer;
+    color: #0F172A;
+    font-weight: 500;
+    font-size: 14px;
+    border: none;
+    background: none;
+    padding: 4px 8px;
+    border-radius: 8px;
+    flex-shrink: 0;
+  }
+
+  body.dark .back-btn {
+    color: #F1F5F9;
+  }
+
+  .back-btn svg {
+    stroke: #0F172A;
+    width: 20px;
+    height: 20px;
+  }
+
+  body.dark .back-btn svg {
+    stroke: #F1F5F9;
+  }
+
+  .back-btn:active {
+    transform: scale(0.95);
+  }
+
+  .sidebar-overlay {
+    position: fixed;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    background: rgba(0, 0, 0, 0.5);
+    backdrop-filter: blur(4px);
+    z-index: 100;
+    visibility: hidden;
+    opacity: 0;
+    transition: 0.25s;
+  }
+
+  .sidebar-overlay.active {
+    visibility: visible;
+    opacity: 1;
+  }
+
+  .sidebar-nav {
+    position: fixed;
+    top: 0;
+    left: -280px;
+    width: 280px;
+    height: 100%;
+    background: #FFFFFF;
+    z-index: 101;
+    transition: 0.3s cubic-bezier(0.2, 0.9, 0.4, 1.1);
+    padding: 70px 20px 30px;
+    display: flex;
+    flex-direction: column;
     gap: 4px;
+    box-shadow: 4px 0 20px rgba(0, 0, 0, 0.1);
+    overflow-y: auto;
   }
 
-  .header .back svg {
-    width: 18px;
-    height: 18px;
-    stroke: #2563eb;
+  body.dark .sidebar-nav {
+    background: #111827;
   }
 
-  body.dark .header .back {
-    color: #60a5fa;
+  .sidebar-nav.active {
+    left: 0;
   }
 
-  body.dark .header .back svg {
-    stroke: #60a5fa;
+  .sidebar-nav a {
+    padding: 14px 18px;
+    font-size: 16px;
+    font-weight: 500;
+    border-radius: 18px;
+    text-decoration: none;
+    color: #0F172A;
+    transition: 0.2s;
+    display: flex;
+    align-items: center;
+    gap: 14px;
+    cursor: pointer;
   }
 
-  .btn-buat {
+  body.dark .sidebar-nav a {
+    color: #F1F5F9;
+  }
+
+  .sidebar-nav a:active {
+    background: #DBEAFE;
+  }
+
+  body.dark .sidebar-nav a:active {
+    background: #1E293B;
+  }
+
+  .sidebar-nav a svg {
+    width: 20px;
+    height: 20px;
+    stroke: currentColor;
+  }
+
+  .logout-link {
+    margin-top: 20px;
+    border-top: 1px solid #E2E8F0;
+    padding-top: 16px;
+  }
+
+  body.dark .logout-link {
+    border-top-color: #334155;
+  }
+
+  .logout-link a {
+    color: #DC2626 !important;
+  }
+
+  .logout-link a svg {
+    stroke: #DC2626;
+  }
+
+  .close-sidebar-icon {
+    position: absolute;
+    top: 20px;
+    right: 20px;
+    cursor: pointer;
+    width: 40px;
+    height: 40px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    border-radius: 30px;
+  }
+
+  .close-sidebar-icon svg {
+    stroke: #0F172A;
+  }
+
+  body.dark .close-sidebar-icon svg {
+    stroke: #F1F5F9;
+  }
+
+  .page-container {
+    flex: 1;
+    padding: 16px;
+    overflow-y: auto;
+    padding-bottom: 30px;
+  }
+
+  .card {
+    background: #FFFFFF;
+    border-radius: 16px;
+    padding: 16px;
+    margin-bottom: 12px;
+    border: 1px solid #E2E8F0;
+  }
+
+  body.dark .card {
+    background: #111827;
+    border-color: #1E293B;
+  }
+
+  .card-title {
+    font-size: 16px;
+    font-weight: 700;
+    margin-bottom: 4px;
+    display: flex;
+    align-items: center;
+    gap: 8px;
+  }
+
+  .card-sub {
+    font-size: 14px;
+    color: #64748B;
+    margin-bottom: 12px;
+  }
+
+  body.dark .card-sub {
+    color: #94A3B8;
+  }
+
+  .card-title svg {
+    width: 20px;
+    height: 20px;
+    stroke: #2563EB;
+  }
+
+  .btn-save {
+    width: 100%;
+    padding: 14px;
+    border: none;
+    border-radius: 10px;
+    background: #2563EB;
+    color: white;
+    font-weight: 600;
+    font-size: 15px;
+    cursor: pointer;
+    transition: 0.2s;
     display: flex;
     align-items: center;
     justify-content: center;
     gap: 8px;
-    width: 100%;
-    padding: 14px;
-    border: none;
-    border-radius: 12px;
-    background: #2563eb;
-    color: white;
-    font-size: 15px;
-    font-weight: 600;
-    cursor: pointer;
-    margin-bottom: 16px;
   }
 
-  .btn-buat svg {
-    width: 20px;
-    height: 20px;
-    stroke: white;
-  }
-
-  .btn-buat:active {
+  .btn-save:active {
     transform: scale(0.97);
   }
 
-  .loading {
-    text-align: center;
-    padding: 40px 0;
-    color: #888;
+  .btn-save.btn-secondary {
+    background: #E2E8F0;
+    color: #0F172A;
   }
 
-  .loading .spin {
-    width: 30px;
-    height: 30px;
-    border: 3px solid #e0e0e0;
-    border-top-color: #2563eb;
-    border-radius: 50%;
-    animation: spin 0.8s linear infinite;
-    margin: 0 auto 10px;
+  body.dark .btn-save.btn-secondary {
+    background: #334155;
+    color: #F1F5F9;
   }
 
-  @keyframes spin {
-    to { transform: rotate(360deg); }
+  .btn-save svg {
+    width: 18px;
+    height: 18px;
+    stroke: white;
+  }
+
+  body.dark .btn-save.btn-secondary svg {
+    stroke: #F1F5F9;
   }
 
   .task-item {
-    background: white;
+    background: #FFFFFF;
+    border: 1px solid #E2E8F0;
     border-radius: 12px;
     padding: 14px 16px;
     margin-bottom: 10px;
-    box-shadow: 0 1px 3px rgba(0,0,0,0.06);
     cursor: pointer;
+    transition: 0.2s;
     display: flex;
     justify-content: space-between;
     align-items: center;
   }
 
   body.dark .task-item {
-    background: #1a1a1a;
-    box-shadow: 0 1px 3px rgba(255,255,255,0.04);
+    background: #111827;
+    border-color: #1E293B;
   }
 
   .task-item:active {
@@ -154,146 +423,385 @@
     min-width: 0;
   }
 
-  .task-item .info .judul {
+  .task-item .judul {
     font-size: 15px;
     font-weight: 600;
-    margin-bottom: 3px;
+    margin-bottom: 4px;
     white-space: nowrap;
     overflow: hidden;
     text-overflow: ellipsis;
   }
 
-  .task-item .info .meta {
+  .task-item .meta {
     font-size: 12px;
-    color: #888;
+    color: #64748B;
     display: flex;
+    align-items: center;
     gap: 10px;
     flex-wrap: wrap;
   }
 
-  .task-item .info .meta .badge {
-    padding: 1px 8px;
-    border-radius: 10px;
+  .task-item .meta .badge {
+    padding: 2px 10px;
+    border-radius: 12px;
     font-size: 10px;
     font-weight: 600;
   }
 
-  .task-item .info .meta .badge.aktif {
-    background: #d1fae5;
-    color: #065f46;
+  .task-item .meta .badge.aktif {
+    background: #D1FAE5;
+    color: #065F46;
   }
 
-  .task-item .info .meta .badge.nonaktif {
-    background: #f3f4f6;
-    color: #6b7280;
+  .task-item .meta .badge.nonaktif {
+    background: #F3F4F6;
+    color: #6B7280;
   }
 
-  body.dark .task-item .info .meta .badge.aktif {
-    background: #064e3b;
-    color: #6ee7b7;
+  .task-item .meta .badge.premium {
+    background: #DBEAFE;
+    color: #2563EB;
   }
 
-  body.dark .task-item .info .meta .badge.nonaktif {
-    background: #374151;
-    color: #9ca3af;
+  .task-item .meta .badge.standar {
+    background: #F3F4F6;
+    color: #6B7280;
   }
 
   .task-item .arrow {
-    color: #bbb;
-    margin-left: 10px;
     flex-shrink: 0;
+    margin-left: 12px;
   }
 
   .task-item .arrow svg {
     width: 20px;
     height: 20px;
-    stroke: #bbb;
+    stroke: #94A3B8;
   }
 
-  .empty {
+  .task-item .actions {
+    display: flex;
+    gap: 6px;
+  }
+
+  .task-item .actions .btn-icon {
+    padding: 6px 10px;
+    border: none;
+    border-radius: 8px;
+    font-size: 12px;
+    font-weight: 600;
+    cursor: pointer;
+    transition: 0.2s;
+  }
+
+  .task-item .actions .btn-icon:active {
+    transform: scale(0.95);
+  }
+
+  .task-item .actions .btn-edit {
+    background: #DBEAFE;
+    color: #2563EB;
+  }
+
+  body.dark .task-item .actions .btn-edit {
+    background: #1E3A5F;
+    color: #60A5FA;
+  }
+
+  .task-item .actions .btn-jawaban {
+    background: #D1FAE5;
+    color: #065F46;
+  }
+
+  body.dark .task-item .actions .btn-jawaban {
+    background: #064E3B;
+    color: #6EE7B7;
+  }
+
+  .task-item .actions .btn-link {
+    background: #F3F4F6;
+    color: #6B7280;
+  }
+
+  body.dark .task-item .actions .btn-link {
+    background: #374151;
+    color: #9CA3AF;
+  }
+
+  .task-item .actions .btn-delete {
+    background: #FEE2E2;
+    color: #991B1B;
+  }
+
+  body.dark .task-item .actions .btn-delete {
+    background: #7F1D1D;
+    color: #FCA5A5;
+  }
+
+  .empty-state {
     text-align: center;
     padding: 50px 20px;
   }
 
-  .empty svg {
+  .empty-state svg {
     width: 56px;
     height: 56px;
-    stroke: #ccc;
-    margin-bottom: 10px;
+    stroke: #94A3B8;
+    margin-bottom: 12px;
   }
 
-  body.dark .empty svg {
-    stroke: #555;
+  body.dark .empty-state svg {
+    stroke: #64748B;
   }
 
-  .empty h3 {
+  .empty-state h3 {
     font-size: 17px;
     margin-bottom: 4px;
   }
 
-  .empty p {
+  .empty-state p {
+    color: #94A3B8;
     font-size: 14px;
-    color: #888;
+  }
+
+  .loading-state {
+    text-align: center;
+    padding: 60px 20px;
+    color: #94A3B8;
+  }
+
+  .loading-state .spin {
+    width: 32px;
+    height: 32px;
+    border: 3px solid #E2E8F0;
+    border-top-color: #2563EB;
+    border-radius: 50%;
+    animation: spin 0.8s linear infinite;
+    margin: 0 auto 12px;
+  }
+
+  @keyframes spin {
+    to { transform: rotate(360deg); }
+  }
+
+  .footer-app {
+    text-align: center;
+    padding: 16px;
+    font-size: 12px;
+    color: #64748B;
+    border-top: 1px solid #E2E8F0;
+    flex-shrink: 0;
+  }
+
+  body.dark .footer-app {
+    color: #94A3B8;
+    border-top-color: #1E293B;
   }
 
   .toast {
     position: fixed;
-    bottom: 20px;
+    bottom: 24px;
     left: 50%;
-    transform: translateX(-50%);
-    background: #1a1a1a;
+    transform: translateX(-50%) translateY(100px);
+    background: #1E293B;
     color: white;
-    padding: 10px 20px;
-    border-radius: 10px;
+    padding: 12px 24px;
+    border-radius: 12px;
     font-size: 14px;
     opacity: 0;
     pointer-events: none;
     transition: 0.3s;
     z-index: 999;
+    border-left: 4px solid #2563EB;
+    max-width: 90%;
   }
 
   .toast.show {
     opacity: 1;
+    transform: translateX(-50%) translateY(0);
   }
 
   .toast.error {
-    background: #991b1b;
+    border-left-color: #DC2626;
+  }
+
+  .alert-overlay {
+    position: fixed;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    background: rgba(0, 0, 0, 0.6);
+    backdrop-filter: blur(4px);
+    display: none;
+    justify-content: center;
+    align-items: center;
+    z-index: 200;
+  }
+
+  .alert-box {
+    background: #FFFFFF;
+    padding: 24px;
+    border-radius: 16px;
+    max-width: 320px;
+    width: 90%;
+    text-align: center;
+    border: 1px solid #E2E8F0;
+  }
+
+  body.dark .alert-box {
+    background: #111827;
+    border-color: #1E293B;
+  }
+
+  .alert-box p {
+    margin-bottom: 16px;
+    line-height: 1.6;
+    font-size: 15px;
+  }
+
+  .alert-box .btn-full {
+    width: 100%;
+    padding: 12px;
+    border: none;
+    border-radius: 10px;
+    background: #2563EB;
+    color: white;
+    font-weight: 600;
+    cursor: pointer;
+    font-size: 14px;
+  }
+
+  .alert-box .btn-full:active {
+    transform: scale(0.97);
+  }
+
+  .hidden {
+    display: none !important;
   }
 </style>
 </head>
 <body>
 
-<div class="header">
-  <div class="left">
-    <svg viewBox="0 0 24 24" fill="none" stroke="#2563EB" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
-      <polygon points="12 2 15.09 8.26 22 9.27 17 14.14 18.18 21.02 12 17.77 5.82 21.02 7 14.14 2 9.27 8.91 8.26 12 2"/>
-    </svg>
-    <h1>Daftar Tugas</h1>
+<div class="app-container">
+
+  <!-- HEADER -->
+  <div class="app-header">
+    <div class="logo-area">
+      <div class="menu-icon" onclick="openSidebar()">
+        <svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+          <line x1="3" y1="12" x2="21" y2="12"/>
+          <line x1="3" y1="6" x2="21" y2="6"/>
+          <line x1="3" y1="18" x2="21" y2="18"/>
+        </svg>
+      </div>
+      <span class="app-title">Star Tools</span>
+    </div>
+    <div class="header-action">
+      <button class="back-btn" onclick="goTo('index.html')">
+        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+          <polyline points="15 18 9 12 15 6"/>
+        </svg>
+        <span>Beranda</span>
+      </button>
+    </div>
   </div>
-  <button class="back" onclick="goTo('index.html')">
-    <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
-      <polyline points="15 18 9 12 15 6"/>
-    </svg>
-    Kembali
-  </button>
+
+  <!-- SIDEBAR -->
+  <div class="sidebar-overlay" id="sidebarOverlay" onclick="closeSidebar()"></div>
+  <div class="sidebar-nav" id="sidebarNav">
+    <div class="close-sidebar-icon" onclick="closeSidebar()">
+      <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+        <line x1="18" y1="6" x2="6" y2="18"/>
+        <line x1="6" y1="6" x2="18" y2="18"/>
+      </svg>
+    </div>
+    <a href="#" onclick="goTo('index.html')">
+      <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.7" stroke-linecap="round" stroke-linejoin="round">
+        <path d="M3 9l9-7 9 7v11a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2z"/>
+        <polyline points="9 22 9 12 15 12 15 22"/>
+      </svg> Utama
+    </a>
+    <a href="#" onclick="goTo('berita.html')">
+      <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.7" stroke-linecap="round" stroke-linejoin="round">
+        <path d="M4 4h16a2 2 0 0 1 2 2v12a2 2 0 0 1-2 2H4a2 2 0 0 1-2-2V6a2 2 0 0 1 2-2z"/>
+        <line x1="8" y1="8" x2="16" y2="8"/>
+        <line x1="8" y1="12" x2="16" y2="12"/>
+        <line x1="8" y1="16" x2="12" y2="16"/>
+      </svg> Berita
+    </a>
+    <a href="#" onclick="goTo('premium.html')">
+      <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.7" stroke-linecap="round" stroke-linejoin="round">
+        <polygon points="12 2 15.09 8.26 22 9.27 17 14.14 18.18 21.02 12 17.77 5.82 21.02 7 14.14 2 9.27 8.91 8.26 12 2"/>
+      </svg> Premium
+    </a>
+    <a href="#" onclick="goTo('akun.html')">
+      <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.7" stroke-linecap="round" stroke-linejoin="round">
+        <path d="M20 21v-2a4 4 0 0 0-4-4H8a4 4 0 0 0-4 4v2"/>
+        <circle cx="12" cy="7" r="4"/>
+      </svg> Akun
+    </a>
+    <div class="logout-link">
+      <a href="#" onclick="logoutAction()">
+        <svg viewBox="0 0 24 24" fill="none" stroke="#DC2626" stroke-width="1.7" stroke-linecap="round" stroke-linejoin="round">
+          <path d="M9 21H5a2 2 0 0 1-2-2V5a2 2 0 0 1 2-2h4"/>
+          <polyline points="16 17 21 12 16 7"/>
+          <line x1="21" y1="12" x2="9" y2="12"/>
+        </svg> Keluar
+      </a>
+    </div>
+  </div>
+
+  <!-- PAGE CONTENT -->
+  <div class="page-container">
+
+    <div class="card">
+      <div class="card-title">
+        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.7" stroke-linecap="round" stroke-linejoin="round">
+          <rect x="2" y="3" width="20" height="14" rx="2" ry="2"/>
+          <line x1="8" y1="21" x2="16" y2="21"/>
+          <line x1="12" y1="17" x2="12" y2="21"/>
+        </svg>
+        Daftar Tugas
+      </div>
+      <div class="card-sub">Semua tugas yang telah kamu buat.</div>
+
+      <!-- LOADING -->
+      <div id="loadingState" class="loading-state">
+        <div class="spin"></div>
+        <div>Memuat daftar tugas...</div>
+      </div>
+
+      <!-- DAFTAR TUGAS -->
+      <div id="taskList"></div>
+
+      <!-- TOMBOL BUAT TUGAS BARU -->
+      <button class="btn-save" onclick="goTo('generate.html')">
+        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+          <line x1="12" y1="5" x2="12" y2="19"/>
+          <line x1="5" y1="12" x2="19" y2="12"/>
+        </svg>
+        Buat Tugas Baru
+      </button>
+    </div>
+
+  </div>
+
+  <div class="footer-app">
+    <p>Star Platform | Star Tools 2026</p>
+  </div>
 </div>
 
-<button class="btn-buat" onclick="goTo('generate.html')">
-  <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
-    <line x1="12" y1="5" x2="12" y2="19"/>
-    <line x1="5" y1="12" x2="19" y2="12"/>
-  </svg>
-  Buat Tugas Baru
-</button>
-
-<div id="loadingState" class="loading">
-  <div class="spin"></div>
-  <div>Memuat tugas...</div>
-</div>
-
-<div id="taskList"></div>
-
+<!-- TOAST -->
 <div id="toast" class="toast"></div>
+
+<!-- ALERT -->
+<div id="globalAlert" class="alert-overlay">
+  <div class="alert-box">
+    <p id="alertMessage">Pemberitahuan</p>
+    <button class="btn-full" onclick="closeAlert()">Mengerti</button>
+  </div>
+</div>
 
 <script>
 const firebaseConfig = {
@@ -309,6 +817,7 @@ if (!firebase.apps.length) {
 const db = firebase.database();
 
 let currentUser = null;
+let tugasListener = null;
 
 firebase.auth().onAuthStateChanged(function(user) {
   if (user) {
@@ -323,8 +832,24 @@ if (localStorage.getItem('theme') === 'dark') {
   document.body.classList.add('dark');
 }
 
+function openSidebar() {
+  document.getElementById('sidebarOverlay').classList.add('active');
+  document.getElementById('sidebarNav').classList.add('active');
+}
+
+function closeSidebar() {
+  document.getElementById('sidebarOverlay').classList.remove('active');
+  document.getElementById('sidebarNav').classList.remove('active');
+}
+
 function goTo(page) {
   window.location.href = page;
+}
+
+function logoutAction() {
+  firebase.auth().signOut().then(function() {
+    window.location.href = 'login.html';
+  });
 }
 
 function loadTugas() {
@@ -333,9 +858,14 @@ function loadTugas() {
   document.getElementById('loadingState').style.display = 'block';
   document.getElementById('taskList').innerHTML = '';
 
-  db.ref('tugas').orderByChild('pembuat_id').equalTo(currentUser.uid).once('value').then(function(snap) {
-    document.getElementById('loadingState').style.display = 'none';
+  if (tugasListener) {
+    tugasListener.off();
+  }
+
+  tugasListener = db.ref('tugas').orderByChild('pembuat_id').equalTo(currentUser.uid);
+  tugasListener.on('value', function(snap) {
     var data = snap.val();
+    document.getElementById('loadingState').style.display = 'none';
 
     if (!data) {
       showEmpty();
@@ -354,10 +884,6 @@ function loadTugas() {
     });
 
     renderList(list);
-  }).catch(function(err) {
-    document.getElementById('loadingState').style.display = 'none';
-    showToast('Gagal: ' + err.message, 'error');
-    showEmpty();
   });
 }
 
@@ -374,25 +900,37 @@ function renderList(list) {
     var tgl = new Date(tugas.created_at);
     var tglStr = tgl.toLocaleDateString('id-ID');
 
-    var status = tugas.status === 'aktif' ? 'aktif' : 'nonaktif';
-    var statusLabel = tugas.status === 'aktif' ? '● Aktif' : '○ Nonaktif';
+    var statusClass = tugas.status === 'aktif' ? 'aktif' : 'nonaktif';
+    var statusText = tugas.status === 'aktif' ? 'Aktif' : 'Nonaktif';
 
-    var fitur = 0;
+    var isPremium = tugas.fitur && tugas.fitur.premium || false;
+    var badgeClass = isPremium ? 'premium' : 'standar';
+    var badgeText = isPremium ? 'Premium' : 'Standar';
+
+    var fiturCount = 0;
     if (tugas.fitur) {
       Object.keys(tugas.fitur).forEach(function(k) {
-        if (tugas.fitur[k]) fitur++;
+        if (tugas.fitur[k] && k !== 'premium') fiturCount++;
       });
     }
 
+    // Cek apakah ada jawaban
+    var jawabanCount = 0;
+    if (tugas.jawaban) {
+      jawabanCount = Object.keys(tugas.jawaban).length;
+    }
+
     html += `
-      <div class="task-item" onclick="openEdit('${tugas._key}')">
+      <div class="task-item" onclick="goTo('edit.html?kode=${tugas._key}')">
         <div class="info">
           <div class="judul">${escapeHtml(tugas.judul || 'Tanpa Judul')}</div>
           <div class="meta">
-            <span>📅 ${tglStr}</span>
-            <span>⏱ ${tugas.durasi || 0}m</span>
-            <span class="badge ${status}">${statusLabel}</span>
-            <span>⚙️ ${fitur}</span>
+            <span>${tglStr}</span>
+            <span>${tugas.durasi || 0} menit</span>
+            <span class="badge ${statusClass}">${statusText}</span>
+            <span class="badge ${badgeClass}">${badgeText}</span>
+            ${fiturCount > 0 ? `<span>${fiturCount} fitur</span>` : ''}
+            ${jawabanCount > 0 ? `<span>${jawabanCount} jawaban</span>` : ''}
           </div>
         </div>
         <div class="arrow">
@@ -409,11 +947,11 @@ function renderList(list) {
 
 function showEmpty() {
   document.getElementById('taskList').innerHTML = `
-    <div class="empty">
+    <div class="empty-state">
       <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round">
         <rect x="2" y="3" width="20" height="14" rx="2" ry="2"/>
         <line x1="8" y1="21" x2="16" y2="21"/>
-        <line x1="12" y1="17" x2="12" y2="21"/>
+        <line x1="12" y1="17" x2="12" y2="17"/>
       </svg>
       <h3>Belum Ada Tugas</h3>
       <p>Klik tombol "Buat Tugas Baru" untuk mulai.</p>
@@ -421,11 +959,8 @@ function showEmpty() {
   `;
 }
 
-function openEdit(kode) {
-  window.location.href = 'edit.html?kode=' + kode;
-}
-
 function escapeHtml(text) {
+  if (!text) return '';
   var div = document.createElement('div');
   div.textContent = text;
   return div.innerHTML;
@@ -437,10 +972,24 @@ function showToast(msg, type) {
   t.className = 'toast show';
   if (type === 'error') t.classList.add('error');
   clearTimeout(t._timer);
-  t._timer = setTimeout(function() {
-    t.classList.remove('show');
-  }, 2500);
+  t._timer = setTimeout(function() { t.classList.remove('show'); }, 2500);
 }
+
+function showAlert(msg) {
+  document.getElementById('alertMessage').textContent = msg;
+  document.getElementById('globalAlert').style.display = 'flex';
+}
+
+function closeAlert() {
+  document.getElementById('globalAlert').style.display = 'none';
+}
+
+document.addEventListener('keydown', function(e) {
+  if (e.key === 'Escape') {
+    closeSidebar();
+    closeAlert();
+  }
+});
 </script>
 
 </body>

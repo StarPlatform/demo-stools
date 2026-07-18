@@ -36,7 +36,8 @@
   body.dark .app-header,
   body.dark .card,
   body.dark .alert-box,
-  body.dark .selesai-box {
+  body.dark .selesai-box,
+  body.dark .sidebar-nav {
     background: #111827;
     border-color: #1E293B;
   }
@@ -135,6 +136,31 @@
     gap: 12px;
   }
 
+  .menu-icon {
+    width: 40px;
+    height: 40px;
+    background: #F8FAFE;
+    border-radius: 32px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    cursor: pointer;
+    border: 1px solid #E2E8F0;
+  }
+
+  body.dark .menu-icon {
+    background: #1E293B;
+    border-color: #334155;
+  }
+
+  .menu-icon svg {
+    stroke: #0F172A;
+  }
+
+  body.dark .menu-icon svg {
+    stroke: #F1F5F9;
+  }
+
   .app-title {
     font-weight: 700;
     font-size: 20px;
@@ -153,37 +179,138 @@
     flex-shrink: 0;
   }
 
-  .back-btn {
+  .close-btn {
+    width: 40px;
+    height: 40px;
+    background: rgba(0, 0, 0, 0.05);
+    border-radius: 50%;
     display: flex;
     align-items: center;
-    gap: 6px;
+    justify-content: center;
     cursor: pointer;
-    color: #0F172A;
-    font-weight: 500;
-    font-size: 14px;
+    transition: 0.2s;
     border: none;
-    background: none;
-    padding: 4px 8px;
-    border-radius: 8px;
-    flex-shrink: 0;
   }
 
-  body.dark .back-btn {
+  body.dark .close-btn {
+    color: #94A3B8;
+  }
+
+  .close-btn svg {
+    width: 24px;
+    height: 24px;
+    stroke: currentColor;
+    stroke-width: 2;
+    stroke-linecap: round;
+    stroke-linejoin: round;
+  }
+
+  .close-btn:active {
+    transform: scale(0.9);
+  }
+
+  .sidebar-overlay {
+    position: fixed;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    background: rgba(0, 0, 0, 0.5);
+    backdrop-filter: blur(4px);
+    z-index: 100;
+    visibility: hidden;
+    opacity: 0;
+    transition: 0.25s;
+  }
+
+  .sidebar-overlay.active {
+    visibility: visible;
+    opacity: 1;
+  }
+
+  .sidebar-nav {
+    position: fixed;
+    top: 0;
+    left: -280px;
+    width: 280px;
+    height: 100%;
+    background: #FFFFFF;
+    z-index: 101;
+    transition: 0.3s cubic-bezier(0.2, 0.9, 0.4, 1.1);
+    padding: 70px 20px 30px;
+    display: flex;
+    flex-direction: column;
+    gap: 4px;
+    box-shadow: 4px 0 20px rgba(0, 0, 0, 0.1);
+  }
+
+  body.dark .sidebar-nav {
+    background: #111827;
+    border-color: #1E293B;
+  }
+
+  .sidebar-nav.active {
+    left: 0;
+  }
+
+  .sidebar-nav a {
+    padding: 14px 18px;
+    font-size: 16px;
+    font-weight: 500;
+    border-radius: 18px;
+    text-decoration: none;
+    color: #0F172A;
+    transition: 0.2s;
+    display: flex;
+    align-items: center;
+    gap: 14px;
+  }
+
+  body.dark .sidebar-nav a {
     color: #F1F5F9;
   }
 
-  .back-btn svg {
-    stroke: #0F172A;
+  .sidebar-nav a:active {
+    background: #DBEAFE;
+  }
+
+  body.dark .sidebar-nav a:active {
+    background: #1E293B;
+  }
+
+  .sidebar-nav a .icon {
     width: 20px;
     height: 20px;
+    stroke: currentColor;
+    fill: none;
+    stroke-width: 2;
+    stroke-linecap: round;
+    stroke-linejoin: round;
+    flex-shrink: 0;
   }
 
-  body.dark .back-btn svg {
+  .close-sidebar-icon {
+    position: absolute;
+    top: 20px;
+    right: 20px;
+    cursor: pointer;
+    width: 40px;
+    height: 40px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    border-radius: 30px;
+  }
+
+  .close-sidebar-icon svg {
+    width: 24px;
+    height: 24px;
+    stroke: #0F172A;
+    stroke-width: 2;
+  }
+
+  body.dark .close-sidebar-icon svg {
     stroke: #F1F5F9;
-  }
-
-  .back-btn:active {
-    transform: scale(0.95);
   }
 
   .page-container {
@@ -466,7 +593,6 @@
     background: #94A3B8;
   }
 
-  /* ===== SELESAI BOX ===== */
   .selesai-box {
     text-align: center;
     padding: 40px 20px;
@@ -603,20 +729,44 @@
     font-size: 15px;
   }
 
-  .alert-box .btn-full {
-    width: 100%;
+  .alert-actions {
+    display: flex;
+    gap: 10px;
+  }
+
+  .alert-actions button {
+    flex: 1;
     padding: 12px;
     border: none;
     border-radius: 10px;
-    background: #2563EB;
-    color: white;
     font-weight: 600;
-    cursor: pointer;
     font-size: 14px;
+    cursor: pointer;
+    transition: 0.2s;
   }
 
-  .alert-box .btn-full:active {
-    transform: scale(0.97);
+  .alert-actions button:active {
+    transform: scale(0.95);
+  }
+
+  .alert-actions .btn-cancel {
+    background: #F1F5F9;
+    color: #0F172A;
+  }
+
+  body.dark .alert-actions .btn-cancel {
+    background: #1E293B;
+    color: #F1F5F9;
+  }
+
+  .alert-actions .btn-confirm {
+    background: #DC2626;
+    color: white;
+  }
+
+  .alert-actions .btn-confirm-primary {
+    background: #2563EB;
+    color: white;
   }
 
   .hidden {
@@ -637,10 +787,6 @@
     border-radius: 50%;
     animation: spin 0.8s linear infinite;
     margin: 0 auto 12px;
-  }
-
-  @keyframes spin {
-    to { transform: rotate(360deg); }
   }
 
   .not-found {
@@ -686,31 +832,57 @@
 
 <div class="app-container">
 
-  <!-- HEADER -->
   <div class="app-header">
     <div class="logo-area">
+      <div class="menu-icon" onclick="openSidebar()">
+        <svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+          <line x1="3" y1="12" x2="21" y2="12"></line>
+          <line x1="3" y1="6" x2="21" y2="6"></line>
+          <line x1="3" y1="18" x2="21" y2="18"></line>
+        </svg>
+      </div>
       <span class="app-title">Star Tools</span>
     </div>
     <div class="header-action">
-      <button class="back-btn" onclick="goTo('index.html')">
-        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
-          <polyline points="15 18 9 12 15 6"/>
-        </svg>
-        <span>Beranda</span>
+      <button class="close-btn" onclick="confirmExit()">
+      <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+        <line x1="18" y1="6" x2="6" y2="18"/>
+        <line x1="6" y1="6" x2="18" y2="18"/>
+      </svg>
       </button>
     </div>
   </div>
 
-  <!-- PAGE CONTENT -->
+  <div class="sidebar-overlay" id="sidebarOverlay" onclick="closeSidebar()"></div>
+  <div class="sidebar-nav" id="sidebarNav">
+    <div class="close-sidebar-icon" onclick="closeSidebar()">
+      <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><line x1="18" y1="6" x2="6" y2="18"/><line x1="6" y1="6" x2="18" y2="18"/></svg>
+    </div>
+    <a href="#" onclick="handleSidebarNavigation('index.html')">
+      <svg class="icon" viewBox="0 0 24 24"><path d="M3 9l9-7 9 7v11a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2z"/><polyline points="9 22 9 12 15 12 15 22"/></svg>
+      Utama
+    </a>
+    <a href="#" onclick="handleSidebarNavigation('berita.html')">
+      <svg class="icon" viewBox="0 0 24 24"><path d="M4 4h16a2 2 0 0 1 2 2v12a2 2 0 0 1-2 2H4a2 2 0 0 1-2-2V6a2 2 0 0 1 2-2z"/><line x1="8" y1="8" x2="16" y2="8"/><line x1="8" y1="12" x2="16" y2="12"/><line x1="8" y1="16" x2="12" y2="16"/></svg>
+      Berita
+    </a>
+    <a href="#" onclick="handleSidebarNavigation('premium.html')">
+      <svg class="icon" viewBox="0 0 24 24"><polygon points="12 2 15.09 8.26 22 9.27 17 14.14 18.18 21.02 12 17.77 5.82 21.02 7 14.14 2 9.27 8.91 8.26 12 2"/></svg>
+      Premium
+    </a>
+    <a href="#" onclick="handleSidebarNavigation('akun.html')">
+      <svg class="icon" viewBox="0 0 24 24"><path d="M20 21v-2a4 4 0 0 0-4-4H8a4 4 0 0 0-4 4v2"/><circle cx="12" cy="7" r="4"/></svg>
+      Akun
+    </a>
+  </div>
+
   <div class="page-container">
 
-    <!-- LOADING -->
     <div id="loadingState" class="loading-state">
       <div class="spin"></div>
       <div>Memuat tugas...</div>
     </div>
 
-    <!-- NOT FOUND -->
     <div id="notFoundState" class="not-found hidden">
       <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round">
         <rect x="2" y="3" width="20" height="14" rx="2" ry="2"/>
@@ -722,10 +894,8 @@
       <button class="btn" onclick="goTo('index.html')">Kembali ke Beranda</button>
     </div>
 
-    <!-- MAIN CONTENT -->
     <div id="mainContent" class="hidden">
 
-      <!-- SELESAI BOX (muncul kalau udah kirim) -->
       <div id="selesaiBox" class="hidden">
         <div class="selesai-box">
           <div class="icon-selesai">
@@ -740,7 +910,6 @@
         </div>
       </div>
 
-      <!-- INFO TUGAS -->
       <div id="infoTugas" class="hidden">
         <div class="card">
           <div class="card-title" id="tugasJudul">-</div>
@@ -748,7 +917,6 @@
           <div id="fotoContainer"></div>
         </div>
 
-        <!-- TIMER -->
         <div class="card">
           <div class="timer">
             <div class="value" id="timerValue">--:--</div>
@@ -757,7 +925,6 @@
           <div class="status-info" id="statusInfo">Silakan kerjakan tugas</div>
         </div>
 
-        <!-- FORM JAWABAN -->
         <div class="card" id="formJawaban">
           <div class="input-group">
             <label>Nama Kamu</label>
@@ -802,19 +969,19 @@
   </div>
 </div>
 
-<!-- TOAST -->
 <div id="toast" class="toast"></div>
 
-<!-- ALERT -->
 <div id="globalAlert" class="alert-overlay">
   <div class="alert-box">
     <p id="alertMessage">Pemberitahuan</p>
-    <button class="btn-full" onclick="closeAlert()">Mengerti</button>
+    <div class="alert-actions" id="alertActions">
+      <button class="btn-confirm" onclick="closeAlert()">Mengerti</button>
+    </div>
   </div>
 </div>
 
 <script>
-const firebaseConfig = {
+var firebaseConfig = {
   apiKey: "AIzaSyDgr_nHqvpMsiG4lBkYckzxRErkskXj_6E",
   authDomain: "laporanstartools-c18b2.firebaseapp.com",
   databaseURL: "https://laporanstartools-c18b2-default-rtdb.asia-southeast1.firebasedatabase.app",
@@ -824,18 +991,18 @@ const firebaseConfig = {
 if (!firebase.apps.length) {
   firebase.initializeApp(firebaseConfig);
 }
-const db = firebase.database();
+var db = firebase.database();
 
-let tugasData = null;
-let tugasKode = null;
-let fileJawabanBase64 = null;
-let timerInterval = null;
-let waktuMulai = null;
-let waktuSelesai = null;
-let sudahKirim = false;
-let jawabanKey = null;
+var tugasData = null;
+var tugasKode = null;
+var fileJawabanBase64 = null;
+var timerInterval = null;
+var waktuMulai = null;
+var waktuSelesai = null;
+var sudahKirim = false;
+var jawabanKey = null;
+var isExiting = false;
 
-// ===== AMBIL KODE DARI URL =====
 var urlParams = new URLSearchParams(window.location.search);
 tugasKode = urlParams.get('kode');
 
@@ -852,6 +1019,73 @@ if (localStorage.getItem('theme') === 'dark') {
 
 function goTo(page) {
   window.location.href = page;
+}
+
+function openSidebar() {
+  document.getElementById('sidebarOverlay').classList.add('active');
+  document.getElementById('sidebarNav').classList.add('active');
+}
+
+function closeSidebar() {
+  document.getElementById('sidebarOverlay').classList.remove('active');
+  document.getElementById('sidebarNav').classList.remove('active');
+}
+
+function handleSidebarNavigation(page) {
+  if (sudahKirim) {
+    goTo(page);
+    return;
+  }
+  closeSidebar();
+  confirmExit(page);
+}
+
+function confirmExit(targetPage) {
+  if (sudahKirim) {
+    if (targetPage) {
+      goTo(targetPage);
+    } else {
+      goTo('index.html');
+    }
+    return;
+  }
+
+  var hasNama = document.getElementById('namaMurid').value.trim() !== '';
+  var hasJawaban = document.getElementById('jawabanMurid').value.trim() !== '';
+
+  if (!hasNama && !hasJawaban && !fileJawabanBase64) {
+    if (targetPage) {
+      goTo(targetPage);
+    } else {
+      goTo('index.html');
+    }
+    return;
+  }
+
+  var target = targetPage || 'index.html';
+  var alertMsg = document.getElementById('alertMessage');
+  var alertActions = document.getElementById('alertActions');
+
+  alertMsg.textContent = 'Yakin ingin keluar? Jawaban yang sudah ditulis akan dikirim secara otomatis dengan data seadanya.';
+
+  alertActions.innerHTML = '';
+  var btnBatal = document.createElement('button');
+  btnBatal.className = 'btn-cancel';
+  btnBatal.textContent = 'Kembali';
+  btnBatal.onclick = function() { closeAlert(); };
+
+  var btnKeluar = document.createElement('button');
+  btnKeluar.className = 'btn-confirm';
+  btnKeluar.textContent = 'Keluar & Kirim';
+  btnKeluar.onclick = function() {
+    closeAlert();
+    kirimJawabanOtomatis(target);
+  };
+
+  alertActions.appendChild(btnBatal);
+  alertActions.appendChild(btnKeluar);
+
+  document.getElementById('globalAlert').style.display = 'flex';
 }
 
 function loadTugas() {
@@ -884,27 +1118,12 @@ function loadTugas() {
 
     tugasData = data;
 
-    // ===== CEK APAKAH SUDAH PERNAH MENGERJAKAN =====
-    // Cek di localStorage
     var sudahMengerjakan = localStorage.getItem('tugas_selesai_' + tugasKode);
 
     if (sudahMengerjakan === 'true') {
-      // Langsung tampilkan halaman selesai
       tampilkanSelesai();
       return;
     }
-
-    // Cek di database juga (untuk jaga-jaga)
-    db.ref('tugas/' + tugasKode + '/jawaban').once('value').then(function(snapJawaban) {
-      var jawabanData = snapJawaban.val();
-      if (jawabanData) {
-        // Cek apakah ada jawaban dengan nama yang sama
-        // Karena kita gak tau nama murid, kita cek aja
-        // Tapi lebih aman pake localStorage aja
-        // Kalau user ganti nama, tetep bisa kirim ulang
-        // Tapi kita tetap kasih proteksi
-      }
-    });
 
     tampilkanTugas();
     document.getElementById('mainContent').classList.remove('hidden');
@@ -959,7 +1178,7 @@ function mulaiTimer(durasiMenit) {
       document.getElementById('btnKirim').innerHTML = 'Waktu Habis';
       document.getElementById('btnKirim').className = 'btn-save btn-danger';
       if (!sudahKirim) {
-        kirimJawabanOtomatis();
+        kirimJawabanOtomatis('index.html');
       }
       return;
     }
@@ -1043,8 +1262,6 @@ function kirimJawaban() {
 
   db.ref('tugas/' + tugasKode + '/jawaban/' + jawabanKey).set(data).then(function() {
     sudahKirim = true;
-
-    // Simpan ke localStorage biar gak bisa kirim ulang
     localStorage.setItem('tugas_selesai_' + tugasKode, 'true');
 
     showToast('Jawaban berhasil dikirim!');
@@ -1056,7 +1273,6 @@ function kirimJawaban() {
     document.getElementById('statusInfo').className = 'status-info selesai';
     clearInterval(timerInterval);
 
-    // Tampilkan halaman selesai setelah 1 detik
     setTimeout(function() {
       tampilkanSelesai();
     }, 1000);
@@ -1068,8 +1284,14 @@ function kirimJawaban() {
   });
 }
 
-function kirimJawabanOtomatis() {
-  if (sudahKirim) return;
+function kirimJawabanOtomatis(targetPage) {
+  if (sudahKirim) {
+    if (targetPage) {
+      goTo(targetPage);
+    }
+    return;
+  }
+
   sudahKirim = true;
 
   var nama = document.getElementById('namaMurid').value.trim();
@@ -1077,10 +1299,10 @@ function kirimJawabanOtomatis() {
 
   var data = {
     nama: nama || 'Tidak Diketahui',
-    jawaban: jawaban || 'Waktu habis, tidak ada jawaban',
-    waktu_mulai: waktuMulai,
+    jawaban: jawaban || 'Keluar dari halaman tugas, jawaban tidak lengkap',
+    waktu_mulai: waktuMulai || Date.now(),
     waktu_selesai: Date.now(),
-    status: 'habis'
+    status: 'ditinggalkan'
   };
 
   if (fileJawabanBase64) {
@@ -1091,15 +1313,20 @@ function kirimJawabanOtomatis() {
 
   db.ref('tugas/' + tugasKode + '/jawaban/' + key).set(data).then(function() {
     localStorage.setItem('tugas_selesai_' + tugasKode, 'true');
-    document.getElementById('btnKirim').disabled = true;
-    document.getElementById('btnKirim').innerHTML = 'Waktu Habis';
-    document.getElementById('btnKirim').className = 'btn-save btn-danger';
-    document.getElementById('statusInfo').innerText = 'Waktu habis! Jawaban otomatis dikirim.';
-    document.getElementById('statusInfo').className = 'status-info habis';
+    if (timerInterval) clearInterval(timerInterval);
 
-    setTimeout(function() {
+    if (targetPage) {
+      goTo(targetPage);
+    } else {
       tampilkanSelesai();
-    }, 1500);
+    }
+
+  }).catch(function() {
+    if (targetPage) {
+      goTo(targetPage);
+    } else {
+      tampilkanSelesai();
+    }
   });
 }
 
@@ -1114,6 +1341,8 @@ function showToast(msg, type) {
 
 function showAlert(msg) {
   document.getElementById('alertMessage').textContent = msg;
+  var actions = document.getElementById('alertActions');
+  actions.innerHTML = '<button class="btn-confirm" onclick="closeAlert()">Mengerti</button>';
   document.getElementById('globalAlert').style.display = 'flex';
 }
 
@@ -1124,9 +1353,20 @@ function closeAlert() {
 document.addEventListener('keydown', function(e) {
   if (e.key === 'Escape') {
     closeAlert();
+    closeSidebar();
+  }
+});
+
+window.addEventListener('beforeunload', function(e) {
+  if (!sudahKirim && tugasData) {
+    var nama = document.getElementById('namaMurid').value.trim();
+    var jawaban = document.getElementById('jawabanMurid').value.trim();
+    if (nama || jawaban) {
+      e.preventDefault();
+      e.returnValue = 'Anda belum menyelesaikan tugas. Yakin ingin meninggalkan halaman?';
+    }
   }
 });
 </script>
-
 </body>
 </html>
