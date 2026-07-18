@@ -36,9 +36,10 @@
   body.dark .app-header,
   body.dark .sidebar-nav,
   body.dark .card,
-  body.dark .alert-box,
   body.dark .link-box,
-  body.dark .jawaban-item {
+  body.dark .jawaban-item,
+  body.dark .alert-box,
+  body.dark .modal-content {
     background: #111827;
     border-color: #1E293B;
   }
@@ -66,19 +67,6 @@
     color: #F1F5F9;
   }
 
-  body.dark .info-box {
-    background: #1E293B;
-    border-color: #334155;
-  }
-
-  body.dark .info-box .label {
-    color: #94A3B8;
-  }
-
-  body.dark .jawaban-item .meta {
-    color: #94A3B8;
-  }
-
   body.dark .jawaban-item .status-badge.selesai {
     background: #064E3B;
     color: #6EE7B7;
@@ -89,19 +77,37 @@
     color: #FCA5A5;
   }
 
-  body.dark .jawaban-item .foto-thumb {
-    background: #1E293B;
-    border-color: #334155;
-    color: #60A5FA;
-  }
-
-  body.dark .jawaban-item .foto-thumb svg {
-    stroke: #60A5FA;
+  body.dark .jawaban-item .meta {
+    color: #94A3B8;
   }
 
   body.dark .btn-save:disabled {
     background: #334155;
     color: #94A3B8;
+  }
+
+  body.dark .custom-alert-box {
+    background: #111827;
+  }
+
+  body.dark .custom-alert-box .alert-title {
+    color: #F1F5F9;
+  }
+
+  body.dark .custom-alert-box .alert-message {
+    color: #94A3B8;
+  }
+
+  body.dark .modal-body .label {
+    color: #94A3B8;
+  }
+
+  body.dark .modal-body .value {
+    color: #F1F5F9;
+  }
+
+  body.dark .jawaban-item .nama {
+    color: #F1F5F9;
   }
 
   .app-container {
@@ -544,36 +550,6 @@
     transform: scale(0.95);
   }
 
-  .info-box {
-    background: #F1F5F9;
-    padding: 10px 12px;
-    border-radius: 10px;
-    border: 1px solid #E2E8F0;
-  }
-
-  body.dark .info-box {
-    background: #1E293B;
-    border-color: #334155;
-  }
-
-  .info-box .label {
-    font-size: 10px;
-    color: #94A3B8;
-    text-transform: uppercase;
-  }
-
-  .info-box .value {
-    font-size: 14px;
-    font-weight: 600;
-    margin-top: 2px;
-  }
-
-  .info-grid {
-    display: grid;
-    grid-template-columns: 1fr 1fr;
-    gap: 8px;
-  }
-
   .btn-save {
     width: 100%;
     padding: 14px;
@@ -663,13 +639,18 @@
     flex: 1;
   }
 
-  /* ===== JAWABAN ===== */
+  /* ===== JAWABAN ITEM ===== */
   .jawaban-item {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    padding: 10px 12px;
     background: #F1F5F9;
     border: 1px solid #E2E8F0;
-    border-radius: 12px;
-    padding: 12px 14px;
-    margin-bottom: 8px;
+    border-radius: 10px;
+    margin-bottom: 6px;
+    cursor: pointer;
+    transition: 0.2s;
   }
 
   body.dark .jawaban-item {
@@ -677,23 +658,32 @@
     border-color: #334155;
   }
 
-  .jawaban-item .header {
-    display: flex;
-    justify-content: space-between;
-    align-items: center;
-    margin-bottom: 4px;
+  .jawaban-item:active {
+    transform: scale(0.97);
   }
 
-  .jawaban-item .header .nama {
+  .jawaban-item .left {
+    display: flex;
+    align-items: center;
+    gap: 10px;
+    flex: 1;
+    min-width: 0;
+  }
+
+  .jawaban-item .left .nama {
     font-size: 14px;
-    font-weight: 600;
+    font-weight: 500;
+    white-space: nowrap;
+    overflow: hidden;
+    text-overflow: ellipsis;
   }
 
   .jawaban-item .status-badge {
-    font-size: 11px;
+    font-size: 10px;
     padding: 2px 10px;
     border-radius: 12px;
     font-weight: 600;
+    flex-shrink: 0;
   }
 
   .jawaban-item .status-badge.selesai {
@@ -709,49 +699,23 @@
   .jawaban-item .meta {
     font-size: 11px;
     color: #64748B;
-    margin-bottom: 4px;
+    flex-shrink: 0;
+    margin-left: 8px;
   }
 
-  .jawaban-item .jawaban-text {
-    font-size: 13px;
-    line-height: 1.5;
-    margin-bottom: 6px;
-    white-space: pre-wrap;
-    word-break: break-word;
+  body.dark .jawaban-item .meta {
+    color: #94A3B8;
   }
 
-  .jawaban-item .foto-thumb {
-    display: inline-flex;
-    align-items: center;
-    gap: 6px;
-    padding: 4px 10px;
-    background: #FFFFFF;
-    border: 1px solid #E2E8F0;
-    border-radius: 6px;
-    cursor: pointer;
-    font-size: 12px;
-    color: #2563EB;
-    transition: 0.2s;
+  .jawaban-item .arrow {
+    flex-shrink: 0;
+    margin-left: 8px;
   }
 
-  body.dark .jawaban-item .foto-thumb {
-    background: #111827;
-    border-color: #334155;
-    color: #60A5FA;
-  }
-
-  .jawaban-item .foto-thumb:active {
-    transform: scale(0.95);
-  }
-
-  .jawaban-item .foto-thumb svg {
-    width: 14px;
-    height: 14px;
-    stroke: #2563EB;
-  }
-
-  body.dark .jawaban-item .foto-thumb svg {
-    stroke: #60A5FA;
+  .jawaban-item .arrow svg {
+    width: 16px;
+    height: 16px;
+    stroke: #94A3B8;
   }
 
   .jawaban-empty {
@@ -768,7 +732,7 @@
     margin-bottom: 8px;
   }
 
-  /* ===== MODAL ===== */
+  /* ===== MODAL DETAIL JAWABAN ===== */
   .modal-overlay {
     position: fixed;
     top: 0;
@@ -795,7 +759,7 @@
     width: 100%;
     max-height: 90vh;
     overflow-y: auto;
-    padding: 20px;
+    padding: 24px;
     border: 1px solid #E2E8F0;
     position: relative;
   }
@@ -835,12 +799,15 @@
   .modal-sub {
     font-size: 13px;
     color: #94A3B8;
+    margin-bottom: 16px;
+  }
+
+  .modal-body .row {
     margin-bottom: 12px;
   }
 
-  .modal-body img {
-    max-width: 100%;
-    border-radius: 8px;
+  .modal-body .row:last-child {
+    margin-bottom: 0;
   }
 
   .modal-body .label {
@@ -848,8 +815,7 @@
     font-weight: 600;
     color: #94A3B8;
     text-transform: uppercase;
-    margin-top: 12px;
-    margin-bottom: 4px;
+    margin-bottom: 2px;
   }
 
   .modal-body .value {
@@ -857,6 +823,153 @@
     line-height: 1.6;
     white-space: pre-wrap;
     word-break: break-word;
+  }
+
+  .modal-body .foto-jawaban {
+    margin-top: 8px;
+  }
+
+  .modal-body .foto-jawaban img {
+    max-width: 100%;
+    border-radius: 8px;
+  }
+
+  /* ===== CUSTOM ALERT ===== */
+  .custom-alert-overlay {
+    position: fixed;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    background: rgba(0, 0, 0, 0.6);
+    backdrop-filter: blur(8px);
+    display: none;
+    justify-content: center;
+    align-items: center;
+    z-index: 9999;
+    animation: customAlertFadeIn 0.3s ease;
+  }
+
+  .custom-alert-overlay.active {
+    display: flex;
+  }
+
+  @keyframes customAlertFadeIn {
+    from { opacity: 0; transform: scale(0.95); }
+    to { opacity: 1; transform: scale(1); }
+  }
+
+  .custom-alert-box {
+    background: #FFFFFF;
+    border-radius: 20px;
+    padding: 28px 24px 24px;
+    max-width: 360px;
+    width: 90%;
+    text-align: center;
+    box-shadow: 0 20px 60px rgba(0, 0, 0, 0.3);
+    border: 1px solid #E2E8F0;
+    position: relative;
+  }
+
+  .custom-alert-box .alert-icon {
+    width: 56px;
+    height: 56px;
+    border-radius: 50%;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    margin: 0 auto 12px;
+  }
+
+  .custom-alert-box .alert-icon svg {
+    width: 28px;
+    height: 28px;
+    stroke: white;
+  }
+
+  .custom-alert-box .alert-icon.success {
+    background: #059669;
+  }
+
+  .custom-alert-box .alert-icon.error {
+    background: #DC2626;
+  }
+
+  .custom-alert-box .alert-icon.warning {
+    background: #D97706;
+  }
+
+  .custom-alert-box .alert-icon.info {
+    background: #2563EB;
+  }
+
+  .custom-alert-box .alert-title {
+    font-size: 18px;
+    font-weight: 700;
+    color: #0F172A;
+    margin-bottom: 4px;
+  }
+
+  .custom-alert-box .alert-message {
+    font-size: 14px;
+    color: #64748B;
+    line-height: 1.6;
+    margin-bottom: 20px;
+  }
+
+  .custom-alert-box .alert-btn {
+    width: 100%;
+    padding: 12px;
+    border: none;
+    border-radius: 10px;
+    font-weight: 600;
+    font-size: 14px;
+    cursor: pointer;
+    transition: 0.2s;
+    color: white;
+  }
+
+  .custom-alert-box .alert-btn:active {
+    transform: scale(0.97);
+  }
+
+  .custom-alert-box .alert-btn.success {
+    background: #059669;
+  }
+
+  .custom-alert-box .alert-btn.error {
+    background: #DC2626;
+  }
+
+  .custom-alert-box .alert-btn.warning {
+    background: #D97706;
+  }
+
+  .custom-alert-box .alert-btn.info {
+    background: #2563EB;
+  }
+
+  .custom-alert-box .alert-btn-secondary {
+    width: 100%;
+    padding: 12px;
+    border: none;
+    border-radius: 10px;
+    font-weight: 600;
+    font-size: 14px;
+    cursor: pointer;
+    transition: 0.2s;
+    background: #E2E8F0;
+    color: #0F172A;
+    margin-top: 8px;
+  }
+
+  body.dark .custom-alert-box .alert-btn-secondary {
+    background: #334155;
+    color: #F1F5F9;
+  }
+
+  .custom-alert-box .alert-btn-secondary:active {
+    transform: scale(0.97);
   }
 
   .footer-app {
@@ -898,57 +1011,6 @@
 
   .toast.error {
     border-left-color: #DC2626;
-  }
-
-  .alert-overlay {
-    position: fixed;
-    top: 0;
-    left: 0;
-    width: 100%;
-    height: 100%;
-    background: rgba(0, 0, 0, 0.6);
-    backdrop-filter: blur(4px);
-    display: none;
-    justify-content: center;
-    align-items: center;
-    z-index: 200;
-  }
-
-  .alert-box {
-    background: #FFFFFF;
-    padding: 24px;
-    border-radius: 16px;
-    max-width: 320px;
-    width: 90%;
-    text-align: center;
-    border: 1px solid #E2E8F0;
-  }
-
-  body.dark .alert-box {
-    background: #111827;
-    border-color: #1E293B;
-  }
-
-  .alert-box p {
-    margin-bottom: 16px;
-    line-height: 1.6;
-    font-size: 15px;
-  }
-
-  .alert-box .btn-full {
-    width: 100%;
-    padding: 12px;
-    border: none;
-    border-radius: 10px;
-    background: #2563EB;
-    color: white;
-    font-weight: 600;
-    cursor: pointer;
-    font-size: 14px;
-  }
-
-  .alert-box .btn-full:active {
-    transform: scale(0.97);
   }
 
   .hidden {
@@ -1177,24 +1239,24 @@
       <div class="card">
         <div class="card-title">
           <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.7" stroke-linecap="round" stroke-linejoin="round">
-            <path d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8z"/>
-            <polyline points="14 2 14 8 20 8"/>
-            <line x1="16" y1="13" x2="8" y2="13"/>
-            <line x1="16" y1="17" x2="8" y2="17"/>
+            <path d="M17 21v-2a4 4 0 0 0-4-4H5a4 4 0 0 0-4 4v2"/>
+            <circle cx="9" cy="7" r="4"/>
+            <path d="M23 21v-2a4 4 0 0 0-3-3.87"/>
+            <path d="M16 3.13a4 4 0 0 1 0 7.75"/>
           </svg>
-          Jawaban Terkirim
+          Daftar Pengerja
           <span style="font-size:12px;font-weight:400;color:#94A3B8;margin-left:auto;" id="totalJawaban">0</span>
         </div>
 
         <div id="jawabanContainer">
           <div class="jawaban-empty">
             <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round">
-              <path d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8z"/>
-              <polyline points="14 2 14 8 20 8"/>
-              <line x1="16" y1="13" x2="8" y2="13"/>
-              <line x1="16" y1="17" x2="8" y2="17"/>
+              <path d="M17 21v-2a4 4 0 0 0-4-4H5a4 4 0 0 0-4 4v2"/>
+              <circle cx="9" cy="7" r="4"/>
+              <path d="M23 21v-2a4 4 0 0 0-3-3.87"/>
+              <path d="M16 3.13a4 4 0 0 1 0 7.75"/>
             </svg>
-            <div>Belum ada jawaban terkirim</div>
+            <div>Belum ada yang mengerjakan</div>
           </div>
         </div>
       </div>
@@ -1207,11 +1269,11 @@
   </div>
 </div>
 
-<!-- MODAL FOTO -->
-<div class="modal-overlay" id="modalFoto">
+<!-- MODAL DETAIL JAWABAN -->
+<div class="modal-overlay" id="modalJawaban">
   <div class="modal-content">
-    <button class="modal-close" onclick="closeModal()">×</button>
-    <div class="modal-title" id="modalTitle">Foto Jawaban</div>
+    <button class="modal-close" onclick="closeModalJawaban()">×</button>
+    <div class="modal-title" id="modalJudul">Detail Jawaban</div>
     <div class="modal-sub" id="modalSub">-</div>
     <div class="modal-body" id="modalBody"></div>
   </div>
@@ -1219,14 +1281,6 @@
 
 <!-- TOAST -->
 <div id="toast" class="toast"></div>
-
-<!-- ALERT -->
-<div id="globalAlert" class="alert-overlay">
-  <div class="alert-box">
-    <p id="alertMessage">Pemberitahuan</p>
-    <button class="btn-full" onclick="closeAlert()">Mengerti</button>
-  </div>
-</div>
 
 <script>
 const firebaseConfig = {
@@ -1248,6 +1302,7 @@ let fileBase64 = null;
 let existingFileUrl = null;
 let jawabanListener = null;
 
+// ===== AUTH =====
 firebase.auth().onAuthStateChanged(function(user) {
   if (user) {
     currentUser = user;
@@ -1261,6 +1316,7 @@ if (localStorage.getItem('theme') === 'dark') {
   document.body.classList.add('dark');
 }
 
+// ===== SIDEBAR =====
 function openSidebar() {
   document.getElementById('sidebarOverlay').classList.add('active');
   document.getElementById('sidebarNav').classList.add('active');
@@ -1281,6 +1337,7 @@ function logoutAction() {
   });
 }
 
+// ===== LOAD TUGAS =====
 function loadTugas() {
   var urlParams = new URLSearchParams(window.location.search);
   tugasKode = urlParams.get('kode');
@@ -1301,7 +1358,7 @@ function loadTugas() {
     }
 
     if (data.pembuat_id !== currentUser.uid) {
-      showAlert('Anda tidak memiliki akses ke tugas ini!');
+      showAlert('Anda tidak memiliki akses ke tugas ini!', 'error');
       document.getElementById('notFoundState').classList.remove('hidden');
       return;
     }
@@ -1315,7 +1372,7 @@ function loadTugas() {
 
   }).catch(function(err) {
     document.getElementById('loadingState').classList.add('hidden');
-    showAlert('Gagal memuat tugas: ' + err.message);
+    showAlert('Gagal memuat tugas: ' + err.message, 'error');
     document.getElementById('notFoundState').classList.remove('hidden');
   });
 }
@@ -1338,6 +1395,7 @@ function tampilkanData() {
   }
 }
 
+// ===== LOAD JAWABAN =====
 function loadJawaban() {
   if (jawabanListener) {
     jawabanListener.off();
@@ -1354,12 +1412,12 @@ function loadJawaban() {
       container.innerHTML = `
         <div class="jawaban-empty">
           <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round">
-            <path d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8z"/>
-            <polyline points="14 2 14 8 20 8"/>
-            <line x1="16" y1="13" x2="8" y2="13"/>
-            <line x1="16" y1="17" x2="8" y2="17"/>
+            <path d="M17 21v-2a4 4 0 0 0-4-4H5a4 4 0 0 0-4 4v2"/>
+            <circle cx="9" cy="7" r="4"/>
+            <path d="M23 21v-2a4 4 0 0 0-3-3.87"/>
+            <path d="M16 3.13a4 4 0 0 1 0 7.75"/>
           </svg>
-          <div>Belum ada jawaban terkirim</div>
+          <div>Belum ada yang mengerjakan</div>
         </div>
       `;
       return;
@@ -1385,38 +1443,18 @@ function loadJawaban() {
         waktu = date.toLocaleDateString('id-ID') + ' ' + date.toLocaleTimeString('id-ID', {hour:'2-digit', minute:'2-digit'});
       }
 
-      var durasiPengerjaan = '-';
-      if (item.waktu_mulai && item.waktu_selesai) {
-        durasiPengerjaan = Math.round((item.waktu_selesai - item.waktu_mulai) / 1000 / 60) + ' menit';
-      }
-
-      var fotoHtml = '';
-      if (item.foto) {
-        fotoHtml = `
-          <div class="foto-thumb" onclick="openFoto('${item.foto}', '${escapeHtml(item.nama || 'Tidak Diketahui')}')">
-            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
-              <rect x="3" y="3" width="18" height="18" rx="2"/>
-              <circle cx="8.5" cy="8.5" r="1.5"/>
-              <path d="M21 15l-5-5L5 21"/>
-            </svg>
-            Lihat Foto
-          </div>
-        `;
-      }
-
       html += `
-        <div class="jawaban-item">
-          <div class="header">
+        <div class="jawaban-item" onclick="openDetailJawaban('${key}')">
+          <div class="left">
             <span class="nama">${escapeHtml(item.nama || 'Tidak Diketahui')}</span>
             <span class="status-badge ${statusClass}">${statusText}</span>
           </div>
-          <div class="meta">
-            <span>${waktu}</span>
-            <span> | </span>
-            <span>${durasiPengerjaan}</span>
+          <div class="meta">${waktu}</div>
+          <div class="arrow">
+            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+              <polyline points="9 18 15 12 9 6"/>
+            </svg>
           </div>
-          <div class="jawaban-text">${escapeHtml(item.jawaban || 'Tidak ada jawaban')}</div>
-          ${fotoHtml}
         </div>
       `;
     });
@@ -1425,17 +1463,73 @@ function loadJawaban() {
   });
 }
 
-function openFoto(fotoUrl, nama) {
-  document.getElementById('modalTitle').innerText = 'Foto Jawaban';
-  document.getElementById('modalSub').innerText = 'Dari: ' + nama;
-  document.getElementById('modalBody').innerHTML = '<img src="' + fotoUrl + '" alt="Foto Jawaban">';
-  document.getElementById('modalFoto').classList.add('active');
+// ===== OPEN DETAIL JAWABAN =====
+function openDetailJawaban(key) {
+  db.ref('tugas/' + tugasKode + '/jawaban/' + key).once('value').then(function(snap) {
+    var item = snap.val();
+    if (!item) {
+      showAlert('Data jawaban tidak ditemukan!', 'error');
+      return;
+    }
+
+    var statusText = item.status === 'selesai' ? 'Selesai' : 'Waktu Habis';
+    var statusColor = item.status === 'selesai' ? '#059669' : '#DC2626';
+
+    var waktu = '-';
+    if (item.waktu_selesai) {
+      var date = new Date(item.waktu_selesai);
+      waktu = date.toLocaleDateString('id-ID') + ' ' + date.toLocaleTimeString('id-ID', {hour:'2-digit', minute:'2-digit'});
+    }
+
+    var durasi = '-';
+    if (item.waktu_mulai && item.waktu_selesai) {
+      durasi = Math.round((item.waktu_selesai - item.waktu_mulai) / 1000 / 60) + ' menit';
+    }
+
+    var fotoHtml = '';
+    if (item.foto) {
+      fotoHtml = `
+        <div class="row">
+          <div class="label">Foto Jawaban</div>
+          <div class="foto-jawaban">
+            <img src="${item.foto}" alt="Foto Jawaban">
+          </div>
+        </div>
+      `;
+    }
+
+    document.getElementById('modalJudul').innerText = 'Detail Jawaban';
+    document.getElementById('modalSub').innerText = 'Dari: ' + (item.nama || 'Tidak Diketahui');
+
+    document.getElementById('modalBody').innerHTML = `
+      <div class="row">
+        <div class="label">Status</div>
+        <div class="value" style="color:${statusColor};font-weight:600;">${statusText}</div>
+      </div>
+      <div class="row">
+        <div class="label">Waktu Kirim</div>
+        <div class="value">${waktu}</div>
+      </div>
+      <div class="row">
+        <div class="label">Durasi Pengerjaan</div>
+        <div class="value">${durasi}</div>
+      </div>
+      <div class="row">
+        <div class="label">Jawaban</div>
+        <div class="value">${escapeHtml(item.jawaban || 'Tidak ada jawaban')}</div>
+      </div>
+      ${fotoHtml}
+    `;
+
+    document.getElementById('modalJawaban').classList.add('active');
+  });
 }
 
-function closeModal() {
-  document.getElementById('modalFoto').classList.remove('active');
+function closeModalJawaban() {
+  document.getElementById('modalJawaban').classList.remove('active');
 }
 
+// ===== FILE UPLOAD =====
 document.getElementById('fileInput').addEventListener('change', function(e) {
   var file = e.target.files[0];
   if (!file) return;
@@ -1480,6 +1574,7 @@ function copyLink() {
   });
 }
 
+// ===== SIMPAN PERUBAHAN =====
 function simpanPerubahan() {
   var btn = document.getElementById('btnSimpan');
 
@@ -1489,7 +1584,7 @@ function simpanPerubahan() {
   var deskripsi = document.getElementById('editDeskripsi').value.trim();
 
   if (!judul) {
-    showAlert('Judul wajib diisi!');
+    showAlert('Judul wajib diisi!', 'warning');
     return;
   }
 
@@ -1508,46 +1603,98 @@ function simpanPerubahan() {
   }
 
   db.ref('tugas/' + tugasKode).update(updates).then(function() {
-    showToast('Perubahan disimpan!');
+    showAlert('Perubahan berhasil disimpan!', 'success');
     btn.disabled = false;
     btn.classList.remove('loading');
-    // Reload data
     loadTugas();
   }).catch(function(err) {
-    showAlert('Gagal menyimpan: ' + err.message);
+    showAlert('Gagal menyimpan: ' + err.message, 'error');
     btn.disabled = false;
     btn.classList.remove('loading');
   });
 }
 
+// ===== HAPUS TUGAS =====
 function hapusTugas() {
-  if (!confirm('Yakin ingin menghapus tugas ini? Tindakan ini tidak dapat dibatalkan!')) {
-    return;
-  }
+  showAlert('Yakin ingin menghapus tugas ini? Tindakan ini tidak dapat dibatalkan!', 'warning', 'Ya, Hapus', function() {
+    var btn = document.getElementById('btnHapus');
+    btn.disabled = true;
+    btn.innerText = 'Menghapus...';
 
-  var btn = document.getElementById('btnHapus');
-  btn.disabled = true;
-  btn.innerText = 'Menghapus...';
-
-  db.ref('tugas/' + tugasKode).remove().then(function() {
-    showToast('Tugas berhasil dihapus!');
-    setTimeout(function() {
-      goTo('daftar-tugas.html');
-    }, 1000);
-  }).catch(function(err) {
-    showAlert('Gagal menghapus: ' + err.message);
-    btn.disabled = false;
-    btn.innerText = 'Hapus Tugas';
+    db.ref('tugas/' + tugasKode).remove().then(function() {
+      showAlert('Tugas berhasil dihapus!', 'success');
+      setTimeout(function() {
+        goTo('daftar-tugas.html');
+      }, 1000);
+    }).catch(function(err) {
+      showAlert('Gagal menghapus: ' + err.message, 'error');
+      btn.disabled = false;
+      btn.innerText = 'Hapus Tugas';
+    });
   });
 }
 
-function escapeHtml(text) {
-  if (!text) return '';
-  var div = document.createElement('div');
-  div.textContent = text;
-  return div.innerHTML;
+// ===== CUSTOM ALERT =====
+function showAlert(message, type, buttonText, callback) {
+  var existing = document.querySelector('.custom-alert-overlay');
+  if (existing) {
+    existing.remove();
+  }
+
+  type = type || 'info';
+  buttonText = buttonText || 'Mengerti';
+
+  var overlay = document.createElement('div');
+  overlay.className = 'custom-alert-overlay active';
+
+  var iconMap = {
+    success: '<svg viewBox="0 0 24 24" fill="none" stroke="white" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><path d="M22 11.08V12a10 10 0 1 1-5.93-9.14"/><polyline points="22 4 12 14.01 9 11.01"/></svg>',
+    error: '<svg viewBox="0 0 24 24" fill="none" stroke="white" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="10"/><line x1="15" y1="9" x2="9" y2="15"/><line x1="9" y1="9" x2="15" y2="15"/></svg>',
+    warning: '<svg viewBox="0 0 24 24" fill="none" stroke="white" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><path d="M12 22s8-4 8-10V5l-8-3-8 3v7c0 6 8 10 8 10z"/><line x1="12" y1="8" x2="12" y2="12"/><line x1="12" y1="16" x2="12.01" y2="16"/></svg>',
+    info: '<svg viewBox="0 0 24 24" fill="none" stroke="white" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="10"/><line x1="12" y1="16" x2="12" y2="12"/><line x1="12" y1="8" x2="12.01" y2="8"/></svg>'
+  };
+
+  var titleMap = {
+    success: 'Berhasil!',
+    error: 'Gagal!',
+    warning: 'Peringatan!',
+    info: 'Informasi'
+  };
+
+  var buttonClass = {
+    success: 'success',
+    error: 'error',
+    warning: 'warning',
+    info: 'info'
+  };
+
+  var box = document.createElement('div');
+  box.className = 'custom-alert-box';
+  box.innerHTML = `
+    <div class="alert-icon ${type}">${iconMap[type] || iconMap.info}</div>
+    <div class="alert-title">${titleMap[type] || 'Informasi'}</div>
+    <div class="alert-message">${message}</div>
+    <button class="alert-btn ${buttonClass[type] || 'info'}" id="customAlertBtn">${buttonText}</button>
+  `;
+
+  overlay.appendChild(box);
+  document.body.appendChild(overlay);
+
+  document.getElementById('customAlertBtn').onclick = function() {
+    overlay.remove();
+    if (callback) callback();
+  };
+
+  // Tutup kalau klik overlay
+  overlay.onclick = function(e) {
+    if (e.target === overlay) {
+      overlay.remove();
+      if (callback) callback();
+    }
+  };
 }
 
+// ===== TOAST =====
 function showToast(msg, type) {
   var t = document.getElementById('toast');
   t.textContent = msg;
@@ -1557,27 +1704,27 @@ function showToast(msg, type) {
   t._timer = setTimeout(function() { t.classList.remove('show'); }, 2500);
 }
 
-function showAlert(msg) {
-  document.getElementById('alertMessage').textContent = msg;
-  document.getElementById('globalAlert').style.display = 'flex';
+function escapeHtml(text) {
+  if (!text) return '';
+  var div = document.createElement('div');
+  div.textContent = text;
+  return div.innerHTML;
 }
 
-function closeAlert() {
-  document.getElementById('globalAlert').style.display = 'none';
-}
-
-// Tutup modal kalau klik overlay
-document.getElementById('modalFoto').addEventListener('click', function(e) {
-  if (e.target === this) {
-    closeModal();
-  }
-});
-
+// ===== KEYBOARD =====
 document.addEventListener('keydown', function(e) {
   if (e.key === 'Escape') {
     closeSidebar();
-    closeAlert();
-    closeModal();
+    closeModalJawaban();
+    var alert = document.querySelector('.custom-alert-overlay');
+    if (alert) alert.remove();
+  }
+});
+
+// Tutup modal kalau klik overlay
+document.getElementById('modalJawaban').addEventListener('click', function(e) {
+  if (e.target === this) {
+    closeModalJawaban();
   }
 });
 </script>
