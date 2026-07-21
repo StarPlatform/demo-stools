@@ -309,7 +309,6 @@
     stroke: #F1F5F9;
   }
 
-  /* SIDEBAR */
   .sidebar-overlay {
     position: fixed;
     top: 0;
@@ -1336,7 +1335,6 @@
 <body>
 
 <div class="app-container">
-  <!-- HEADER -->
   <div class="app-header">
     <div class="logo-area">
       <div class="menu-icon" onclick="openSidebar()">
@@ -1356,7 +1354,6 @@
     </button>
   </div>
 
-  <!-- SIDEBAR -->
   <div class="sidebar-overlay" id="sidebarOverlay" onclick="closeSidebar()"></div>
   <div class="sidebar-nav" id="sidebarNav">
     <div class="close-sidebar-icon" onclick="closeSidebar()">
@@ -1379,10 +1376,6 @@
     <a href="#" onclick="goTo('akun.html')">
       <svg class="icon" viewBox="0 0 24 24"><path d="M20 21v-2a4 4 0 0 0-4-4H8a4 4 0 0 0-4 4v2"/><circle cx="12" cy="7" r="4"/></svg>
       Akun
-    </a>
-    <a href="#" onclick="goTo('coding.html')">
-      <svg class="icon" viewBox="0 0 24 24"><polyline points="16 18 22 12 16 6"/><polyline points="8 6 2 12 8 18"/></svg>
-      Belajar
     </a>
     <div class="logout-link">
       <a href="#" onclick="logoutAction()">
@@ -1519,6 +1512,7 @@
             </div>
             <input type="file" id="fileInput" accept="image/*">
             <div id="galleryResult" class="scan-result hidden"></div>
+            <div id="tempReader" style="display:none;"></div>
           </div>
         </div>
       </div>
@@ -1681,12 +1675,7 @@ window.addEventListener("DOMContentLoaded", function() {
     const file = e.target.files[0];
     if (!file) return;
 
-    const reader = new FileReader();
-    reader.onload = function(event) {
-      const imgData = event.target.result;
-      processGalleryImage(imgData);
-    };
-    reader.readAsDataURL(file);
+    processGalleryImage(file);
     this.value = "";
   });
 });
@@ -1935,12 +1924,13 @@ function processGalleryImage(imgData) {
     return;
   }
 
+  document.getElementById("tempReader").innerHTML = "";
   const tempReader = new Html5Qrcode("tempReader");
 
   tempReader.scanFile(imgData, true)
     .then(function(decodedText) {
       resultDiv.className = "scan-result success";
-      resultDiv.textContent = "QR terdeteksi! Memproses...";
+      resultDiv.textContent = "QR berhasil terdeteksi!";
       resultDiv.classList.remove("hidden");
 
       setTimeout(function() {
@@ -1953,9 +1943,12 @@ function processGalleryImage(imgData) {
       resultDiv.className = "scan-result error";
       resultDiv.textContent = "Gagal membaca QR: " + err.message;
       resultDiv.classList.remove("hidden");
+
+      showModal("error", "Gagal Membaca QR", "Pastikan gambar QR Code jelas dan tidak terpotong.\n\nError: " + (err.message || err));
+
       setTimeout(function() {
         resultDiv.classList.add("hidden");
-      }, 3000);
+      }, 5000);
     });
 }
 
@@ -2082,13 +2075,13 @@ function stopScanner() {
 
 function handleScanResult(kode) {
   if (!kode || !kode.startsWith("STAR-ABSEN-")) {
-    showScanResult("Kode tidak valid!", "error");
+    showModal("error", "Kode Tidak Valid", "QR Code yang discan bukan kode absensi Star Tools.");
     return;
   }
 
   const parts = kode.split("-");
   if (parts.length < 4) {
-    showScanResult("Format kode salah!", "error");
+    showModal("error", "Format Salah", "Format QR Code tidak dikenali.");
     return;
   }
 
@@ -2096,13 +2089,13 @@ function handleScanResult(kode) {
   const murid = parts[3];
 
   if (kelas !== kelasAktif) {
-    showScanResult("Kode untuk kelas lain!", "error");
+    showModal("warning", "Kelas Berbeda", "QR Code ini untuk kelas lain: " + kelas);
     return;
   }
 
   db.ref("kelas/" + kelasAktif + "/siswa/" + murid).once("value").then(function(snap) {
     if (!snap.exists()) {
-      showScanResult("Murid tidak terdaftar!", "error");
+      showModal("error", "Murid Tidak Ditemukan", "Murid " + murid + " tidak terdaftar di kelas ini.");
       return;
     }
 
@@ -2111,7 +2104,7 @@ function handleScanResult(kode) {
 
     db.ref(path).once("value").then(function(snapAbsen) {
       if (snapAbsen.exists()) {
-        showScanResult(murid + " sudah absen hari ini!", "warning");
+        showModal("warning", "Sudah Absen", murid + " sudah absen hari ini.");
         return;
       }
 
@@ -2127,30 +2120,23 @@ function handleScanResult(kode) {
       });
       redoStack = [];
 
-      showScanResult(murid + " berhasil absen!", "success");
-
       showModal("success", "Absen Berhasil!", murid + " berhasil dihadirkan.");
 
       loadTabel();
       loadRekap();
       updateRekap();
 
+      if (currentScanMode === 'gallery') {
+        document.getElementById('galleryResult').classList.add('hidden');
+      }
+
       setTimeout(function() {
-        stopScanner();
+        if (currentScanMode === 'camera') {
+          stopScanner();
+        }
       }, 2000);
     });
   });
-}
-
-function showScanResult(message, type) {
-  const resultDiv = document.getElementById("scanResult");
-  resultDiv.className = "scan-result " + type;
-  resultDiv.textContent = message;
-  resultDiv.classList.remove("hidden");
-
-  setTimeout(function() {
-    resultDiv.classList.add("hidden");
-  }, 5000);
 }
 
 function absenManual() {
